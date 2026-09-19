@@ -1,0 +1,13 @@
+SmalltalkCISpec {
+  #loading : [
+    SCIMetacelloLoadSpec {
+      #baseline : 'RudesheimMobileLab',
+      #load : [ 'tests' ]
+    }
+  ],
+  #testing : {
+    #include : {
+      #packages : [ 'Rudesheim-MobileLab-Tests' ]
+    }
+  }
+}
