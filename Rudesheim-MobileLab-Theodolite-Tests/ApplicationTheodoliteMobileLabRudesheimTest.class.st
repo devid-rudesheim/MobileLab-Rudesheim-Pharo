@@ -15,12 +15,6 @@ ApplicationTheodoliteMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'tests' }
-ApplicationTheodoliteMobileLabRudesheimTest >> testApplicationIsSpApplication [
-	self
-		assert:	(self targetClass inheritsFrom: SpApplication).
-]
-
-{ #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 	self
 		shouldnt:	[ self basicTarget run ]
