@@ -44,11 +44,18 @@ BaselineOfRudesheimMobileLab >> baseline: spec [
 					spec
 						requires:	#( 'Rudesheim-MobileLab' ).
 				];
+				project:	'RudesheimUtilityTests'
+				copyFrom:	'RudesheimUtility'
+				with:
+				[
+					spec
+						loads:	#( 'tests' ).
+				];
 				package:	'Rudesheim-MobileLab-Theodolite-Tests'
 				with:
 				[
 					spec
-						requires:	#( 'Rudesheim-MobileLab-Theodolite' ).
+						requires:	#( 'Rudesheim-MobileLab-Theodolite' 'RudesheimUtilityTests' ).
 				];
 				group:	#core
 				with:	#( 'Rudesheim-MobileLab' 'Rudesheim-MobileLab-Theodolite' );

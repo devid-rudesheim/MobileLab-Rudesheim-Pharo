@@ -4,32 +4,25 @@ An ApplicationTheodoliteMobileLabRudesheimTest is a test class for testing that
 "
 Class {
 	#name : 'ApplicationTheodoliteMobileLabRudesheimTest',
-	#superclass : 'TestCase',
+	#superclass : 'BasicRudesheimTest',
 	#category : 'Rudesheim-MobileLab-Theodolite-Tests',
 	#package : 'Rudesheim-MobileLab-Theodolite-Tests'
 }
 
 { #category : 'accessing' }
 ApplicationTheodoliteMobileLabRudesheimTest class >> targetClass [
-	^ Rudesheim.
-]
-
-{ #category : 'tests' }
-ApplicationTheodoliteMobileLabRudesheimTest >> testApplicationResolvesFromRudesheimMobileLabTheodolite [
-	self
-		assert:	self class targetClass MobileLab Theodolite Application
-		equals:	ApplicationTheodoliteMobileLabRudesheim.
+	^ Rudesheim MobileLab Theodolite Application.
 ]
 
 { #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testApplicationIsSpApplication [
 	self
-		assert:	(ApplicationTheodoliteMobileLabRudesheim inheritsFrom: SpApplication).
+		assert:	(self targetClass inheritsFrom: SpApplication).
 ]
 
 { #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 	self
-		shouldnt:	[ ApplicationTheodoliteMobileLabRudesheim new run ]
+		shouldnt:	[ self basicTarget run ]
 		raise:	Error.
 ]
