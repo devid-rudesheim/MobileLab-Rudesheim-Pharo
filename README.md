@@ -1,5 +1,7 @@
 # Rudesheim MobileLab for Pharo
 
+[![Unit Tests](https://github.com/devid-rudesheim/MobileLab-Rudesheim-Pharo/actions/workflows/tests.yml/badge.svg)](https://github.com/devid-rudesheim/MobileLab-Rudesheim-Pharo/actions/workflows/tests.yml)
+
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-informational)](https://pharo.org)
 
 Rudesheim MobileLab is a mixed dumping ground (a "闇鍋", hot-pot-of-whatever-is-on-hand) for
