@@ -83,7 +83,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 		ifTrue: [ ^ #() ].
 	sumX := (points collect: [ :point | point x ]) sum.
 	sumY := (points collect: [ :point | point y ]) sum.
-	^ { sumX / points size , sumY / points size }.
+	^ { (sumX / points size) , (sumY / points size) }.
 ]
 
 { #category : 'geometry' }

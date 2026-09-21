@@ -60,5 +60,6 @@ SpecBuilderTheodoliteMobileLabRudesheim class >> bindModel: aModel toView: aView
 
 	aModel bearingLines announcer
 		when: LaunchRequestedTheodoliteMobileLabRudesheim
-		do: [ aModel bearingLines mapURL do: [ :url | url launch ] ].
+		do: [ aModel bearingLines mapURL do: [ :url | url launch ] ]
+		for: aView.
 ]
