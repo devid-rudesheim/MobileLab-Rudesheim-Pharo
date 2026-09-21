@@ -64,7 +64,7 @@ SpecBuilderTheodoliteMobileLabRudesheim class >> bindModel: aModel toView: aView
 		action: [ aModel discardAll ].
 
 	aModel bearingLines announcer
-		when: LaunchRequestedTheodoliteMobileLabRudesheim
+		when: Rudesheim MobileLab Theodolite LaunchRequested
 		do: [ aModel bearingLines mapURL do: [ :url | url launch ] ]
 		for: aView.
 ]

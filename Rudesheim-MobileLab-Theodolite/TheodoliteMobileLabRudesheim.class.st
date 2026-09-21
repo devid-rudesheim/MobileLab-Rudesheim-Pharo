@@ -20,3 +20,23 @@ TheodoliteMobileLabRudesheim class >> Model [
 TheodoliteMobileLabRudesheim class >> SpecBuilder [
 	^ SpecBuilderTheodoliteMobileLabRudesheim.
 ]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> BearingLine [
+	^ BearingLineTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> BearingLines [
+	^ BearingLinesTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> Warning [
+	^ WarningTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> LaunchRequested [
+	^ LaunchRequestedTheodoliteMobileLabRudesheim.
+]

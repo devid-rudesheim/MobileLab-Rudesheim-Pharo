@@ -39,7 +39,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 
 	launchCount := 0.
 	model bearingLines announcer
-		when: LaunchRequestedTheodoliteMobileLabRudesheim
+		when: Rudesheim MobileLab Theodolite LaunchRequested
 		do: [ launchCount := launchCount + 1 ]
 		for: self.
 

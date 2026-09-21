@@ -32,12 +32,6 @@ BaselineOfRudesheimMobileLab >> baseline: spec [
 					spec
 						requires:	#( 'RudesheimKernel' 'RudesheimUtility' ).
 				];
-				package:	'Rudesheim-MobileLab-Tests'
-				with:
-				[
-					spec
-						requires:	#( 'Rudesheim-MobileLab' ).
-				];
 				package:	'Rudesheim-MobileLab-Theodolite'
 				with:
 				[
@@ -50,6 +44,12 @@ BaselineOfRudesheimMobileLab >> baseline: spec [
 				[
 					spec
 						loads:	#( 'tests' ).
+				];
+				package:	'Rudesheim-MobileLab-Tests'
+				with:
+				[
+					spec
+						requires:	#( 'Rudesheim-MobileLab' 'RudesheimUtilityTests' ).
 				];
 				package:	'Rudesheim-MobileLab-Theodolite-Tests'
 				with:

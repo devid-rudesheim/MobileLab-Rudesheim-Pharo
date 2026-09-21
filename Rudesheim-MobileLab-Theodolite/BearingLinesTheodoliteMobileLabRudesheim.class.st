@@ -45,13 +45,13 @@ BearingLinesTheodoliteMobileLabRudesheim >> warning: aNewValueHolder [
 BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
 	self size >= self class maxSize
 		ifTrue: [
-			self announcer announce: LaunchRequestedTheodoliteMobileLabRudesheim new.
+			self announcer announce: Rudesheim MobileLab Theodolite LaunchRequested new.
 			^ aBearingLine ].
 	(self allSatisfy: [ :existing | (existing ray intersectionsWith: aBearingLine ray) isNotEmpty ])
 		ifFalse: [
 			self warning
 				value:
-					{ WarningTheodoliteMobileLabRudesheim
+					{ Rudesheim MobileLab Theodolite Warning
 						message: 'この線は既存の線とほぼ平行で交差しないため追加できません' }.
 			^ aBearingLine ].
 	self warning value: #().

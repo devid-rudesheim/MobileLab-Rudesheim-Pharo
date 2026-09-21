@@ -20,7 +20,7 @@ SpecBuilderTheodoliteMobileLabRudesheimTest class >> targetClass [
 SpecBuilderTheodoliteMobileLabRudesheimTest >> testBindModelToViewDoesNotRaise [
 	| app view model |
 	app := SpApplication new.
-	view := StubViewTheodoliteMobileLabRudesheim new.
+	view := (Rudesheim MobileLab Theodolite StubView) new.
 	view application: app.
 	model := Rudesheim MobileLab Theodolite Model new.
 
@@ -31,7 +31,7 @@ SpecBuilderTheodoliteMobileLabRudesheimTest >> testBindModelToViewDoesNotRaise [
 SpecBuilderTheodoliteMobileLabRudesheimTest >> testBoundViewButtonsHaveActions [
 	| app view model |
 	app := SpApplication new.
-	view := StubViewTheodoliteMobileLabRudesheim new.
+	view := (Rudesheim MobileLab Theodolite StubView) new.
 	view application: app.
 	model := Rudesheim MobileLab Theodolite Model new.
 	self targetClass bindModel: model toView: view.

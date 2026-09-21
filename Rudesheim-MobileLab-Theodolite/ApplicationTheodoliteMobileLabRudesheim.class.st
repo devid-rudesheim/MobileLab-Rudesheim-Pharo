@@ -25,5 +25,5 @@ ApplicationTheodoliteMobileLabRudesheim >> model [
 
 { #category : 'starting' }
 ApplicationTheodoliteMobileLabRudesheim >> start [
-	model := ModelTheodoliteMobileLabRudesheim new.
+	model := Rudesheim MobileLab Theodolite Model new.
 ]

@@ -22,31 +22,31 @@ Class {
 ModelTheodoliteMobileLabRudesheim >> initialize [
 	super initialize.
 	self
-		at: WarningTheodoliteMobileLabRudesheim
+		at: Rudesheim MobileLab Theodolite Warning
 		put: (NewValueHolder value: #()).
 	self
-		at: BearingLineTheodoliteMobileLabRudesheim
+		at: Rudesheim MobileLab Theodolite BearingLine
 		put:
-			(BearingLinesTheodoliteMobileLabRudesheim new
+			(Rudesheim MobileLab Theodolite BearingLines new
 				warning: self warning;
 				yourself).
 ]
 
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> bearingLines [
-	^ self at: BearingLineTheodoliteMobileLabRudesheim.
+	^ self at: Rudesheim MobileLab Theodolite BearingLine.
 ]
 
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> warning [
-	^ self at: WarningTheodoliteMobileLabRudesheim.
+	^ self at: Rudesheim MobileLab Theodolite Warning.
 ]
 
 { #category : 'adding' }
 ModelTheodoliteMobileLabRudesheim >> addLineAt: aGPoint heading: aNumber [
 	self bearingLines
 		add:
-			(BearingLineTheodoliteMobileLabRudesheim
+			(Rudesheim MobileLab Theodolite BearingLine
 				origin: aGPoint
 				bearing: aNumber).
 ]

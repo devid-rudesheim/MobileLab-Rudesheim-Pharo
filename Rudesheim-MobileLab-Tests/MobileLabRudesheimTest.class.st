@@ -6,19 +6,12 @@ underneath it later.
 "
 Class {
 	#name : 'MobileLabRudesheimTest',
-	#superclass : 'TestCase',
+	#superclass : 'BasicRudesheimTest',
 	#category : 'Rudesheim-MobileLab-Tests',
 	#package : 'Rudesheim-MobileLab-Tests'
 }
 
 { #category : 'accessing' }
 MobileLabRudesheimTest class >> targetClass [
-	^ Rudesheim.
-]
-
-{ #category : 'tests' }
-MobileLabRudesheimTest >> testMobileLabResolvesFromRudesheim [
-	self
-		assert:	self class targetClass MobileLab
-		equals:	MobileLabRudesheim.
+	^ Rudesheim MobileLab.
 ]
