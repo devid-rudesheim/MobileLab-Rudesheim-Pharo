@@ -23,22 +23,27 @@ Class {
 
 { #category : 'binding' }
 SpecBuilderTheodoliteMobileLabRudesheim class >> bindModel: aModel toView: aView [
+	"The transform blocks below close over aModel and re-derive everything from it directly,
+	rather than trusting the raw value SpPresenterWithModel's port hands them (that value is
+	whatever the underlying NewValueHolder is holding right now -- a plain OrderedCollection or
+	Array, not the richer BearingLinesTheodoliteMobileLabRudesheim/warning holder itself)."
+
 	(SpPresenterWithModel new model: aModel bearingLines)
 		transmitTo: aView progressLabel
-		transform: [ :lines |
-			lines size printString , '/' , lines class maxSize printString , '本' ].
+		transform: [ :ignored |
+			aModel bearingLines size printString , '/' , aModel bearingLines class maxSize printString , '本' ].
 
 	(SpPresenterWithModel new model: aModel bearingLines)
 		transmitTo: aView addressBar
-		transform: [ :lines |
-			lines mapURL
+		transform: [ :ignored |
+			aModel bearingLines mapURL
 				ifEmpty: [ '' ]
 				ifNotEmpty: [ :urls | urls first displayString ] ].
 
 	(SpPresenterWithModel new model: aModel warning)
 		transmitTo: aView warningLabel
-		transform: [ :warnings |
-			warnings
+		transform: [ :ignored |
+			aModel warning value
 				ifEmpty: [ '' ]
 				ifNotEmpty: [ :ws | ws first message ] ]
 		postTransmission: [ :dest :origin :value |
