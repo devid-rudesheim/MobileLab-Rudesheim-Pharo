@@ -22,49 +22,116 @@ Class {
 }
 
 { #category : 'binding' }
-SpecBuilderTheodoliteMobileLabRudesheim class >> bindModel: aModel toView: aView [
+SpecBuilderTheodoliteMobileLabRudesheim class >> bindModel: aModel
+toView: aView [
 	"The transform blocks below close over aModel and re-derive everything from it directly,
 	rather than trusting the raw value SpPresenterWithModel's port hands them (that value is
 	whatever the underlying NewValueHolder is holding right now -- a plain OrderedCollection or
 	Array, not the richer BearingLinesTheodoliteMobileLabRudesheim/warning holder itself)."
+	(
+		SpPresenterWithModel new
+			model:	aModel bearingLines
+	)
+		transmitTo:	aView progressLabel
+		transform:
+		[ :ignored |
+			aModel bearingLines size printString , '/' , aModel bearingLines class maxSize printString , '本'.
+		].
 
-	(SpPresenterWithModel new model: aModel bearingLines)
-		transmitTo: aView progressLabel
-		transform: [ :ignored |
-			aModel bearingLines size printString , '/' , aModel bearingLines class maxSize printString , '本' ].
-
-	(SpPresenterWithModel new model: aModel bearingLines)
-		transmitTo: aView addressBar
-		transform: [ :ignored |
+	(
+		SpPresenterWithModel new
+			model:	aModel bearingLines
+	)
+		transmitTo:	aView addressBar
+		transform:
+		[ :ignored |
 			aModel bearingLines mapURL
-				ifEmpty: [ '' ]
-				ifNotEmpty: [ :urls | urls first displayString ] ].
+				ifEmpty:
+				[
+					''.
+				]
+				ifNotEmpty:
+				[ :urls |
+					urls first displayString.
+				].
+		].
 
-	(SpPresenterWithModel new model: aModel warning)
-		transmitTo: aView warningLabel
-		transform: [ :ignored |
+	(
+		SpPresenterWithModel new
+			model:	aModel warning
+	)
+		transmitTo:	aView warningLabel
+		transform:
+		[ :ignored |
 			aModel warning value
-				ifEmpty: [ '' ]
-				ifNotEmpty: [ :ws | ws first message ] ]
-		postTransmission: [ :dest :origin :value |
+				ifEmpty:
+				[
+					''.
+				]
+				ifNotEmpty:
+				[ :ws |
+					ws first message.
+				].
+		]
+		postTransmission:
+		[ :dest :origin :value |
 			value isEmpty
-				ifTrue: [ dest removeStyle: #warning ]
-				ifFalse: [ dest addStyle: #warning ] ].
+				ifTrue:
+				[
+					dest
+						removeStyle:	#warning.
+				]
+				ifFalse:
+				[
+					dest
+						addStyle:	#warning.
+				].
+		].
 
 	aView addLineButton
 		action:
-			[ aModel
-				addLineAt: CLLocationManagerAgent default currentLocation
-				heading: CLHeadingAgent default trueHeading ].
+		[
+			aModel
+				addLineAt:	CLLocationManagerAgent default currentLocation
+				heading:	CLHeadingAgent default trueHeading.
+		].
+
 	aView openButton
-		action: [ aModel bearingLines mapURL do: [ :url | url launch ] ].
+		action:
+		[
+			aModel bearingLines mapURL
+				do:
+				[ :url |
+					url launch.
+				].
+		].
+
 	aView copyButton
-		action: [ aModel bearingLines mapURL do: [ :url | Clipboard clipboardText: url displayString ] ].
+		action:
+		[
+			aModel bearingLines mapURL
+				do:
+				[ :url |
+					Clipboard
+						clipboardText:	url displayString.
+				].
+		].
+
 	aView discardButton
-		action: [ aModel discardAll ].
+		action:
+		[
+			aModel discardAll.
+		].
 
 	aModel bearingLines announcer
-		when: Rudesheim MobileLab Theodolite LaunchRequested
-		do: [ aModel bearingLines mapURL do: [ :url | url launch ] ]
-		for: aView.
+		when:	Rudesheim MobileLab Theodolite LaunchRequested
+		do:
+		[
+			aModel bearingLines mapURL
+				do:
+				[ :url |
+					url launch.
+				].
+		]
+		for:	aView.
 ]

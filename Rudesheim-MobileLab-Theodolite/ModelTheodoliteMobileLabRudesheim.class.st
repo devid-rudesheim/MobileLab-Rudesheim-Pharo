@@ -18,41 +18,56 @@ Class {
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
-{ #category : 'initialization' }
-ModelTheodoliteMobileLabRudesheim >> initialize [
-	super initialize.
-	self
-		at: Rudesheim MobileLab Theodolite Warning
-		put: (NewValueHolder value: #()).
-	self
-		at: Rudesheim MobileLab Theodolite BearingLine
-		put:
-			(Rudesheim MobileLab Theodolite BearingLines new
-				warning: self warning;
-				yourself).
+{ #category : 'adding' }
+ModelTheodoliteMobileLabRudesheim >> addLineAt: aGPoint
+heading: aNumber [
+	self bearingLines
+		add:
+		(
+			Rudesheim MobileLab Theodolite BearingLine
+				origin:	aGPoint
+				bearing:	aNumber
+		).
 ]
 
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> bearingLines [
-	^ self at: Rudesheim MobileLab Theodolite BearingLine.
-]
-
-{ #category : 'accessing' }
-ModelTheodoliteMobileLabRudesheim >> warning [
-	^ self at: Rudesheim MobileLab Theodolite Warning.
-]
-
-{ #category : 'adding' }
-ModelTheodoliteMobileLabRudesheim >> addLineAt: aGPoint heading: aNumber [
-	self bearingLines
-		add:
-			(Rudesheim MobileLab Theodolite BearingLine
-				origin: aGPoint
-				bearing: aNumber).
+	^ self
+		at:	Rudesheim MobileLab Theodolite BearingLine.
 ]
 
 { #category : 'actions' }
 ModelTheodoliteMobileLabRudesheim >> discardAll [
 	self bearingLines removeAll.
-	self warning value: #().
+
+	self warning
+		value:	#(  ).
+]
+
+{ #category : 'initialization' }
+ModelTheodoliteMobileLabRudesheim >> initialize [
+	super initialize.
+
+	self
+		at:	Rudesheim MobileLab Theodolite Warning
+		put:
+		(
+			NewValueHolder
+				value:	#(  )
+		).
+
+	self
+		at:	Rudesheim MobileLab Theodolite BearingLine
+		put:
+		(
+			Rudesheim MobileLab Theodolite BearingLines new
+				warning:	self warning;
+				yourself
+		).
+]
+
+{ #category : 'accessing' }
+ModelTheodoliteMobileLabRudesheim >> warning [
+	^ self
+		at:	Rudesheim MobileLab Theodolite Warning.
 ]

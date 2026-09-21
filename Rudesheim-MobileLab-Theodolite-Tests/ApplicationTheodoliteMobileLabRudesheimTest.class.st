@@ -17,6 +17,9 @@ ApplicationTheodoliteMobileLabRudesheimTest class >> targetClass [
 { #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 	self
-		shouldnt:	[ self basicTarget run ]
+		shouldnt:
+		[
+			self basicTarget run.
+		]
 		raise:	Error.
 ]

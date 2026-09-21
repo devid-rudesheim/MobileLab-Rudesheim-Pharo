@@ -7,28 +7,21 @@ note/ios-triangulation-app.md section 3 (NocoDB Sections 項番FE) in the main p
 Class {
 	#name : 'BearingLineTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
-	#instVars : [ 'origin', 'bearing', 'timestamp' ],
+	#instVars : [
+		'origin',
+		'bearing',
+		'timestamp'
+	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
 { #category : 'instance creation' }
-BearingLineTheodoliteMobileLabRudesheim class >> origin: aGPoint bearing: aNumber [
+BearingLineTheodoliteMobileLabRudesheim class >> origin: aGPoint
+bearing: aNumber [
 	^ self new
-		setOrigin: aGPoint
-		bearing: aNumber.
-]
-
-{ #category : 'private' }
-BearingLineTheodoliteMobileLabRudesheim >> setOrigin: aGPoint bearing: aNumber [
-	origin := aGPoint.
-	bearing := aNumber.
-	timestamp := DateAndTime now.
-]
-
-{ #category : 'accessing' }
-BearingLineTheodoliteMobileLabRudesheim >> origin [
-	^ origin.
+		setOrigin:	aGPoint
+		bearing:	aNumber.
 ]
 
 { #category : 'accessing' }
@@ -37,8 +30,8 @@ BearingLineTheodoliteMobileLabRudesheim >> bearing [
 ]
 
 { #category : 'accessing' }
-BearingLineTheodoliteMobileLabRudesheim >> timestamp [
-	^ timestamp.
+BearingLineTheodoliteMobileLabRudesheim >> origin [
+	^ origin.
 ]
 
 { #category : 'geometry' }
@@ -46,10 +39,26 @@ BearingLineTheodoliteMobileLabRudesheim >> ray [
 	"trueHeading is a compass bearing (0=north, clockwise). On the origin+longitude@latitude
 	plane that is dx=sin(bearing), dy=cos(bearing); GRay direction: wants a point on the ray, not
 	a bare vector, so we offset origin by the unit vector."
+	|
+		angle
+	|
 
-	| angle |
 	angle := self bearing degrees.
+
 	^ GRay
-		origin: self origin
-		direction: self origin + (angle sin , angle cos).
+		origin:	self origin
+		direction:	self origin + ( angle sin , angle cos ).
+]
+
+{ #category : 'private' }
+BearingLineTheodoliteMobileLabRudesheim >> setOrigin: aGPoint
+bearing: aNumber [
+	origin := aGPoint.
+	bearing := aNumber.
+	timestamp := DateAndTime now.
+]
+
+{ #category : 'accessing' }
+BearingLineTheodoliteMobileLabRudesheim >> timestamp [
+	^ timestamp.
 ]

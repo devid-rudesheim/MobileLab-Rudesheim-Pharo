@@ -12,16 +12,6 @@ TheodoliteMobileLabRudesheim class >> Application [
 ]
 
 { #category : 'accessing' }
-TheodoliteMobileLabRudesheim class >> Model [
-	^ ModelTheodoliteMobileLabRudesheim.
-]
-
-{ #category : 'accessing' }
-TheodoliteMobileLabRudesheim class >> SpecBuilder [
-	^ SpecBuilderTheodoliteMobileLabRudesheim.
-]
-
-{ #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> BearingLine [
 	^ BearingLineTheodoliteMobileLabRudesheim.
 ]
@@ -32,11 +22,21 @@ TheodoliteMobileLabRudesheim class >> BearingLines [
 ]
 
 { #category : 'accessing' }
-TheodoliteMobileLabRudesheim class >> Warning [
-	^ WarningTheodoliteMobileLabRudesheim.
+TheodoliteMobileLabRudesheim class >> LaunchRequested [
+	^ LaunchRequestedTheodoliteMobileLabRudesheim.
 ]
 
 { #category : 'accessing' }
-TheodoliteMobileLabRudesheim class >> LaunchRequested [
-	^ LaunchRequestedTheodoliteMobileLabRudesheim.
+TheodoliteMobileLabRudesheim class >> Model [
+	^ ModelTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> SpecBuilder [
+	^ SpecBuilderTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> Warning [
+	^ WarningTheodoliteMobileLabRudesheim.
 ]

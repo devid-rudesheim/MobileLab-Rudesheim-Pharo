@@ -18,23 +18,54 @@ SpecBuilderTheodoliteMobileLabRudesheimTest class >> targetClass [
 
 { #category : 'tests' }
 SpecBuilderTheodoliteMobileLabRudesheimTest >> testBindModelToViewDoesNotRaise [
-	| app view model |
+	|
+		app
+		view
+		model
+	|
+
 	app := SpApplication new.
-	view := (Rudesheim MobileLab Theodolite StubView) new.
-	view application: app.
+	view := Rudesheim MobileLab Theodolite StubView new.
+
+	view
+		application:	app.
+
 	model := Rudesheim MobileLab Theodolite Model new.
 
-	self shouldnt: [ self targetClass bindModel: model toView: view ] raise: Error.
+	self
+		shouldnt:
+		[
+			self targetClass
+				bindModel:	model
+				toView:	view.
+		]
+		raise:	Error.
 ]
 
 { #category : 'tests' }
 SpecBuilderTheodoliteMobileLabRudesheimTest >> testBoundViewButtonsHaveActions [
-	| app view model |
-	app := SpApplication new.
-	view := (Rudesheim MobileLab Theodolite StubView) new.
-	view application: app.
-	model := Rudesheim MobileLab Theodolite Model new.
-	self targetClass bindModel: model toView: view.
+	|
+		app
+		view
+		model
+	|
 
-	self shouldnt: [ view discardButton performAction ] raise: Error.
+	app := SpApplication new.
+	view := Rudesheim MobileLab Theodolite StubView new.
+
+	view
+		application:	app.
+
+	model := Rudesheim MobileLab Theodolite Model new.
+
+	self targetClass
+		bindModel:	model
+		toView:	view.
+
+	self
+		shouldnt:
+		[
+			view discardButton performAction.
+		]
+		raise:	Error.
 ]

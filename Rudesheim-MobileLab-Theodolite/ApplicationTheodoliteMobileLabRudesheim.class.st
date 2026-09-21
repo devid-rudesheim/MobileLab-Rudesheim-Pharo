@@ -13,7 +13,9 @@ comment. Once a View exists, `start` wires it with
 Class {
 	#name : 'ApplicationTheodoliteMobileLabRudesheim',
 	#superclass : 'SpApplication',
-	#instVars : [ 'model' ],
+	#instVars : [
+		'model'
+	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }

@@ -7,7 +7,9 @@ collection entry.
 Class {
 	#name : 'WarningTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
-	#instVars : [ 'message' ],
+	#instVars : [
+		'message'
+	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
@@ -15,15 +17,15 @@ Class {
 { #category : 'instance creation' }
 WarningTheodoliteMobileLabRudesheim class >> message: aString [
 	^ self new
-		setMessage: aString.
-]
-
-{ #category : 'private' }
-WarningTheodoliteMobileLabRudesheim >> setMessage: aString [
-	message := aString.
+		setMessage:	aString.
 ]
 
 { #category : 'accessing' }
 WarningTheodoliteMobileLabRudesheim >> message [
 	^ message.
+]
+
+{ #category : 'private' }
+WarningTheodoliteMobileLabRudesheim >> setMessage: aString [
+	message := aString.
 ]

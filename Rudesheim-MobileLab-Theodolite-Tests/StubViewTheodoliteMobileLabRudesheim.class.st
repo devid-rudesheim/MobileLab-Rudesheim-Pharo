@@ -9,42 +9,78 @@ works). Test-only; never opened as a window.
 Class {
 	#name : 'StubViewTheodoliteMobileLabRudesheim',
 	#superclass : 'SpPresenter',
-	#instVars : [ 'progressLabel', 'addressBar', 'warningLabel', 'addLineButton', 'openButton', 'copyButton', 'discardButton' ],
+	#instVars : [
+		'progressLabel',
+		'addressBar',
+		'warningLabel',
+		'addLineButton',
+		'openButton',
+		'copyButton',
+		'discardButton'
+	],
 	#category : 'Rudesheim-MobileLab-Theodolite-Tests',
 	#package : 'Rudesheim-MobileLab-Theodolite-Tests'
 }
 
 { #category : 'accessing' }
-StubViewTheodoliteMobileLabRudesheim >> progressLabel [
-	^ progressLabel ifNil: [ progressLabel := SpLabelPresenter new application: self application; yourself ].
+StubViewTheodoliteMobileLabRudesheim >> addLineButton [
+	^ addLineButton
+		ifNil:
+		[
+			addLineButton := SpButtonPresenter new    application: self application;    yourself.
+		].
 ]
 
 { #category : 'accessing' }
 StubViewTheodoliteMobileLabRudesheim >> addressBar [
-	^ addressBar ifNil: [ addressBar := SpLabelPresenter new application: self application; yourself ].
-]
-
-{ #category : 'accessing' }
-StubViewTheodoliteMobileLabRudesheim >> warningLabel [
-	^ warningLabel ifNil: [ warningLabel := SpLabelPresenter new application: self application; yourself ].
-]
-
-{ #category : 'accessing' }
-StubViewTheodoliteMobileLabRudesheim >> addLineButton [
-	^ addLineButton ifNil: [ addLineButton := SpButtonPresenter new application: self application; yourself ].
-]
-
-{ #category : 'accessing' }
-StubViewTheodoliteMobileLabRudesheim >> openButton [
-	^ openButton ifNil: [ openButton := SpButtonPresenter new application: self application; yourself ].
+	^ addressBar
+		ifNil:
+		[
+			addressBar := SpLabelPresenter new    application: self application;    yourself.
+		].
 ]
 
 { #category : 'accessing' }
 StubViewTheodoliteMobileLabRudesheim >> copyButton [
-	^ copyButton ifNil: [ copyButton := SpButtonPresenter new application: self application; yourself ].
+	^ copyButton
+		ifNil:
+		[
+			copyButton := SpButtonPresenter new    application: self application;    yourself.
+		].
 ]
 
 { #category : 'accessing' }
 StubViewTheodoliteMobileLabRudesheim >> discardButton [
-	^ discardButton ifNil: [ discardButton := SpButtonPresenter new application: self application; yourself ].
+	^ discardButton
+		ifNil:
+		[
+			discardButton := SpButtonPresenter new    application: self application;    yourself.
+		].
+]
+
+{ #category : 'accessing' }
+StubViewTheodoliteMobileLabRudesheim >> openButton [
+	^ openButton
+		ifNil:
+		[
+			openButton := SpButtonPresenter new    application: self application;    yourself.
+		].
+]
+
+{ #category : 'accessing' }
+StubViewTheodoliteMobileLabRudesheim >> progressLabel [
+	^ progressLabel
+		ifNil:
+		[
+			progressLabel := SpLabelPresenter new    application: self application;    yourself.
+		].
+]
+
+{ #category : 'accessing' }
+StubViewTheodoliteMobileLabRudesheim >> warningLabel [
+	^ warningLabel
+		ifNil:
+		[
+			warningLabel := SpLabelPresenter new    application: self application;    yourself.
+		].
 ]
