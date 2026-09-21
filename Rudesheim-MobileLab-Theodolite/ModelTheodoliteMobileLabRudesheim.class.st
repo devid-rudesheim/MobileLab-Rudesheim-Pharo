@@ -46,10 +46,16 @@ ModelTheodoliteMobileLabRudesheim >> discardAll [
 
 { #category : 'initialization' }
 ModelTheodoliteMobileLabRudesheim >> initialize [
+	|
+		theodolite
+	|
+
 	super initialize.
 
+	theodolite := Rudesheim MobileLab Theodolite.
+
 	self
-		at:	Rudesheim MobileLab Theodolite Warning
+		at:	theodolite Warning
 		put:
 		(
 			NewValueHolder
@@ -57,10 +63,10 @@ ModelTheodoliteMobileLabRudesheim >> initialize [
 		).
 
 	self
-		at:	Rudesheim MobileLab Theodolite BearingLine
+		at:	theodolite BearingLine
 		put:
 		(
-			Rudesheim MobileLab Theodolite BearingLines new
+			theodolite BearingLines new
 				warning:	self warning;
 				yourself
 		).

@@ -29,11 +29,17 @@ BearingLinesTheodoliteMobileLabRudesheim class >> maxSize [
 
 { #category : 'adding' }
 BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
+	|
+		theodolite
+	|
+
+	theodolite := Rudesheim MobileLab Theodolite.
+
 	self size >= self class maxSize
 		ifTrue:
 		[
 			self announcer
-				announce:	Rudesheim MobileLab Theodolite LaunchRequested new.
+				announce:	theodolite LaunchRequested new.
 
 			^ aBearingLine.
 		].
@@ -53,7 +59,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
 			self warning
 				value:
 				{
-					Rudesheim MobileLab Theodolite Warning
+					theodolite Warning
 						message:	'この線は既存の線とほぼ平行で交差しないため追加できません'
 				}.
 
