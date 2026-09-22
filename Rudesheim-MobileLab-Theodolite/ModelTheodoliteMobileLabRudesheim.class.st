@@ -12,6 +12,9 @@ Sections 項番FM) it keeps exactly two persistent entries, keyed by class:
 There is deliberately no Controller class: every operation (adding a line, opening/copying the
 map URL, discarding everything) is either a standard Collection/Dictionary-protocol call or one of
 the two composite operations below, called directly from view action blocks.
+
+Both entries are created lazily (on first #bearingLines/#warning read) rather than eagerly in
+#initialize, per ~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule.
 "
 Class {
 	#name : 'ModelTheodoliteMobileLabRudesheim',
@@ -35,7 +38,21 @@ heading: aNumber [
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> bearingLines [
 	^ self
-		at:	Rudesheim MobileLab Theodolite BearingLines.
+		at:	Rudesheim MobileLab Theodolite BearingLines
+		ifAbsentPut:	[ self defaultBearingLines ].
+]
+
+{ #category : 'private' }
+ModelTheodoliteMobileLabRudesheim >> defaultBearingLines [
+	^ Rudesheim MobileLab Theodolite BearingLines new
+		warning:	self warning;
+		yourself.
+]
+
+{ #category : 'private' }
+ModelTheodoliteMobileLabRudesheim >> defaultWarning [
+	^ NewValueHolder
+		value:	#(  ).
 ]
 
 { #category : 'actions' }
@@ -46,35 +63,9 @@ ModelTheodoliteMobileLabRudesheim >> discardAll [
 		value:	#(  ).
 ]
 
-{ #category : 'initialization' }
-ModelTheodoliteMobileLabRudesheim >> initialize [
-	|
-		theodolite
-	|
-
-	super initialize.
-	theodolite := Rudesheim MobileLab Theodolite.
-
-	self
-		at:	theodolite Warning
-		put:
-		(
-			NewValueHolder
-				value:	#(  )
-		).
-
-	self
-		at:	theodolite BearingLines
-		put:
-		(
-			theodolite BearingLines new
-				warning:	self warning;
-				yourself
-		).
-]
-
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> warning [
 	^ self
-		at:	Rudesheim MobileLab Theodolite Warning.
+		at:	Rudesheim MobileLab Theodolite Warning
+		ifAbsentPut:	[ self defaultWarning ].
 ]

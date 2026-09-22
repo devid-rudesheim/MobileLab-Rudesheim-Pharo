@@ -33,15 +33,13 @@ toward: aTarget [
 
 	degrees := radians * 180 / Float pi.
 
-	^ degrees < 0
+	0 > degrees
 		ifTrue:
 		[
-			degrees + 360.
-		]
-		ifFalse:
-		[
-			degrees.
+			^ degrees + 360.
 		].
+
+	^ degrees.
 ]
 
 { #category : 'tests' }

@@ -1,7 +1,7 @@
 "
 A WarningTheodoliteMobileLabRudesheim is a single warning entry held (0-or-1, never nil, per the
 project's no-nil convention) by the Model's warning NewValueHolder. Also doubles as that entry's
-dictionary key in the Model, mirroring how BearingLineTheodoliteMobileLabRudesheim keys its own
+dictionary key in the Model, mirroring how BearingLinesTheodoliteMobileLabRudesheim keys its own
 collection entry.
 "
 Class {
@@ -17,7 +17,8 @@ Class {
 { #category : 'instance creation' }
 WarningTheodoliteMobileLabRudesheim class >> message: aString [
 	^ self new
-		setMessage:	aString.
+		message:	aString;
+		yourself.
 ]
 
 { #category : 'accessing' }
@@ -25,7 +26,7 @@ WarningTheodoliteMobileLabRudesheim >> message [
 	^ message.
 ]
 
-{ #category : 'private' }
-WarningTheodoliteMobileLabRudesheim >> setMessage: aString [
+{ #category : 'accessing' }
+WarningTheodoliteMobileLabRudesheim >> message: aString [
 	message := aString.
 ]

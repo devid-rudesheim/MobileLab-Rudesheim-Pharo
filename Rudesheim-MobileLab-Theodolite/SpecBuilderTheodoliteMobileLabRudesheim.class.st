@@ -80,7 +80,9 @@ toView: aView [
 				[
 					dest
 						removeStyle:	#warning.
-				]
+				].
+
+			value isEmpty
 				ifFalse:
 				[
 					dest
