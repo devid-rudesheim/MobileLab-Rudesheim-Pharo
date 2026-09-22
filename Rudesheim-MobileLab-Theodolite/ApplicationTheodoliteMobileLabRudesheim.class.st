@@ -56,6 +56,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 				in:
 				[ :root |
 					|
+						window
 						progressLabel
 						addressBar
 						warningLabel
@@ -63,6 +64,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 						updateWarning
 					|
 
+					window :=
 					root
 						openWithLayout:
 						(
@@ -220,9 +222,9 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 					aModel bearingLines announcer
 						when:	Rudesheim MobileLab Theodolite LaunchRequested
 						do:	[ aModel bearingLines mapURL do: #launch ]
-						for:	root.
+						for:	window.
 
-					root.
+					window.
 				]
 			)
 				title:		'Theodolite';
