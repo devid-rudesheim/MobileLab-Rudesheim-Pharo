@@ -5,10 +5,12 @@ note/ios-triangulation-app.md in the main project repository). Reached as
 `Rudesheim MobileLab Theodolite Application`.
 
 `start` builds the Model, opens the landscape View (`ViewLandscapeTheodoliteMobileLabRudesheim`,
-note/ios-triangulation-app.md section 2.2 / NocoDB Sections 項番FD §2.2), and wires the two
-together with `SpecBuilderTheodoliteMobileLabRudesheim class>>#bindModel:toView:` (項番FL). The
-portrait View (項番FD §2.1) and the ObjC-bridge location/heading sourcing (項番FJ §8 item 4) are
-separate, not-yet-built work.
+note/ios-triangulation-app.md section 2.2 / NocoDB Sections 項番FD §2.2), and wires the Model to
+the View's `widgets` (a WidgetsTheodoliteMobileLabRudesheim, holding the actual widget protocol
+SpecBuilder needs -- the View itself only arranges them) with
+`SpecBuilderTheodoliteMobileLabRudesheim class>>#bindModel:toView:` (項番FL). The portrait View
+(項番FD §2.1) and the ObjC-bridge location/heading sourcing (項番FJ §8 item 4) are separate,
+not-yet-built work.
 "
 Class {
 	#name : 'ApplicationTheodoliteMobileLabRudesheim',
@@ -58,5 +60,5 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 
 	namespace SpecBuilder
 		bindModel:	self model
-		toView:		view.
+		toView:		view widgets.
 ]

@@ -1,12 +1,16 @@
 "
 A SpecBuilderTheodoliteMobileLabRudesheim wires a ModelTheodoliteMobileLabRudesheim to whichever
-View (portrait or landscape SpPresenter) currently owns the window, per
-note/ios-triangulation-app.md section 7.4 (NocoDB Sections 項番FL). Stateless: it exists only for
-its class-side #bindModel:toView:, called once per View instance.
+object exposes the widget protocol below -- in practice a View's `widgets`
+(WidgetsTheodoliteMobileLabRudesheim, shared by both orientations; ApplicationTheodoliteMobileLabRudesheim>>
+#start passes `view widgets`, not the View itself), since the View presenter (portrait or landscape)
+only arranges those widgets and does not answer the protocol directly. Per note/ios-triangulation-app.md
+section 7.4 (NocoDB Sections 項番FL). Stateless: it exists only for its class-side
+#bindModel:toView:, called once per View instance.
 
-The View just needs to answer #progressLabel/#addressBar/#warningLabel (each an SpAbstractPresenter,
-for the Spec2-Transmission read direction) and #addLineButton/#removeLineButton/#openButton/
-#copyButton/#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
+`toView:` just needs to answer #progressLabel/#addressBar/#warningLabel (each an
+SpAbstractPresenter, for the Spec2-Transmission read direction) and #addLineButton/
+#removeLineButton/#openButton/#copyButton/#discardButton (each an SpButtonPresenter, for the
+write-direction action blocks).
 
 #addLineButton's action is just `aModel bearingLines push` -- sourcing the current position/heading
 is BearingLinesTheodoliteMobileLabRudesheim's own concern (via Rudesheim-MobileLab's OS-dispatch
