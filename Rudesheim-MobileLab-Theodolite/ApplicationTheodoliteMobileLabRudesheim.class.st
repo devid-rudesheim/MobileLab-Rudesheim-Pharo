@@ -39,12 +39,6 @@ ApplicationTheodoliteMobileLabRudesheim >> model [
 
 { #category : 'starting' }
 ApplicationTheodoliteMobileLabRudesheim >> start [
-	|
-		aModel
-	|
-
-	aModel := self model.
-
 	self
 		registerWindow:
 		(
@@ -76,7 +70,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 										(
 											root newButton
 												label:	'Discard all';
-												action:	[ aModel discardAll ];
+												action:	[ self model discardAll ];
 												yourself
 										)
 										expand:	false;
@@ -96,7 +90,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 												label:	'Open';
 												action:
 												[
-													aModel bearingLines mapURL
+													self model bearingLines mapURL
 														do:	#launch.
 												];
 												yourself
@@ -109,7 +103,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 												label:	'Copy';
 												action:
 												[
-													aModel bearingLines mapURL
+													self model bearingLines mapURL
 														do:
 														[ :url |
 															Clipboard
@@ -142,7 +136,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 												(
 													root newButton
 														label:	'Add line';
-														action:	[ aModel bearingLines push ];
+														action:	[ self model bearingLines push ];
 														yourself
 												)
 												expand:	false;
@@ -151,7 +145,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 												(
 													root newButton
 														label:	'Remove line';
-														action:	[ aModel bearingLines pop ];
+														action:	[ self model bearingLines pop ];
 														yourself
 												)
 												expand:	false;
@@ -188,12 +182,12 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 					updateBearingLines :=
 					[
 						progressLabel
-							label:	aModel bearingLines size printString , '/' , aModel bearingLines class maxSize printString , ' lines'.
+							label:	self model bearingLines size printString , '/' , self model bearingLines class maxSize printString , ' lines'.
 
 						addressBar
 							label:
 							(
-								aModel bearingLines mapURL
+								self model bearingLines mapURL
 									ifEmpty:	[ '' ]
 									ifNotEmpty:	[ :urls | urls first displayString ]
 							).
@@ -204,7 +198,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 						warningLabel
 							label:
 							(
-								aModel warning value
+								self model warning value
 									ifEmpty:	[ '' ]
 									ifNotEmpty:	[ :ws | ws first ]
 							).
@@ -213,15 +207,15 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 					updateBearingLines value.
 					updateWarning value.
 
-					aModel bearingLines
+					self model bearingLines
 						whenChangedDo:	updateBearingLines.
 
-					aModel warning
+					self model warning
 						whenChangedDo:	updateWarning.
 
-					aModel bearingLines announcer
+					self model bearingLines announcer
 						when:	Rudesheim MobileLab Theodolite LaunchRequested
-						do:	[ aModel bearingLines mapURL do: #launch ]
+						do:	[ self model bearingLines mapURL do: #launch ]
 						for:	window.
 
 					window.
