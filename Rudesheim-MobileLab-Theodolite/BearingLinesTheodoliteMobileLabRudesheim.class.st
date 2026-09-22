@@ -89,8 +89,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 	|
 		lines
 		points
-		sumX
-		sumY
+		average
 	|
 
 	lines := self asArray.
@@ -129,27 +128,16 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 			^ #(  ).
 		].
 
-	sumX :=
-	(
-		points
-			collect:
-			[ :point |
-				point x.
-			]
-	) sum.
-
-	sumY :=
-	(
-		points
-			collect:
-			[ :point |
-				point y.
-			]
-	) sum.
+	average :=
+		(
+			points
+				inject:	0 , 0
+				into:	[ :sum :each | sum + each ]
+		) asPoint / points size.
 
 	^
 	{
-		( sumX / points size ) , ( sumY / points size )
+		average x , average y
 	}.
 ]
 

@@ -20,18 +20,16 @@ ModelTheodoliteMobileLabRudesheimTest class >> targetClass [
 ModelTheodoliteMobileLabRudesheimTest >> bearingFrom: anOrigin
 toward: aTarget [
 	|
-		dx
-		dy
+		delta
 		radians
 		degrees
 	|
 
-	dx := aTarget x - anOrigin x.
-	dy := aTarget y - anOrigin y.
+	delta := aTarget - anOrigin.
 
 	radians :=
-		dx
-			arcTan:	dy.
+		delta x
+			arcTan:	delta y.
 
 	degrees := radians * 180 / Float pi.
 
