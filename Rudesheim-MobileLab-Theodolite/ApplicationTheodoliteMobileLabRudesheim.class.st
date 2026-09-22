@@ -20,12 +20,18 @@ Class {
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
+{ #category : 'private' }
+ApplicationTheodoliteMobileLabRudesheim >> defaultModel [
+	^ Rudesheim MobileLab Theodolite Model new.
+]
+
 { #category : 'accessing' }
 ApplicationTheodoliteMobileLabRudesheim >> model [
-	^ model.
+	^ model
+		ifNil:	[ model := self defaultModel ].
 ]
 
 { #category : 'starting' }
 ApplicationTheodoliteMobileLabRudesheim >> start [
-	model := Rudesheim MobileLab Theodolite Model new.
+	self model.
 ]
