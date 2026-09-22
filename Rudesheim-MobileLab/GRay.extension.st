@@ -1,6 +1,6 @@
 Extension { #name : 'GRay' }
 
-{ #category : '*Rudesheim-MobileLab-Theodolite' }
+{ #category : '*Rudesheim-MobileLab' }
 GRay class >> origin: aGPoint
 bearing: aNumber [
 	"aNumber is a compass bearing in degrees (0=north, clockwise). On the origin+longitude@latitude

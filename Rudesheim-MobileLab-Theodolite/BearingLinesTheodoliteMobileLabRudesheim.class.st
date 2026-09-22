@@ -13,10 +13,13 @@ section 7.3 (NocoDB Sections 項番FM):
 - #intersectionPoint / #mapURL are 0-or-1-element-array query methods (never nil, per the
   project's no-nil convention) computed on demand from the current lines, not cached.
 
-#push:heading:/#pop are the view-facing stack-style entry points action blocks actually call:
-#push:heading: builds the GRay from a raw origin point + compass bearing and passes it through
-#add: (so the capacity/intersection coordination above still applies); #pop is a plain alias for
-#removeLast. Callers that already have a GRay in hand can still use #add:/#removeLast directly.
+#push/#push:heading:/#pop are the view-facing stack-style entry points action blocks actually call:
+#push reads the current position/heading from `Smalltalk os rudesheim location currentRay`
+(Rudesheim-MobileLab's OS-dispatch mechanism) and passes it through #add:; #push:heading: does the
+same from an already-known origin point + compass bearing instead (used directly by tests, which
+can't rely on live device sensors). Either way #add:'s capacity/intersection coordination above
+still applies. #pop is a plain alias for #removeLast. Callers that already have a GRay in hand can
+still use #add:/#removeLast directly.
 "
 Class {
 	#name : 'BearingLinesTheodoliteMobileLabRudesheim',
@@ -164,6 +167,12 @@ BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
 { #category : 'removing' }
 BearingLinesTheodoliteMobileLabRudesheim >> pop [
 	^ self removeLast.
+]
+
+{ #category : 'adding' }
+BearingLinesTheodoliteMobileLabRudesheim >> push [
+	^ self
+		add:	Smalltalk os rudesheim location currentRay.
 ]
 
 { #category : 'adding' }

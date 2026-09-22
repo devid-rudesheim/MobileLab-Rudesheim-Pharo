@@ -8,11 +8,10 @@ The View just needs to answer #progressLabel/#addressBar/#warningLabel (each an 
 for the Spec2-Transmission read direction) and #addLineButton/#removeLineButton/#openButton/
 #copyButton/#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
 
-`CLLocationManagerAgent`/`CLHeadingAgent` (current-location/true-heading sourcing over the ObjC
-bridge, note/ios-triangulation-app.md section 8 item 4) are deliberately not implemented yet --
-that is separate, iOS-only, and unverified-headless work. Referencing them here compiles fine
-(they resolve once that work lands) but #addLineButton's action block cannot actually run until
-then.
+#addLineButton's action is just `aModel bearingLines push` -- sourcing the current position/heading
+is BearingLinesTheodoliteMobileLabRudesheim's own concern (via Rudesheim-MobileLab's OS-dispatch
+mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesheim's comment for
+why it can't actually run yet). This class no longer references the ObjC bridge globals directly.
 "
 Class {
 	#name : 'SpecBuilderTheodoliteMobileLabRudesheim',
@@ -91,9 +90,7 @@ toView: aView [
 	aView addLineButton
 		action:
 		[
-			aModel bearingLines
-				push:	CLLocationManagerAgent default currentLocation
-				heading:	CLHeadingAgent default trueHeading.
+			aModel bearingLines push.
 		].
 
 	aView removeLineButton
