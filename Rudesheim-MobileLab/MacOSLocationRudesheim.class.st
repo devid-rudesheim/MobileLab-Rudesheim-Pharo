@@ -5,8 +5,8 @@ OSLocationRudesheim's #currentRay template method needs: #currentLocation (the d
 position, via `CLLocationManagerAgent` over the ObjC bridge, see note/pharo-ops.md section 40/41)
 and #currentNormalizedBearing (the device's current true-heading direction, via `CLHeadingAgent`,
 converted from raw degrees to Rudesheim-MobileLab's normalized bearing form through
-`Number>>#asNormalizedBearingRudesheim` -- this is the one boundary where a raw-degrees sensor
-reading enters the system).
+`Rudesheim Utility Normalizer Angle Degree normalizeAngle:` -- this is the one boundary where a
+raw-degrees sensor reading enters the system).
 
 `CLLocationManagerAgent`/`CLHeadingAgent` are deliberately not implemented yet -- that is separate,
 iOS-only, unverified-headless work (see note/ios-triangulation-app.md section 8 item 4). Referencing
@@ -27,5 +27,5 @@ MacOSLocationRudesheim class >> currentLocation [
 
 { #category : 'accessing' }
 MacOSLocationRudesheim class >> currentNormalizedBearing [
-	^ CLHeadingAgent default trueHeading asNormalizedBearingRudesheim.
+	^ Rudesheim Utility Normalizer Angle Degree normalizeAngle: CLHeadingAgent default trueHeading.
 ]
