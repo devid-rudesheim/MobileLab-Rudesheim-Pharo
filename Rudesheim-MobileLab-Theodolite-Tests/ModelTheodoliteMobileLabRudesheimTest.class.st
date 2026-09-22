@@ -51,8 +51,12 @@ ModelTheodoliteMobileLabRudesheimTest >> testDiscardAllClearsEverything [
 	model := self basicTarget.
 
 	model bearingLines
-		push:	0 , 0
-		heading:	90.
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				bearing:	90
+		).
 
 	model discardAll.
 
@@ -87,12 +91,16 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 		do:
 		[ :origin |
 			model bearingLines
-				push:	origin
-				heading:
+				add:
 				(
-					self
-						bearingFrom:	origin
-						toward:	target
+					GRay
+						origin:	origin
+						bearing:
+						(
+							self
+								bearingFrom:	origin
+								toward:	target
+						)
 				).
 		].
 
@@ -107,12 +115,16 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 		for:	self.
 
 	model bearingLines
-		push:	50 , 50
-		heading:
+		add:
 		(
-			self
-				bearingFrom:	50 , 50
-				toward:	target
+			GRay
+				origin:	50 , 50
+				bearing:
+				(
+					self
+						bearingFrom:	50 , 50
+						toward:	target
+				)
 		).
 
 	self
@@ -141,12 +153,20 @@ ModelTheodoliteMobileLabRudesheimTest >> testNonIntersectingLineIsRejectedWithWa
 	model := self basicTarget.
 
 	model bearingLines
-		push:	0 , 0
-		heading:	90.
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				bearing:	90
+		).
 
 	model bearingLines
-		push:	0 , 5
-		heading:	90.
+		add:
+		(
+			GRay
+				origin:	0 , 5
+				bearing:	90
+		).
 
 	self
 		assert:	model bearingLines size
@@ -166,12 +186,20 @@ ModelTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
 	model := self basicTarget.
 
 	model bearingLines
-		push:	0 , 0
-		heading:	90.
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				bearing:	90
+		).
 
 	model bearingLines
-		push:	0 , 5
-		heading:	90.
+		add:
+		(
+			GRay
+				origin:	0 , 5
+				bearing:	90
+		).
 
 	model bearingLines removeLast.
 

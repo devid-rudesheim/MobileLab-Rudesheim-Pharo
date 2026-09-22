@@ -93,8 +93,12 @@ SpecBuilderTheodoliteMobileLabRudesheimTest >> testRemoveLineButtonPopsLastLine 
 	model := theodolite Model new.
 
 	model bearingLines
-		push:	0 , 0
-		heading:	90.
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				bearing:	90
+		).
 
 	self targetClass
 		bindModel:	model
