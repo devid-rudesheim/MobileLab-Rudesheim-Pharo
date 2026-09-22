@@ -100,10 +100,7 @@ toView: aView [
 		action:
 		[
 			aModel bearingLines mapURL
-				do:
-				[ :url |
-					url launch.
-				].
+				do:	#launch.
 		].
 
 	aView copyButton
@@ -128,10 +125,7 @@ toView: aView [
 		do:
 		[
 			aModel bearingLines mapURL
-				do:
-				[ :url |
-					url launch.
-				].
+				do:	#launch.
 		]
 		for:	aView.
 ]
