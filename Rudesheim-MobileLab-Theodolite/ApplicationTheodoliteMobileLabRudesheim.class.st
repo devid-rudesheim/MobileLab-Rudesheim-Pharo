@@ -46,19 +46,12 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 
 	namespace := Rudesheim MobileLab Theodolite.
 	view := namespace ViewLandscape new.
-
-	window :=
-		(
-			view
-				open
-		)
-			title:		'Theodolite';
-			yourself.
+	window := view open    title: 'Theodolite';    yourself.
 
 	self
 		registerWindow:	window.
 
 	namespace SpecBuilder
 		bindModel:	self model
-		toView:		view widgets.
+		toView:	view widgets.
 ]

@@ -22,26 +22,23 @@ Class {
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
-{ #category : 'private' }
-ViewLandscapeTheodoliteMobileLabRudesheim >> defaultWidgets [
-	^ Rudesheim MobileLab Theodolite Widgets
-		owner:	self.
-]
-
 { #category : 'layout' }
 ViewLandscapeTheodoliteMobileLabRudesheim >> defaultLayout [
 	^ SpBoxLayout newTopToBottom
 		add:
 		(
 			SpBoxLayout newLeftToRight
-				add:	self widgets discardButton expand: false;
-				add:	self widgets addressBar expand: true;
-				add:	self widgets openButton expand: false;
-				add:	self widgets copyButton expand: false;
+				add:	self widgets discardButton
+				expand:	false;
+				add:	self widgets addressBar
+				expand:	true;
+				add:	self widgets openButton
+				expand:	false;
+				add:	self widgets copyButton
+				expand:	false;
 				yourself
 		)
 		expand:	false;
-
 		add:
 		(
 			SpBoxLayout newLeftToRight
@@ -52,23 +49,30 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> defaultLayout [
 						yourself
 				)
 				expand:	true;
-
 				add:
 				(
 					SpBoxLayout newTopToBottom
-						add:	self widgets addLineButton expand: false;
-						add:	self widgets removeLineButton expand: false;
-						add:	self widgets progressLabel expand: false;
-						add:	self widgets warningLabel expand: false;
+						add:	self widgets addLineButton
+						expand:	false;
+						add:	self widgets removeLineButton
+						expand:	false;
+						add:	self widgets progressLabel
+						expand:	false;
+						add:	self widgets warningLabel
+						expand:	false;
 						yourself
 				)
 				expand:	false;
-
 				yourself
 		)
 		expand:	true;
-
 		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultWidgets [
+	^ Rudesheim MobileLab Theodolite Widgets
+		owner:	self.
 ]
 
 { #category : 'accessing' }

@@ -38,7 +38,6 @@ toward: aTarget [
 			arcTan:	delta y.
 
 	degrees := radians * 180 / Float pi.
-
 	^ degrees / 360.
 ]
 

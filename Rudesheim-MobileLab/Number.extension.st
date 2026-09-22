@@ -11,7 +11,7 @@ Number >> asNormalizedBearingRudesheim [
 	self > 180
 		ifTrue:
 		[
-			^ ( self - 360 ) / 360.
+			^ ( ( self - 360 ) ) / 360.
 		].
 
 	^ self / 360.
