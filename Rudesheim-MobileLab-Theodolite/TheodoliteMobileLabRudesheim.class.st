@@ -35,3 +35,8 @@ TheodoliteMobileLabRudesheim class >> Model [
 TheodoliteMobileLabRudesheim class >> SpecBuilder [
 	^ SpecBuilderTheodoliteMobileLabRudesheim.
 ]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> ViewLandscape [
+	^ ViewLandscapeTheodoliteMobileLabRudesheim.
+]
