@@ -23,3 +23,79 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 		]
 		raise:	Error.
 ]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresDiscardButton [
+	|
+		target
+		view
+	|
+
+	target := self basicTarget.
+	view := target viewLandscape.
+	target start.
+
+	target model bearingLines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	view widgets discardButton performAction.
+
+	self
+		assert:	target model bearingLines size
+		equals:	0.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresProgressLabelToModelChanges [
+	|
+		target
+		view
+	|
+
+	target := self basicTarget.
+	view := target viewLandscape.
+	target start.
+
+	target model bearingLines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	self
+		assert:	view widgets progressLabel label
+		equals:	'1/3 lines'.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresRemoveLineButton [
+	|
+		target
+		view
+	|
+
+	target := self basicTarget.
+	view := target viewLandscape.
+	target start.
+
+	target model bearingLines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	view widgets removeLineButton performAction.
+
+	self
+		assert:	target model bearingLines size
+		equals:	0.
+]
