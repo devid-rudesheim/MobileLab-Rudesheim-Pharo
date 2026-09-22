@@ -1,8 +1,8 @@
 "
 A WarningTheodoliteMobileLabRudesheim is a single warning entry held (0-or-1, never nil, per the
-project's no-nil convention) by the Model's warning NewValueHolder. Also doubles as that entry's
-dictionary key in the Model, mirroring how BearingLinesTheodoliteMobileLabRudesheim keys its own
-collection entry.
+project's no-nil convention) by the Model's warning NewValueHolder. Its Model dictionary entry is
+keyed separately, by WarningKeyTheodoliteMobileLabRudesheim (see
+KeyTheodoliteMobileLabRudesheim's comment) -- this class holds the warning's value, not its key.
 "
 Class {
 	#name : 'WarningTheodoliteMobileLabRudesheim',

@@ -1,13 +1,14 @@
 "
 A ModelTheodoliteMobileLabRudesheim is Theodolite's single state-holding object, reached as
 `Rudesheim MobileLab Theodolite Model new`. Per note/ios-triangulation-app.md section 7.3 (NocoDB
-Sections 項番FM) it keeps exactly two persistent entries, keyed by class:
-- BearingLinesTheodoliteMobileLabRudesheim -> itself, holding the recorded lines (up to 3) as
-  plain GRay instances directly (no separate BearingLine wrapper -- nothing needs the bearing
+Sections 項番FM) it keeps exactly two persistent entries, keyed by the dedicated key classes under
+`Rudesheim MobileLab Theodolite Key` (KeyTheodoliteMobileLabRudesheim's comment) -- not by the
+value-holding classes themselves:
+- Key BearingLines -> a BearingLinesTheodoliteMobileLabRudesheim, holding the recorded lines (up to
+  3) as plain GRay instances directly (no separate BearingLine wrapper -- nothing needs the bearing
   degrees or a timestamp once the ray exists, and GRay's own #initialPoint/#directionPoint already
   cover what #add:/#intersectionPoint need)
-- WarningTheodoliteMobileLabRudesheim -> a NewValueHolder holding the current 0-or-1-element
-  warning array
+- Key Warning -> a NewValueHolder holding the current 0-or-1-element warning array
 
 There is deliberately no Controller class: every operation (adding a line, opening/copying the
 map URL, discarding everything) is either a standard Collection/Dictionary-protocol call, one of
@@ -28,7 +29,7 @@ Class {
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> bearingLines [
 	^ self
-		at:	Rudesheim MobileLab Theodolite BearingLines
+		at:	Rudesheim MobileLab Theodolite Key BearingLines
 		ifAbsentPut:
 		[
 			self defaultBearingLines.
@@ -59,7 +60,7 @@ ModelTheodoliteMobileLabRudesheim >> discardAll [
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> warning [
 	^ self
-		at:	Rudesheim MobileLab Theodolite Warning
+		at:	Rudesheim MobileLab Theodolite Key Warning
 		ifAbsentPut:
 		[
 			self defaultWarning.

@@ -17,6 +17,11 @@ TheodoliteMobileLabRudesheim class >> BearingLines [
 ]
 
 { #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> Key [
+	^ KeyTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> LaunchRequested [
 	^ LaunchRequestedTheodoliteMobileLabRudesheim.
 ]
