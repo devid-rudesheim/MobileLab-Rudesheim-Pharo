@@ -2,11 +2,12 @@
 A KeyTheodoliteMobileLabRudesheim is the namespace for Theodolite's dictionary-key marker classes,
 reached as `Rudesheim MobileLab Theodolite Key`. These classes
 (BearingLinesKeyTheodoliteMobileLabRudesheim, WarningKeyTheodoliteMobileLabRudesheim) exist only to
-be used as ModelTheodoliteMobileLabRudesheim's dictionary keys -- they hold no state and are
-distinct from the value-holding BearingLinesTheodoliteMobileLabRudesheim/
-WarningTheodoliteMobileLabRudesheim classes. Separating key identity from value storage means a key
+be used as ModelTheodoliteMobileLabRudesheim's dictionary keys -- they hold no state. The
+BearingLines entry's value is a BearingLinesTheodoliteMobileLabRudesheim; the Warning entry's value
+is a plain 0-or-1-element array of message Strings (no separate wrapper class -- there was nothing
+for one to add beyond the message itself). Separating key identity from value storage means a key
 can later carry its own behavior (e.g. reading/displaying its own entry from a given Model, see the
-usage sketch below) without that behavior getting mixed into the value class itself:
+usage sketch below) without that behavior getting mixed into whatever the entry's value happens to be:
 
 keys := Rudesheim MobileLab Theodolite Key.
 { keys BearingLines. keys Warning } collect: [ :each | each readDisplayStringFrom: model ]

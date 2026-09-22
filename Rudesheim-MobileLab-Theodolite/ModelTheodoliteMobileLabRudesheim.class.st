@@ -8,7 +8,8 @@ value-holding classes themselves:
   3) as plain GRay instances directly (no separate BearingLine wrapper -- nothing needs the bearing
   degrees or a timestamp once the ray exists, and GRay's own #initialPoint/#directionPoint already
   cover what #add:/#intersectionPoint need)
-- Key Warning -> a NewValueHolder holding the current 0-or-1-element warning array
+- Key Warning -> a NewValueHolder holding the current 0-or-1-element array of message Strings (no
+  wrapper class -- there is nothing for one to add beyond the message itself)
 
 There is deliberately no Controller class: every operation (adding a line, opening/copying the
 map URL, discarding everything) is either a standard Collection/Dictionary-protocol call, one of

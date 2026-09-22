@@ -70,7 +70,7 @@ toView: aView [
 				]
 				ifNotEmpty:
 				[ :ws |
-					ws first message.
+					ws first.
 				].
 		]
 		postTransmission:

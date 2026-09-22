@@ -35,17 +35,11 @@ BearingLinesTheodoliteMobileLabRudesheim class >> maxSize [
 
 { #category : 'adding' }
 BearingLinesTheodoliteMobileLabRudesheim >> add: aGRay [
-	|
-		theodolite
-	|
-
-	theodolite := Rudesheim MobileLab Theodolite.
-
 	self size >= self class maxSize
 		ifTrue:
 		[
 			self announcer
-				announce:	theodolite LaunchRequested new.
+				announce:	Rudesheim MobileLab Theodolite LaunchRequested new.
 
 			^ aGRay.
 		].
@@ -65,8 +59,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aGRay [
 			self warning
 				value:
 				{
-					theodolite Warning
-						message:	'This line does not cross the existing lines (nearly parallel); it was not added'
+					'This line does not cross the existing lines (nearly parallel); it was not added'
 				}.
 
 			^ aGRay.
