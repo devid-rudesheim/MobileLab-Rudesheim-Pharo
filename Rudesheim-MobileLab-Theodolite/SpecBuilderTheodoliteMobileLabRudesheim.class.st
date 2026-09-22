@@ -5,8 +5,8 @@ note/ios-triangulation-app.md section 7.4 (NocoDB Sections 項番FL). Stateless:
 its class-side #bindModel:toView:, called once per View instance.
 
 The View just needs to answer #progressLabel/#addressBar/#warningLabel (each an SpAbstractPresenter,
-for the Spec2-Transmission read direction) and #addLineButton/#openButton/#copyButton/
-#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
+for the Spec2-Transmission read direction) and #addLineButton/#removeLineButton/#openButton/
+#copyButton/#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
 
 `CLLocationManagerAgent`/`CLHeadingAgent` (current-location/true-heading sourcing over the ObjC
 bridge, note/ios-triangulation-app.md section 8 item 4) are deliberately not implemented yet --
@@ -94,6 +94,12 @@ toView: aView [
 			aModel bearingLines
 				push:	CLLocationManagerAgent default currentLocation
 				heading:	CLHeadingAgent default trueHeading.
+		].
+
+	aView removeLineButton
+		action:
+		[
+			aModel bearingLines pop.
 		].
 
 	aView openButton

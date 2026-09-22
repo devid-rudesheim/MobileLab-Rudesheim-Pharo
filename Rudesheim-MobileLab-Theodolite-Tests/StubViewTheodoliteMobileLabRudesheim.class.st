@@ -3,8 +3,8 @@ A StubViewTheodoliteMobileLabRudesheim is a minimal stand-in for the (not-yet-bu
 portrait/landscape View presenters, exposing exactly the widget protocol
 SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: needs: #progressLabel/#addressBar/
 #warningLabel (each a real SpLabelPresenter, so Spec2-Transmission's #defaultInputPort works) and
-#addLineButton/#openButton/#copyButton/#discardButton (each a real SpButtonPresenter, so #action:
-works). Test-only; never opened as a window.
+#addLineButton/#removeLineButton/#openButton/#copyButton/#discardButton (each a real
+SpButtonPresenter, so #action: works). Test-only; never opened as a window.
 "
 Class {
 	#name : 'StubViewTheodoliteMobileLabRudesheim',
@@ -14,6 +14,7 @@ Class {
 		'addressBar',
 		'warningLabel',
 		'addLineButton',
+		'removeLineButton',
 		'openButton',
 		'copyButton',
 		'discardButton'
@@ -73,6 +74,15 @@ StubViewTheodoliteMobileLabRudesheim >> progressLabel [
 		ifNil:
 		[
 			progressLabel := SpLabelPresenter new    application: self application;    yourself.
+		].
+]
+
+{ #category : 'accessing' }
+StubViewTheodoliteMobileLabRudesheim >> removeLineButton [
+	^ removeLineButton
+		ifNil:
+		[
+			removeLineButton := SpButtonPresenter new    application: self application;    yourself.
 		].
 ]
 

@@ -73,3 +73,36 @@ SpecBuilderTheodoliteMobileLabRudesheimTest >> testBoundViewButtonsHaveActions [
 		]
 		raise:	Error.
 ]
+
+{ #category : 'tests' }
+SpecBuilderTheodoliteMobileLabRudesheimTest >> testRemoveLineButtonPopsLastLine [
+	|
+		theodolite
+		app
+		view
+		model
+	|
+
+	theodolite := Rudesheim MobileLab Theodolite.
+	app := SpApplication new.
+	view := theodolite StubView new.
+
+	view
+		application:	app.
+
+	model := theodolite Model new.
+
+	model bearingLines
+		push:	0 , 0
+		heading:	90.
+
+	self targetClass
+		bindModel:	model
+		toView:	view.
+
+	view removeLineButton performAction.
+
+	self
+		assert:	model bearingLines size
+		equals:	0.
+]
