@@ -221,6 +221,8 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 						when:	Rudesheim MobileLab Theodolite LaunchRequested
 						do:	[ aModel bearingLines mapURL do: #launch ]
 						for:	root.
+
+					root.
 				]
 			)
 				title:		'Theodolite';
