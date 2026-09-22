@@ -28,7 +28,10 @@ ApplicationTheodoliteMobileLabRudesheim >> defaultModel [
 { #category : 'accessing' }
 ApplicationTheodoliteMobileLabRudesheim >> model [
 	^ model
-		ifNil:	[ model := self defaultModel ].
+		ifNil:
+		[
+			model := self defaultModel.
+		].
 ]
 
 { #category : 'starting' }

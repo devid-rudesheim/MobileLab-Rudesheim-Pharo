@@ -29,7 +29,10 @@ Class {
 ModelTheodoliteMobileLabRudesheim >> bearingLines [
 	^ self
 		at:	Rudesheim MobileLab Theodolite BearingLines
-		ifAbsentPut:	[ self defaultBearingLines ].
+		ifAbsentPut:
+		[
+			self defaultBearingLines.
+		].
 ]
 
 { #category : 'private' }
@@ -57,5 +60,8 @@ ModelTheodoliteMobileLabRudesheim >> discardAll [
 ModelTheodoliteMobileLabRudesheim >> warning [
 	^ self
 		at:	Rudesheim MobileLab Theodolite Warning
-		ifAbsentPut:	[ self defaultWarning ].
+		ifAbsentPut:
+		[
+			self defaultWarning.
+		].
 ]
