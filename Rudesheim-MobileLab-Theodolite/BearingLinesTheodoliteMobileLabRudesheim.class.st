@@ -1,8 +1,8 @@
 "
 A BearingLinesTheodoliteMobileLabRudesheim holds the recorded bearing lines, each a plain GRay
 (see the GRay class-side extension #origin:bearing: in this package), up to #maxSize, 3. It
-overrides the standard Collection protocol #add:/#removeLast rather than introducing new
-selectors, per note/ios-triangulation-app.md section 7.3 (NocoDB Sections 項番FM):
+overrides the standard Collection protocol #add:/#removeLast, per note/ios-triangulation-app.md
+section 7.3 (NocoDB Sections 項番FM):
 
 - #add: past capacity never records a 4th line; it announces
   LaunchRequestedTheodoliteMobileLabRudesheim instead.
@@ -12,6 +12,11 @@ selectors, per note/ios-triangulation-app.md section 7.3 (NocoDB Sections 項番
   as living inside #add: itself, not through separate Model-level observation.
 - #intersectionPoint / #mapURL are 0-or-1-element-array query methods (never nil, per the
   project's no-nil convention) computed on demand from the current lines, not cached.
+
+#push:heading:/#pop are the view-facing stack-style entry points action blocks actually call:
+#push:heading: builds the GRay from a raw origin point + compass bearing and passes it through
+#add: (so the capacity/intersection coordination above still applies); #pop is a plain alias for
+#removeLast. Callers that already have a GRay in hand can still use #add:/#removeLast directly.
 "
 Class {
 	#name : 'BearingLinesTheodoliteMobileLabRudesheim',
@@ -168,6 +173,23 @@ BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
 
 			url.
 		].
+]
+
+{ #category : 'removing' }
+BearingLinesTheodoliteMobileLabRudesheim >> pop [
+	^ self removeLast.
+]
+
+{ #category : 'adding' }
+BearingLinesTheodoliteMobileLabRudesheim >> push: aGPoint
+heading: aNumber [
+	^ self
+		add:
+		(
+			GRay
+				origin:	aGPoint
+				bearing:	aNumber
+		).
 ]
 
 { #category : 'removing' }

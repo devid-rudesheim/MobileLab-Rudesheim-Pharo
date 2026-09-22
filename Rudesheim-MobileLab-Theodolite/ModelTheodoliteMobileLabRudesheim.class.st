@@ -10,8 +10,10 @@ Sections 項番FM) it keeps exactly two persistent entries, keyed by class:
   warning array
 
 There is deliberately no Controller class: every operation (adding a line, opening/copying the
-map URL, discarding everything) is either a standard Collection/Dictionary-protocol call or one of
-the two composite operations below, called directly from view action blocks.
+map URL, discarding everything) is either a standard Collection/Dictionary-protocol call, one of
+BearingLinesTheodoliteMobileLabRudesheim's own #push:heading:/#pop, or #discardAll below, called
+directly from view action blocks. Adding a line is #bearingLines push:heading: directly -- there is
+no Model-level wrapper for it (see BearingLinesTheodoliteMobileLabRudesheim's comment).
 
 Both entries are created lazily (on first #bearingLines/#warning read) rather than eagerly in
 #initialize, per ~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule.
@@ -22,18 +24,6 @@ Class {
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
-
-{ #category : 'adding' }
-ModelTheodoliteMobileLabRudesheim >> addLineAt: aGPoint
-heading: aNumber [
-	self bearingLines
-		add:
-		(
-			GRay
-				origin:	aGPoint
-				bearing:	aNumber
-		).
-]
 
 { #category : 'accessing' }
 ModelTheodoliteMobileLabRudesheim >> bearingLines [

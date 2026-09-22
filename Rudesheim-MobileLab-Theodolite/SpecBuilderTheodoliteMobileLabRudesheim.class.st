@@ -91,8 +91,8 @@ toView: aView [
 	aView addLineButton
 		action:
 		[
-			aModel
-				addLineAt:	CLLocationManagerAgent default currentLocation
+			aModel bearingLines
+				push:	CLLocationManagerAgent default currentLocation
 				heading:	CLHeadingAgent default trueHeading.
 		].
 

@@ -50,8 +50,8 @@ ModelTheodoliteMobileLabRudesheimTest >> testDiscardAllClearsEverything [
 
 	model := self basicTarget.
 
-	model
-		addLineAt:	0 , 0
+	model bearingLines
+		push:	0 , 0
 		heading:	90.
 
 	model discardAll.
@@ -86,8 +86,8 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 	origins
 		do:
 		[ :origin |
-			model
-				addLineAt:	origin
+			model bearingLines
+				push:	origin
 				heading:
 				(
 					self
@@ -106,8 +106,8 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 		]
 		for:	self.
 
-	model
-		addLineAt:	50 , 50
+	model bearingLines
+		push:	50 , 50
 		heading:
 		(
 			self
@@ -140,12 +140,12 @@ ModelTheodoliteMobileLabRudesheimTest >> testNonIntersectingLineIsRejectedWithWa
 
 	model := self basicTarget.
 
-	model
-		addLineAt:	0 , 0
+	model bearingLines
+		push:	0 , 0
 		heading:	90.
 
-	model
-		addLineAt:	0 , 5
+	model bearingLines
+		push:	0 , 5
 		heading:	90.
 
 	self
@@ -165,12 +165,12 @@ ModelTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
 
 	model := self basicTarget.
 
-	model
-		addLineAt:	0 , 0
+	model bearingLines
+		push:	0 , 0
 		heading:	90.
 
-	model
-		addLineAt:	0 , 5
+	model bearingLines
+		push:	0 , 5
 		heading:	90.
 
 	model bearingLines removeLast.
