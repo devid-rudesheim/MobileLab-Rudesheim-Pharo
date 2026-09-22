@@ -143,13 +143,21 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 
 { #category : 'geometry' }
 BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
-	"0-or-1 array: an Apple Maps 'maps://' URL string for #intersectionPoint. A plain String for
-	now -- wrapping it in something that responds to #launch is left to the View/action-block
+	"0-or-1 array: an Apple Maps ZnUrl for #intersectionPoint. There is no 'maps://' scheme --
+	Apple Maps links are plain http(s) URLs to maps.apple.com that the OS intercepts and opens in
+	Maps instead of a browser (see
+	https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html).
+	ZnUrl has no #launch of its own yet -- actually opening it is left to the View/action-block
 	layer (out of scope this round, see note/ios-triangulation-app.md 項番FJ item 4)."
 	^ self intersectionPoint
 		collect:
 		[ :point |
-			'maps://?ll=' , point y printString , ',' , point x printString.
+			| url |
+			url := 'http://maps.apple.com' asZnUrl.
+			url
+				queryAt:	'll'
+				put:	point y printString , ',' , point x printString.
+			url.
 		].
 ]
 
