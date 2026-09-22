@@ -58,8 +58,8 @@ toward: aTarget [
 	origin:normalizedBearing:'s comment), not raw degrees. delta x arcTan: delta y already matches
 	atan2's own (-180, 180] convention, so dividing straight by 360 lands exactly on the target
 	form -- no separate wrap-into-negative step is needed (unlike
-	Number>>#asNormalizedBearingRudesheim, which has to wrap because it starts from [0, 360)
-	instead)."
+	Rudesheim Utility Normalizer Angle Degree normalizeAngle:, which has to wrap because it starts
+	from [0, 360) instead)."
 	|
 		delta
 		radians
