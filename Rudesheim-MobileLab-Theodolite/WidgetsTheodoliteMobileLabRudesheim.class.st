@@ -154,7 +154,7 @@ WidgetsTheodoliteMobileLabRudesheim >> owner [
 
 { #category : 'accessing' }
 WidgetsTheodoliteMobileLabRudesheim >> owner: anOwningPresenter [
-	owner := anOwningPresenter.
+	owner := anOwningPresenter assertNotNilRudesheim.
 ]
 
 { #category : 'accessing' }

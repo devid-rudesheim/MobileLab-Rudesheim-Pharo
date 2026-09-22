@@ -195,5 +195,5 @@ BearingLinesTheodoliteMobileLabRudesheim >> warning [
 
 { #category : 'accessing' }
 BearingLinesTheodoliteMobileLabRudesheim >> warning: aNewValueHolder [
-	warning := aNewValueHolder.
+	warning := aNewValueHolder assertNotNilRudesheim.
 ]
