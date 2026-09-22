@@ -13,18 +13,19 @@ SpButtonPresenter). Each accessor lazily builds its own widget via a matching #d
 ModelTheodoliteMobileLabRudesheim's #bearingLines/#defaultBearingLines) -- callers never
 construct these presenters themselves and pass them in; they only ever read the accessors.
 
-Not itself a presenter (it has no layout of its own), so widget construction goes through
-`SpButtonPresenter new application: self application; ...`/`SpLabelPresenter new application:
-self application; ...` directly rather than through `self newButton`/`self newLabel` -- it needs
-an owning `application` (#application:), supplied by whichever View presenter builds one for its
-own layout (each View gets its own Widgets instance; the widget protocol is shared, not the
-widget instances).
+Not itself a presenter, so it does not compose SpTPresenterBuilder (the trait `self newButton`/
+`self newLabel` come from) -- it instead holds the `owner` (the View presenter it was built for,
+#owner:) and builds each widget through `self owner newButton`/`self owner newLabel`, which
+already resolves to that owning presenter's own trait-provided factory methods and wires the new
+widget's SpAbstractPresenter-owner chain correctly (matching `SpPresenter>>#instantiate:`'s own
+`aPresenterClass owner: self`, so there is no need to reimplement that wiring here). Each View
+gets its own Widgets instance; the widget protocol is shared, not the widget instances.
 "
 Class {
 	#name : 'WidgetsTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
 	#instVars : [
-		'application',
+		'owner',
 		'progressLabel',
 		'addressBar',
 		'warningLabel',
@@ -39,9 +40,9 @@ Class {
 }
 
 { #category : 'instance creation' }
-WidgetsTheodoliteMobileLabRudesheim class >> application: anApplication [
+WidgetsTheodoliteMobileLabRudesheim class >> owner: anOwningPresenter [
 	^ self new
-		application:	anApplication;
+		owner:	anOwningPresenter;
 		yourself.
 ]
 
@@ -64,16 +65,6 @@ WidgetsTheodoliteMobileLabRudesheim >> addressBar [
 ]
 
 { #category : 'accessing' }
-WidgetsTheodoliteMobileLabRudesheim >> application [
-	^ application.
-]
-
-{ #category : 'accessing' }
-WidgetsTheodoliteMobileLabRudesheim >> application: anApplication [
-	application := anApplication.
-]
-
-{ #category : 'accessing' }
 WidgetsTheodoliteMobileLabRudesheim >> copyButton [
 	^ copyButton
 		ifNil:
@@ -84,64 +75,56 @@ WidgetsTheodoliteMobileLabRudesheim >> copyButton [
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultAddLineButton [
-	^ SpButtonPresenter new
-		application:	self application;
+	^ self owner newButton
 		label:	'Add line';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultAddressBar [
-	^ SpLabelPresenter new
-		application:	self application;
+	^ self owner newLabel
 		label:	'';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultCopyButton [
-	^ SpButtonPresenter new
-		application:	self application;
+	^ self owner newButton
 		label:	'Copy';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultDiscardButton [
-	^ SpButtonPresenter new
-		application:	self application;
+	^ self owner newButton
 		label:	'Discard all';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultOpenButton [
-	^ SpButtonPresenter new
-		application:	self application;
+	^ self owner newButton
 		label:	'Open';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultProgressLabel [
-	^ SpLabelPresenter new
-		application:	self application;
+	^ self owner newLabel
 		label:	'';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultRemoveLineButton [
-	^ SpButtonPresenter new
-		application:	self application;
+	^ self owner newButton
 		label:	'Remove line';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultWarningLabel [
-	^ SpLabelPresenter new
-		application:	self application;
+	^ self owner newLabel
 		label:	'';
 		yourself.
 ]
@@ -162,6 +145,16 @@ WidgetsTheodoliteMobileLabRudesheim >> openButton [
 		[
 			openButton := self defaultOpenButton.
 		].
+]
+
+{ #category : 'accessing' }
+WidgetsTheodoliteMobileLabRudesheim >> owner [
+	^ owner.
+]
+
+{ #category : 'accessing' }
+WidgetsTheodoliteMobileLabRudesheim >> owner: anOwningPresenter [
+	owner := anOwningPresenter.
 ]
 
 { #category : 'accessing' }

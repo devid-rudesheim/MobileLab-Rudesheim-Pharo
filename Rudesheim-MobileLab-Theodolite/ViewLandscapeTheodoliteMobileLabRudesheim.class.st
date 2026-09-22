@@ -25,7 +25,7 @@ Class {
 { #category : 'private' }
 ViewLandscapeTheodoliteMobileLabRudesheim >> defaultWidgets [
 	^ Rudesheim MobileLab Theodolite Widgets
-		application:	self application.
+		owner:	self.
 ]
 
 { #category : 'layout' }
