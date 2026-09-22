@@ -154,17 +154,10 @@ BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
 	^ self intersectionPoint
 		collect:
 		[ :point |
-			|
-				url
-			|
-
-			url := 'http://maps.apple.com' asZnUrl.
-
-			url
+			'http://maps.apple.com' asZnUrl
 				queryAt:	'll'
-				put:	point y printString , ',' , point x printString.
-
-			url.
+				put:	point y printString , ',' , point x printString;
+				yourself.
 		].
 ]
 
