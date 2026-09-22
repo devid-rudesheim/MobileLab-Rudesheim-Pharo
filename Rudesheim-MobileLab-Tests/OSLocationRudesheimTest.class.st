@@ -21,7 +21,10 @@ OSLocationRudesheimTest class >> targetClass [
 { #category : 'tests' }
 OSLocationRudesheimTest >> testCurrentRayIsSubclassResponsibility [
 	self
-		should:	[ OSLocationRudesheim currentRay ]
+		should:
+		[
+			OSLocationRudesheim currentRay.
+		]
 		raise:	Error.
 ]
 
