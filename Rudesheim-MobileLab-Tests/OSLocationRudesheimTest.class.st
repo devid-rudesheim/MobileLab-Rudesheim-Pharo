@@ -1,10 +1,13 @@
 "
 An OSLocationRudesheimTest verifies OSLocationRudesheim's OS-dispatch wiring (mirroring
 OSTableQueryRudesheimTest's own #testDelegatesThroughRudesheimOSDispatch pattern) and that the
-base/unsupported implementation signals cleanly. It does not exercise MacOSLocationRudesheim>>
-#currentRay itself -- that depends on the not-yet-implemented CLLocationManagerAgent/CLHeadingAgent
-ObjC bridge (see MacOSLocationRudesheim's comment) and would fail with an uncontrolled DNU rather
-than a clean assertion, on whichever platform actually resolves to it.
+base/unsupported implementation signals cleanly for all three class-side methods -- the two
+primitives (#currentLocation/#currentNormalizedBearing) and the #currentRay template method built
+from them (which surfaces the same subclassResponsibility, since it calls the primitives). It does
+not exercise MacOSLocationRudesheim's own primitive overrides -- those depend on the
+not-yet-implemented CLLocationManagerAgent/CLHeadingAgent ObjC bridge (see
+MacOSLocationRudesheim's comment) and would fail with an uncontrolled DNU rather than a clean
+assertion, on whichever platform actually resolves to it.
 "
 Class {
 	#name : 'OSLocationRudesheimTest',
@@ -16,6 +19,26 @@ Class {
 { #category : 'accessing' }
 OSLocationRudesheimTest class >> targetClass [
 	^ Rudesheim OS location.
+]
+
+{ #category : 'tests' }
+OSLocationRudesheimTest >> testCurrentLocationIsSubclassResponsibility [
+	self
+		should:
+		[
+			OSLocationRudesheim currentLocation.
+		]
+		raise:	Error.
+]
+
+{ #category : 'tests' }
+OSLocationRudesheimTest >> testCurrentNormalizedBearingIsSubclassResponsibility [
+	self
+		should:
+		[
+			OSLocationRudesheim currentNormalizedBearing.
+		]
+		raise:	Error.
 ]
 
 { #category : 'tests' }
