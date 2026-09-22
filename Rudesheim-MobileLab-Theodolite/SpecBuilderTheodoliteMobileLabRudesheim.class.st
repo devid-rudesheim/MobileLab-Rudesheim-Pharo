@@ -75,15 +75,13 @@ toView: aView [
 		]
 		postTransmission:
 		[ :dest :origin :value |
-			value isEmpty
-				ifTrue:
+			value
+				ifEmpty:
 				[
 					dest
 						removeStyle:	#warning.
-				].
-
-			value isEmpty
-				ifFalse:
+				]
+				ifNotEmpty:
 				[
 					dest
 						addStyle:	#warning.
