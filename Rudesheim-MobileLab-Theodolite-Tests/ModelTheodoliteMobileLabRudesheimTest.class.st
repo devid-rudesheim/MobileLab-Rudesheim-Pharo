@@ -17,6 +17,41 @@ ModelTheodoliteMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'private' }
+ModelTheodoliteMobileLabRudesheimTest >> assertMapURL: aZnUrl
+matchesPoint: aGPoint [
+	"mapURL encodes its point as 'y,x' under the 'll' query key (BearingLinesTheodoliteMobileLabRudesheim>>
+	#mapURL's comment) -- parse it back out and check it against the expected point, rather than
+	comparing displayStrings, since the computed coordinates carry floating-point noise."
+	|
+		stream
+		llY
+		llX
+	|
+
+	stream :=
+	(
+		aZnUrl
+			queryAt:	'll'
+	) readStream.
+
+	llY :=
+	(
+		stream
+			upTo:	$,
+	) asNumber.
+
+	llX := stream upToEnd asNumber.
+
+	self
+		assert:	llX
+		closeTo:	aGPoint x.
+
+	self
+		assert:	llY
+		closeTo:	aGPoint y.
+]
+
+{ #category : 'private' }
 ModelTheodoliteMobileLabRudesheimTest >> bearingFrom: anOrigin
 toward: aTarget [
 	"Returns a normalized bearing (Rudesheim-MobileLab's (-0.5, 0.5] form, see GRay class >>
@@ -62,6 +97,33 @@ ModelTheodoliteMobileLabRudesheimTest >> testDiscardAllClearsEverything [
 	self
 		assert:	model bearingLines size
 		equals:	0.
+
+	self
+		assert:	model warning value isEmpty.
+]
+
+{ #category : 'tests' }
+ModelTheodoliteMobileLabRudesheimTest >> testFirstAddNeverWarns [
+	"1本目の追加では交差チェックのみ行われ、何も起動しない (NocoDB 項番FC): with nothing recorded yet,
+	#allSatisfy: over an empty collection is vacuously true, so the very first line is always
+	accepted regardless of its bearing."
+	|
+		model
+	|
+
+	model := self basicTarget.
+
+	model bearingLines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	self
+		assert:	model bearingLines size
+		equals:	1.
 
 	self
 		assert:	model warning value isEmpty.
@@ -158,31 +220,6 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 		matchesPoint:	target.
 ]
 
-{ #category : 'private' }
-ModelTheodoliteMobileLabRudesheimTest >> assertMapURL: aZnUrl
-matchesPoint: aGPoint [
-	"mapURL encodes its point as 'y,x' under the 'll' query key (BearingLinesTheodoliteMobileLabRudesheim>>
-	#mapURL's comment) -- parse it back out and check it against the expected point, rather than
-	comparing displayStrings, since the computed coordinates carry floating-point noise."
-	|
-		stream
-		llY
-		llX
-	|
-
-	stream := (aZnUrl queryAt: 'll') readStream.
-	llY := (stream upTo: $,) asNumber.
-	llX := stream upToEnd asNumber.
-
-	self
-		assert:	llX
-		closeTo:	aGPoint x.
-
-	self
-		assert:	llY
-		closeTo:	aGPoint y.
-]
-
 { #category : 'tests' }
 ModelTheodoliteMobileLabRudesheimTest >> testNonIntersectingLineIsRejectedWithWarning [
 	|
@@ -217,10 +254,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testNonIntersectingLineIsRejectedWithWa
 ]
 
 { #category : 'tests' }
-ModelTheodoliteMobileLabRudesheimTest >> testFirstAddNeverWarns [
-	"1本目の追加では交差チェックのみ行われ、何も起動しない (NocoDB 項番FC): with nothing recorded yet,
-	#allSatisfy: over an empty collection is vacuously true, so the very first line is always
-	accepted regardless of its bearing."
+ModelTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
 	|
 		model
 	|
@@ -235,9 +269,15 @@ ModelTheodoliteMobileLabRudesheimTest >> testFirstAddNeverWarns [
 				normalizedBearing:	0.25
 		).
 
-	self
-		assert:	model bearingLines size
-		equals:	1.
+	model bearingLines
+		add:
+		(
+			GRay
+				origin:	0 , 5
+				normalizedBearing:	0.25
+		).
+
+	model bearingLines removeLast.
 
 	self
 		assert:	model warning value isEmpty.
@@ -284,36 +324,6 @@ ModelTheodoliteMobileLabRudesheimTest >> testWarningClearsOnSubsequentSuccessful
 	self
 		assert:	model bearingLines size
 		equals:	2.
-
-	self
-		assert:	model warning value isEmpty.
-]
-
-{ #category : 'tests' }
-ModelTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
-	|
-		model
-	|
-
-	model := self basicTarget.
-
-	model bearingLines
-		add:
-		(
-			GRay
-				origin:	0 , 0
-				normalizedBearing:	0.25
-		).
-
-	model bearingLines
-		add:
-		(
-			GRay
-				origin:	0 , 5
-				normalizedBearing:	0.25
-		).
-
-	model bearingLines removeLast.
 
 	self
 		assert:	model warning value isEmpty.
