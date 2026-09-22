@@ -60,7 +60,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
 				value:
 				{
 					theodolite Warning
-						message:	'この線は既存の線とほぼ平行で交差しないため追加できません'
+						message:	'This line does not cross the existing lines (nearly parallel); it was not added'
 				}.
 
 			^ aBearingLine.

@@ -35,7 +35,7 @@ toView: aView [
 		transmitTo:	aView progressLabel
 		transform:
 		[ :ignored |
-			aModel bearingLines size printString , '/' , aModel bearingLines class maxSize printString , '本'.
+			aModel bearingLines size printString , '/' , aModel bearingLines class maxSize printString , ' lines'.
 		].
 
 	(
