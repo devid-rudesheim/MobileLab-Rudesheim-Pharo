@@ -49,9 +49,10 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 		registerWindow:
 		(
 			(
-				self
-					newPresenter:	SpPresenter
-			)
+				(
+					self
+						newPresenter:	SpPresenter
+				)
 				in:
 				[ :root |
 					|
@@ -221,7 +222,8 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 						do:	[ aModel bearingLines mapURL do: #launch ]
 						for:	root.
 				]
-		)
-			title:		'Theodolite';
-			yourself.
+			)
+				title:		'Theodolite';
+				yourself
+		).
 ]
