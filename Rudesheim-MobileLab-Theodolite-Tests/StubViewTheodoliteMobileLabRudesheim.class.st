@@ -1,10 +1,14 @@
 "
 A StubViewTheodoliteMobileLabRudesheim is a minimal stand-in for the (not-yet-built)
-portrait/landscape View presenters, exposing exactly the widget protocol
+portrait View presenter, exposing exactly the widget protocol
 SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: needs: #progressLabel/#addressBar/
 #warningLabel (each a real SpLabelPresenter, so Spec2-Transmission's #defaultInputPort works) and
 #addLineButton/#removeLineButton/#openButton/#copyButton/#discardButton (each a real
 SpButtonPresenter, so #action: works). Test-only; never opened as a window.
+
+Each accessor lazily builds its own widget via a matching #defaultXxx method
+(~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule), same as
+ViewLandscapeTheodoliteMobileLabRudesheim's real landscape View presenter.
 "
 Class {
 	#name : 'StubViewTheodoliteMobileLabRudesheim',
@@ -28,7 +32,7 @@ StubViewTheodoliteMobileLabRudesheim >> addLineButton [
 	^ addLineButton
 		ifNil:
 		[
-			addLineButton := SpButtonPresenter new    application: self application;    yourself.
+			addLineButton := self defaultAddLineButton.
 		].
 ]
 
@@ -37,7 +41,7 @@ StubViewTheodoliteMobileLabRudesheim >> addressBar [
 	^ addressBar
 		ifNil:
 		[
-			addressBar := SpLabelPresenter new    application: self application;    yourself.
+			addressBar := self defaultAddressBar.
 		].
 ]
 
@@ -46,8 +50,64 @@ StubViewTheodoliteMobileLabRudesheim >> copyButton [
 	^ copyButton
 		ifNil:
 		[
-			copyButton := SpButtonPresenter new    application: self application;    yourself.
+			copyButton := self defaultCopyButton.
 		].
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultAddLineButton [
+	^ SpButtonPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultAddressBar [
+	^ SpLabelPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultCopyButton [
+	^ SpButtonPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultDiscardButton [
+	^ SpButtonPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultOpenButton [
+	^ SpButtonPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultProgressLabel [
+	^ SpLabelPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultRemoveLineButton [
+	^ SpButtonPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultWarningLabel [
+	^ SpLabelPresenter new
+		application:	self application;
+		yourself.
 ]
 
 { #category : 'accessing' }
@@ -55,7 +115,7 @@ StubViewTheodoliteMobileLabRudesheim >> discardButton [
 	^ discardButton
 		ifNil:
 		[
-			discardButton := SpButtonPresenter new    application: self application;    yourself.
+			discardButton := self defaultDiscardButton.
 		].
 ]
 
@@ -64,7 +124,7 @@ StubViewTheodoliteMobileLabRudesheim >> openButton [
 	^ openButton
 		ifNil:
 		[
-			openButton := SpButtonPresenter new    application: self application;    yourself.
+			openButton := self defaultOpenButton.
 		].
 ]
 
@@ -73,7 +133,7 @@ StubViewTheodoliteMobileLabRudesheim >> progressLabel [
 	^ progressLabel
 		ifNil:
 		[
-			progressLabel := SpLabelPresenter new    application: self application;    yourself.
+			progressLabel := self defaultProgressLabel.
 		].
 ]
 
@@ -82,7 +142,7 @@ StubViewTheodoliteMobileLabRudesheim >> removeLineButton [
 	^ removeLineButton
 		ifNil:
 		[
-			removeLineButton := SpButtonPresenter new    application: self application;    yourself.
+			removeLineButton := self defaultRemoveLineButton.
 		].
 ]
 
@@ -91,6 +151,6 @@ StubViewTheodoliteMobileLabRudesheim >> warningLabel [
 	^ warningLabel
 		ifNil:
 		[
-			warningLabel := SpLabelPresenter new    application: self application;    yourself.
+			warningLabel := self defaultWarningLabel.
 		].
 ]

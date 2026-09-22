@@ -7,9 +7,11 @@ It exists to satisfy exactly the widget protocol SpecBuilderTheodoliteMobileLabR
 #bindModel:toView: needs (see that class's comment and StubViewTheodoliteMobileLabRudesheim's,
 which mirrors the same protocol for tests): #progressLabel/#addressBar/#warningLabel (each a real
 SpLabelPresenter) and #addLineButton/#removeLineButton/#openButton/#copyButton/#discardButton
-(each a real SpButtonPresenter). Each accessor lazily builds its own widget -- callers (in
-particular ApplicationTheodoliteMobileLabRudesheim>>#start) never construct these presenters
-themselves and pass them in; they only ever read the accessors.
+(each a real SpButtonPresenter). Each accessor lazily builds its own widget via a matching
+#defaultXxx method (~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule,
+also followed by ModelTheodoliteMobileLabRudesheim's #bearingLines/#defaultBearingLines) --
+callers (in particular ApplicationTheodoliteMobileLabRudesheim>>#start) never construct these
+presenters themselves and pass them in; they only ever read the accessors.
 
 #defaultLayout arranges them into the landscape structure: a full-width, fixed-height top row
 (discard/address/open/copy) and a bottom row with a variable-width map placeholder (self-drawn
@@ -38,10 +40,7 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> addLineButton [
 	^ addLineButton
 		ifNil:
 		[
-			addLineButton :=
-				self newButton
-					label:	'Add line';
-					yourself.
+			addLineButton := self defaultAddLineButton.
 		].
 ]
 
@@ -50,10 +49,7 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> addressBar [
 	^ addressBar
 		ifNil:
 		[
-			addressBar :=
-				self newLabel
-					label:	'';
-					yourself.
+			addressBar := self defaultAddressBar.
 		].
 ]
 
@@ -62,11 +58,64 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> copyButton [
 	^ copyButton
 		ifNil:
 		[
-			copyButton :=
-				self newButton
-					label:	'Copy';
-					yourself.
+			copyButton := self defaultCopyButton.
 		].
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultAddLineButton [
+	^ self newButton
+		label:	'Add line';
+		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultAddressBar [
+	^ self newLabel
+		label:	'';
+		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultCopyButton [
+	^ self newButton
+		label:	'Copy';
+		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultDiscardButton [
+	^ self newButton
+		label:	'Discard all';
+		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultOpenButton [
+	^ self newButton
+		label:	'Open';
+		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultProgressLabel [
+	^ self newLabel
+		label:	'';
+		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultRemoveLineButton [
+	^ self newButton
+		label:	'Remove line';
+		yourself.
+]
+
+{ #category : 'private' }
+ViewLandscapeTheodoliteMobileLabRudesheim >> defaultWarningLabel [
+	^ self newLabel
+		label:	'';
+		yourself.
 ]
 
 { #category : 'layout' }
@@ -117,10 +166,7 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> discardButton [
 	^ discardButton
 		ifNil:
 		[
-			discardButton :=
-				self newButton
-					label:	'Discard all';
-					yourself.
+			discardButton := self defaultDiscardButton.
 		].
 ]
 
@@ -129,10 +175,7 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> openButton [
 	^ openButton
 		ifNil:
 		[
-			openButton :=
-				self newButton
-					label:	'Open';
-					yourself.
+			openButton := self defaultOpenButton.
 		].
 ]
 
@@ -141,10 +184,7 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> progressLabel [
 	^ progressLabel
 		ifNil:
 		[
-			progressLabel :=
-				self newLabel
-					label:	'';
-					yourself.
+			progressLabel := self defaultProgressLabel.
 		].
 ]
 
@@ -153,10 +193,7 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> removeLineButton [
 	^ removeLineButton
 		ifNil:
 		[
-			removeLineButton :=
-				self newButton
-					label:	'Remove line';
-					yourself.
+			removeLineButton := self defaultRemoveLineButton.
 		].
 ]
 
@@ -165,9 +202,6 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> warningLabel [
 	^ warningLabel
 		ifNil:
 		[
-			warningLabel :=
-				self newLabel
-					label:	'';
-					yourself.
+			warningLabel := self defaultWarningLabel.
 		].
 ]

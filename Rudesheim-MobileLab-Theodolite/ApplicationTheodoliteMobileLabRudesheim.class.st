@@ -37,11 +37,13 @@ ApplicationTheodoliteMobileLabRudesheim >> model [
 { #category : 'starting' }
 ApplicationTheodoliteMobileLabRudesheim >> start [
 	|
+		namespace
 		view
 		window
 	|
 
-	view := Rudesheim MobileLab Theodolite ViewLandscape new.
+	namespace := Rudesheim MobileLab Theodolite.
+	view := namespace ViewLandscape new.
 
 	window :=
 		(
@@ -54,7 +56,7 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 	self
 		registerWindow:	window.
 
-	Rudesheim MobileLab Theodolite SpecBuilder
+	namespace SpecBuilder
 		bindModel:	self model
 		toView:		view.
 ]
