@@ -75,6 +75,51 @@ SpecBuilderTheodoliteMobileLabRudesheimTest >> testBoundViewButtonsHaveActions [
 ]
 
 { #category : 'tests' }
+SpecBuilderTheodoliteMobileLabRudesheimTest >> testCopyButtonCopiesMapURL [
+	|
+		theodolite
+		app
+		view
+		model
+	|
+
+	theodolite := Rudesheim MobileLab Theodolite.
+	app := SpApplication new.
+	view := theodolite StubView new.
+
+	view
+		application:	app.
+
+	model := theodolite Model new.
+
+	model bearingLines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	model bearingLines
+		add:
+		(
+			GRay
+				origin:	5 , -5
+				normalizedBearing:	0.0
+		).
+
+	self targetClass
+		bindModel:	model
+		toView:	view.
+
+	view copyButton performAction.
+
+	self
+		assert:	Clipboard clipboardText asString
+		equals:	model bearingLines mapURL first displayString.
+]
+
+{ #category : 'tests' }
 SpecBuilderTheodoliteMobileLabRudesheimTest >> testRemoveLineButtonPopsLastLine [
 	|
 		theodolite
