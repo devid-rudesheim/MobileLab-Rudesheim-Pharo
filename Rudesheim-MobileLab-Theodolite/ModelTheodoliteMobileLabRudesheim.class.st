@@ -51,7 +51,6 @@ ModelTheodoliteMobileLabRudesheim >> initialize [
 	|
 
 	super initialize.
-
 	theodolite := Rudesheim MobileLab Theodolite.
 
 	self

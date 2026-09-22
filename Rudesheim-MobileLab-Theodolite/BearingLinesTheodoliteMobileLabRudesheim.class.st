@@ -129,15 +129,18 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 		].
 
 	average :=
-		(
-			points
-				inject:	0 , 0
-				into:	[ :sum :each | sum + each ]
-		) asPoint / points size.
+	(
+		points
+			inject:	0 , 0
+			into:
+			[ :sum :each |
+				sum + each.
+			]
+	) asPoint / points size.
 
 	^
 	{
-		average x , average y
+		( average x , average y )
 	}.
 ]
 
@@ -152,11 +155,16 @@ BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
 	^ self intersectionPoint
 		collect:
 		[ :point |
-			| url |
+			|
+				url
+			|
+
 			url := 'http://maps.apple.com' asZnUrl.
+
 			url
 				queryAt:	'll'
 				put:	point y printString , ',' , point x printString.
+
 			url.
 		].
 ]
