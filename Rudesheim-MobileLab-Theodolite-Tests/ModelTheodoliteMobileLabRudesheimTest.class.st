@@ -1,5 +1,5 @@
 "
-A ModelTheodoliteMobileLabRudesheimTest tests the BearingLine/warning coordination described in
+A ModelTheodoliteMobileLabRudesheimTest tests the bearing-line/warning coordination described in
 note/ios-triangulation-app.md section 7.3 (NocoDB Sections 項番FM): recording up to maxSize (3)
 lines, rejecting a 4th in favor of a launch-request announcement, rejecting non-intersecting
 (near-parallel) lines with a warning, and clearing that warning on removal.

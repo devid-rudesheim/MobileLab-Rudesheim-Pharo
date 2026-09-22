@@ -1,7 +1,8 @@
 "
-A BearingLinesTheodoliteMobileLabRudesheim holds the recorded BearingLine collection (up to
-#maxSize, 3). It overrides the standard Collection protocol #add:/#removeLast rather than
-introducing new selectors, per note/ios-triangulation-app.md section 7.3 (NocoDB Sections 項番FM):
+A BearingLinesTheodoliteMobileLabRudesheim holds the recorded bearing lines, each a plain GRay
+(see the GRay class-side extension #origin:bearing: in this package), up to #maxSize, 3. It
+overrides the standard Collection protocol #add:/#removeLast rather than introducing new
+selectors, per note/ios-triangulation-app.md section 7.3 (NocoDB Sections 項番FM):
 
 - #add: past capacity never records a 4th line; it announces
   LaunchRequestedTheodoliteMobileLabRudesheim instead.
@@ -28,7 +29,7 @@ BearingLinesTheodoliteMobileLabRudesheim class >> maxSize [
 ]
 
 { #category : 'adding' }
-BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
+BearingLinesTheodoliteMobileLabRudesheim >> add: aGRay [
 	|
 		theodolite
 	|
@@ -41,7 +42,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
 			self announcer
 				announce:	theodolite LaunchRequested new.
 
-			^ aBearingLine.
+			^ aGRay.
 		].
 
 	(
@@ -49,8 +50,8 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
 			allSatisfy:
 			[ :existing |
 				(
-					existing ray
-						intersectionsWith:	aBearingLine ray
+					existing
+						intersectionsWith:	aGRay
 				) isNotEmpty.
 			]
 	)
@@ -63,14 +64,14 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aBearingLine [
 						message:	'This line does not cross the existing lines (nearly parallel); it was not added'
 				}.
 
-			^ aBearingLine.
+			^ aGRay.
 		].
 
 	self warning
 		value:	#(  ).
 
 	^ super
-		add:	aBearingLine.
+		add:	aGRay.
 ]
 
 { #category : 'initialization' }
@@ -107,12 +108,12 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 						(
 							lines
 								at:	i
-						) ray
+						)
 							intersectionsWith:
 							(
 								lines
 									at:	j
-							) ray
+							)
 					)
 						do:
 						[ :point |

@@ -12,11 +12,6 @@ TheodoliteMobileLabRudesheim class >> Application [
 ]
 
 { #category : 'accessing' }
-TheodoliteMobileLabRudesheim class >> BearingLine [
-	^ BearingLineTheodoliteMobileLabRudesheim.
-]
-
-{ #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> BearingLines [
 	^ BearingLinesTheodoliteMobileLabRudesheim.
 ]
