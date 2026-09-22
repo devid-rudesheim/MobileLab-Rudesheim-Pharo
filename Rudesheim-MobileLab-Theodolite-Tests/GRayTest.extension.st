@@ -1,14 +1,15 @@
 Extension { #name : 'GRayTest' }
 
 { #category : '*Rudesheim-MobileLab-Theodolite-Tests' }
-GRayTest >> testOriginBearingCardinalDirections [
-	"GRay class >> origin:bearing: (added for Theodolite, see GRay.extension.st in
-	Rudesheim-MobileLab-Theodolite) must reproduce the standard compass convention: 0=north,
-	90=east, 180=south, 270=west, measured clockwise. Checked against known unit-vector directions
-	rather than against the app's own bearing-computation formula
-	(ModelTheodoliteMobileLabRudesheimTest>>#bearingFrom:toward:) -- the Model-level tests never
-	assert an exact coordinate, so on their own they cannot catch a sign/axis mistake here (they
-	would still pass if #origin:bearing: and #bearingFrom:toward: shared the same bug)."
+GRayTest >> testOriginNormalizedBearingCardinalDirections [
+	"GRay class >> origin:normalizedBearing: (added for Theodolite, see GRay.extension.st in
+	Rudesheim-MobileLab) must reproduce the standard compass convention on Rudesheim-MobileLab's
+	normalized bearing form: 0.0=north, 0.25=east, 0.5=south, -0.25=west, measured clockwise.
+	Checked against known unit-vector directions rather than against the app's own
+	bearing-computation formula (ModelTheodoliteMobileLabRudesheimTest>>#bearingFrom:toward:) -- the
+	Model-level tests never assert an exact coordinate, so on their own they cannot catch a
+	sign/axis mistake here (they would still pass if #origin:normalizedBearing: and
+	#bearingFrom:toward: shared the same bug)."
 	|
 		origin
 	|
@@ -21,7 +22,7 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	0
+					normalizedBearing:	0.0
 			) directionPoint - origin
 		) x
 		closeTo:	0.
@@ -32,7 +33,7 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	0
+					normalizedBearing:	0.0
 			) directionPoint - origin
 		) y
 		closeTo:	1.
@@ -43,7 +44,7 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	90
+					normalizedBearing:	0.25
 			) directionPoint - origin
 		) x
 		closeTo:	1.
@@ -54,7 +55,7 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	90
+					normalizedBearing:	0.25
 			) directionPoint - origin
 		) y
 		closeTo:	0.
@@ -65,7 +66,7 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	180
+					normalizedBearing:	0.5
 			) directionPoint - origin
 		) x
 		closeTo:	0.
@@ -76,7 +77,7 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	180
+					normalizedBearing:	0.5
 			) directionPoint - origin
 		) y
 		closeTo:	-1.
@@ -87,7 +88,7 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	270
+					normalizedBearing:	-0.25
 			) directionPoint - origin
 		) x
 		closeTo:	-1.
@@ -98,17 +99,17 @@ GRayTest >> testOriginBearingCardinalDirections [
 			(
 				GRay
 					origin:	origin
-					bearing:	270
+					normalizedBearing:	-0.25
 			) directionPoint - origin
 		) y
 		closeTo:	0.
 ]
 
 { #category : '*Rudesheim-MobileLab-Theodolite-Tests' }
-GRayTest >> testOriginBearingIntersectionMatchesKnownGeometry [
-	"Two rays built from hardcoded bearings (east from the origin, south from (10,10)) must cross
-	at (10,0) -- a ground-truth check independent of any bearing-computation formula elsewhere in
-	the app."
+GRayTest >> testOriginNormalizedBearingIntersectionMatchesKnownGeometry [
+	"Two rays built from hardcoded normalized bearings (east from the origin, south from (10,10))
+	must cross at (10,0) -- a ground-truth check independent of any bearing-computation formula
+	elsewhere in the app."
 	|
 		eastRay
 		southRay
@@ -118,12 +119,12 @@ GRayTest >> testOriginBearingIntersectionMatchesKnownGeometry [
 	eastRay :=
 		GRay
 			origin:	0 , 0
-			bearing:	90.
+			normalizedBearing:	0.25.
 
 	southRay :=
 		GRay
 			origin:	10 , 10
-			bearing:	180.
+			normalizedBearing:	0.5.
 
 	intersection :=
 		eastRay

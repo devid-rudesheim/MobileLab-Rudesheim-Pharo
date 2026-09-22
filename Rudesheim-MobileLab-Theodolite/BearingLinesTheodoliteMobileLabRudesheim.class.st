@@ -1,6 +1,7 @@
 "
 A BearingLinesTheodoliteMobileLabRudesheim holds the recorded bearing lines, each a plain GRay
-(see the GRay class-side extension #origin:bearing: in this package), up to #maxSize, 3. It
+(see the GRay class-side extension #origin:normalizedBearing: in Rudesheim-MobileLab), up to
+#maxSize, 3. It
 overrides the standard Collection protocol #add:/#removeLast, per note/ios-triangulation-app.md
 section 7.3 (NocoDB Sections 項番FM):
 
@@ -16,8 +17,9 @@ section 7.3 (NocoDB Sections 項番FM):
 #push/#pop are the view-facing stack-style entry points action blocks actually call: #push reads
 the current position/heading from `Smalltalk os rudesheim location currentRay` (Rudesheim-MobileLab's
 OS-dispatch mechanism) and passes it through #add:; #pop is a plain alias for #removeLast. A caller
-that already has (or can build) a GRay -- e.g. a test supplying a synthetic origin/bearing via
-`GRay origin:bearing:` -- uses #add:/#removeLast directly instead; #add:'s capacity/intersection
+that already has (or can build) a GRay -- e.g. a test supplying a synthetic origin/normalized
+bearing via `GRay origin:normalizedBearing:` -- uses #add:/#removeLast directly instead; #add:'s
+capacity/intersection
 coordination above applies either way.
 "
 Class {

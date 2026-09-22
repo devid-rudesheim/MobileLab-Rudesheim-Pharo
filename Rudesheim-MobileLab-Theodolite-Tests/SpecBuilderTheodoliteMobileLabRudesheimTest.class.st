@@ -97,7 +97,7 @@ SpecBuilderTheodoliteMobileLabRudesheimTest >> testRemoveLineButtonPopsLastLine 
 		(
 			GRay
 				origin:	0 , 0
-				bearing:	90
+				normalizedBearing:	0.25
 		).
 
 	self targetClass

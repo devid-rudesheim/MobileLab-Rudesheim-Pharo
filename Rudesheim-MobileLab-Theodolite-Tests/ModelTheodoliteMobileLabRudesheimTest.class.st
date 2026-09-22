@@ -19,6 +19,12 @@ ModelTheodoliteMobileLabRudesheimTest class >> targetClass [
 { #category : 'private' }
 ModelTheodoliteMobileLabRudesheimTest >> bearingFrom: anOrigin
 toward: aTarget [
+	"Returns a normalized bearing (Rudesheim-MobileLab's (-0.5, 0.5] form, see GRay class >>
+	origin:normalizedBearing:'s comment), not raw degrees. delta x arcTan: delta y already matches
+	atan2's own (-180, 180] convention, so dividing straight by 360 lands exactly on the target
+	form -- no separate wrap-into-negative step is needed (unlike
+	Number>>#asNormalizedBearingRudesheim, which has to wrap because it starts from [0, 360)
+	instead)."
 	|
 		delta
 		radians
@@ -33,13 +39,7 @@ toward: aTarget [
 
 	degrees := radians * 180 / Float pi.
 
-	0 > degrees
-		ifTrue:
-		[
-			^ degrees + 360.
-		].
-
-	^ degrees.
+	^ degrees / 360.
 ]
 
 { #category : 'tests' }
@@ -55,7 +55,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testDiscardAllClearsEverything [
 		(
 			GRay
 				origin:	0 , 0
-				bearing:	90
+				normalizedBearing:	0.25
 		).
 
 	model discardAll.
@@ -95,7 +95,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 				(
 					GRay
 						origin:	origin
-						bearing:
+						normalizedBearing:
 						(
 							self
 								bearingFrom:	origin
@@ -119,7 +119,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testFourthAttemptTriggersLaunchWithoutB
 		(
 			GRay
 				origin:	50 , 50
-				bearing:
+				normalizedBearing:
 				(
 					self
 						bearingFrom:	50 , 50
@@ -157,7 +157,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testNonIntersectingLineIsRejectedWithWa
 		(
 			GRay
 				origin:	0 , 0
-				bearing:	90
+				normalizedBearing:	0.25
 		).
 
 	model bearingLines
@@ -165,7 +165,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testNonIntersectingLineIsRejectedWithWa
 		(
 			GRay
 				origin:	0 , 5
-				bearing:	90
+				normalizedBearing:	0.25
 		).
 
 	self
@@ -190,7 +190,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
 		(
 			GRay
 				origin:	0 , 0
-				bearing:	90
+				normalizedBearing:	0.25
 		).
 
 	model bearingLines
@@ -198,7 +198,7 @@ ModelTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
 		(
 			GRay
 				origin:	0 , 5
-				bearing:	90
+				normalizedBearing:	0.25
 		).
 
 	model bearingLines removeLast.
