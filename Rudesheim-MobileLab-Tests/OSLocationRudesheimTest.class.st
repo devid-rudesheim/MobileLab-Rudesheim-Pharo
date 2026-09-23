@@ -4,10 +4,11 @@ OSTableQueryRudesheimTest's own #testDelegatesThroughRudesheimOSDispatch pattern
 base/unsupported implementation signals cleanly for all three class-side methods -- the two
 primitives (#currentLocation/#currentNormalizedBearing) and the #currentRay template method built
 from them (which surfaces the same subclassResponsibility, since it calls the primitives). It does
-not exercise MacOSLocationRudesheim's own primitive overrides -- those depend on the
-not-yet-implemented CLLocationManagerAgent/CLHeadingAgent ObjC bridge (see
-MacOSLocationRudesheim's comment) and would fail with an uncontrolled DNU rather than a clean
-assertion, on whichever platform actually resolves to it.
+not exercise MacOSLocationRudesheim's own primitive overrides -- those go through CoreLocation over
+the ObjC bridge (see MacOSLocationRudesheim's comment), which cannot actually obtain a location in
+this project's headless test environment (a known macOS permission-dialog limitation, not
+something this test can assert around cleanly) and would otherwise just hang for the timeout
+duration on every run.
 "
 Class {
 	#name : 'OSLocationRudesheimTest',

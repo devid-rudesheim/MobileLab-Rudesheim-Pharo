@@ -15,7 +15,9 @@ write-direction action blocks).
 #addLineButton's action is just `aModel bearingLines push` -- sourcing the current position/heading
 is BearingLinesTheodoliteMobileLabRudesheim's own concern (via Rudesheim-MobileLab's OS-dispatch
 mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesheim's comment for
-why it can't actually run yet). This class no longer references the ObjC bridge globals directly.
+its own known limitation). #openButton's action and the LaunchRequested handler below open each
+mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a `ZnUrl`-side
+#launch -- see OSLauncherRudesheim's comment for why that dispatch lives there instead.
 "
 Class {
 	#name : 'SpecBuilderTheodoliteMobileLabRudesheim',
@@ -107,7 +109,7 @@ toView: aView [
 		action:
 		[
 			aModel bearingLines mapURL
-				do:	#launch.
+				do:	[ :url | Smalltalk os rudesheim launcher open: url ].
 		].
 
 	aView copyButton
@@ -132,7 +134,7 @@ toView: aView [
 		do:
 		[
 			aModel bearingLines mapURL
-				do:	#launch.
+				do:	[ :url | Smalltalk os rudesheim launcher open: url ].
 		]
 		for:	aView.
 ]

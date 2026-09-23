@@ -1,5 +1,5 @@
 Class {
-	#name : 'MobileLabRudesheim',
+	#name : 'LocationMobileLabRudesheim',
 	#superclass : 'Object',
 	#category : 'Rudesheim-MobileLab-Namespace',
 	#package : 'Rudesheim-MobileLab',
@@ -7,6 +7,6 @@ Class {
 }
 
 { #category : 'namespace' }
-MobileLabRudesheim class >> Location [
-	^ LocationMobileLabRudesheim.
+LocationMobileLabRudesheim class >> CoordinateParser [
+	^ CoordinateParserLocationMobileLabRudesheim.
 ]

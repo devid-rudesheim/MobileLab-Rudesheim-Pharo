@@ -153,8 +153,8 @@ BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
 	Apple Maps links are plain http(s) URLs to maps.apple.com that the OS intercepts and opens in
 	Maps instead of a browser (see
 	https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html).
-	ZnUrl has no #launch of its own yet -- actually opening it is left to the View/action-block
-	layer (out of scope this round, see note/ios-triangulation-app.md 項番FJ item 4)."
+	Actually opening it is the View/action-block layer's concern, via
+	`Smalltalk os rudesheim launcher open:` (see OSLauncherRudesheim's comment) -- not this class."
 	^ self intersectionPoint
 		collect:
 		[ :point |
