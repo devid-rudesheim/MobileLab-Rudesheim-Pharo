@@ -24,11 +24,12 @@ above, not from whatever raw value Spec2-Transmission's port would hand it): it 
 refits the visible bounds (every origin plus the current intersection point,
 MapDrawingTheodoliteMobileLabRudesheim class>>#worldBoundsFor:) from scratch on every call, and,
 for each fitted bounds, builds one MapDrawingTheodoliteMobileLabRudesheim (the shared
-`lines`/`bounds`/`extent`/`canvas`/`scale` context) and dispatches to
+`lines`/`bounds`/`extent`/`canvas`/`scale` context) and dispatches it to
 RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- the two things that
-actually draw, via their shared #draw. This is inlined here rather than behind a class-side
-`MapDrawing class>>#drawBearingLines:on:` entry point because that method (like the
-MapDrawing-instance-side #draw it called) had exactly one caller -- this block. #addLineButton/
+actually draw, both stateless class-side `#drawOn: aRenderer`. This is inlined here rather than
+behind a class-side `MapDrawing class>>#drawBearingLines:on:` entry point because that method
+(like the MapDrawing-instance-side #draw it used to call, before Rays/Markers existed) had exactly
+one caller -- this block. #addLineButton/
 #removeLineButton/#discardButton each explicitly send #redraw after mutating `aModel bearingLines`,
 so every 'Add line' press (and every remove/discard) refits and repaints the map; #openButton/
 #copyButton do not mutate the lines, so they do not redraw.
@@ -135,12 +136,13 @@ toView: aView [
 							canvas:	aCanvas.
 
 					{
-						theodolite Rays renderer: renderer.
-						theodolite Markers renderer: renderer.
+						theodolite Rays.
+						theodolite Markers.
 					}
 						do:
 						[ :each |
-							each draw.
+							each
+								drawOn:	renderer.
 						].
 				].
 		].

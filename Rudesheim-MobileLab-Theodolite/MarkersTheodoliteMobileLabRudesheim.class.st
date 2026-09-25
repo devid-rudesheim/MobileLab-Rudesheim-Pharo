@@ -1,46 +1,57 @@
 "
 A MarkersTheodoliteMobileLabRudesheim draws origin/intersection markers on Theodolite's map
-(NocoDB Sections 項番GM), one of the two things #draw's polymorphic `{ Rays renderer: self.
-Markers renderer: self } do: [ :each | each draw ]` dispatches to alongside
-RaysTheodoliteMobileLabRudesheim -- both answer the same #draw protocol, per this project's
-'prefer polymorphism over switch/if on kind' convention (~/.claude/CLAUDE.md's Design section),
-rather than being two named methods on one class. Reached as `Rudesheim MobileLab Theodolite
-Markers`.
+(NocoDB Sections 項番GM), one of the two things dispatched to polymorphically alongside
+RaysTheodoliteMobileLabRudesheim -- `{ Rays. Markers } do: [ :each | each drawOn: renderer ]` --
+both answering the same class-side #drawOn:, per this project's 'prefer polymorphism over
+switch/if on kind' convention (~/.claude/CLAUDE.md's Design section), rather than being two named
+methods on one class. Reached as `Rudesheim MobileLab Theodolite Markers`.
 
-Holds no geometry of its own: `renderer` (a MapDrawingTheodoliteMobileLabRudesheim, set once via
-the class-side #renderer: convenience) is the single source of `lines`/`canvas`/`screenPointFor:`,
-so #draw reads `self renderer lines`/`self renderer canvas` etc. rather than duplicating any of
-that state. Draws every recorded line's origin in blue and the current intersection point (if any)
-in red, via one data-driven pass over `{ points. color }` pairs rather than two near-duplicate
-loops.
+Stateless: #drawOn: never references self, so it stays a class-side method
+(~/.claude/CLAUDE.md's 'put self-free logic on the class side' rule) taking `aRenderer` (a
+MapDrawingTheodoliteMobileLabRudesheim, one redraw's shared `lines`/`canvas`/`screenPointFor:`
+context) as a plain argument rather than holding it as instance state.
+
+Draws every recorded line's origin in blue and the current intersection point (if any) in red, via
+one data-driven pass over `{ points. color }` pairs rather than two near-duplicate loops.
 "
 Class {
 	#name : 'MarkersTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
-	#instVars : [
-		'renderer'
-	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
-{ #category : 'instance creation' }
-MarkersTheodoliteMobileLabRudesheim class >> renderer: aMapDrawingTheodoliteMobileLabRudesheim [
-	^ self new
-		renderer:	aMapDrawingTheodoliteMobileLabRudesheim;
-		yourself.
+{ #category : 'drawing' }
+MarkersTheodoliteMobileLabRudesheim class >> drawMarker: aPointPoint
+color: aColorColor
+on: aRendererMapDrawingTheodoliteMobileLabRudesheim [
+	|
+		radius
+	|
+
+	radius := 4.
+
+	aRendererMapDrawingTheodoliteMobileLabRudesheim canvas
+		setPaint:	aColorColor.
+
+	aRendererMapDrawingTheodoliteMobileLabRudesheim canvas
+		drawShape:
+		(
+			aPointPoint - radius
+				corner:	aPointPoint + radius
+		).
 ]
 
 { #category : 'drawing' }
-MarkersTheodoliteMobileLabRudesheim >> draw [
+MarkersTheodoliteMobileLabRudesheim class >> drawOn: aRenderer [
 	{
 		{
-			self renderer lines asArray
+			aRenderer lines asArray
 				collect:	#initialPoint.
 			Color blue
 		}.
 		{
-			self renderer lines intersectionPoint.
+			aRenderer lines intersectionPoint.
 			Color red
 		}
 	}
@@ -52,40 +63,11 @@ MarkersTheodoliteMobileLabRudesheim >> draw [
 					self
 						drawMarker:
 						(
-							self renderer
+							aRenderer
 								screenPointFor:	each
 						)
-						color:	pair last.
+						color:	pair last
+						on:	aRenderer.
 				].
 		].
-]
-
-{ #category : 'private' }
-MarkersTheodoliteMobileLabRudesheim >> drawMarker: aPointPoint
-color: aColorColor [
-	|
-		radius
-	|
-
-	radius := 4.
-
-	self renderer canvas
-		setPaint:	aColorColor.
-
-	self renderer canvas
-		drawShape:
-		(
-			aPointPoint - radius
-				corner:	aPointPoint + radius
-		).
-]
-
-{ #category : 'accessing' }
-MarkersTheodoliteMobileLabRudesheim >> renderer [
-	^ renderer.
-]
-
-{ #category : 'accessing' }
-MarkersTheodoliteMobileLabRudesheim >> renderer: aMapDrawingTheodoliteMobileLabRudesheim [
-	renderer := aMapDrawingTheodoliteMobileLabRudesheim assertNotNilRudesheim.
 ]
