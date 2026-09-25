@@ -147,15 +147,18 @@ on: aCanvasAthensCanvas [
 					farPoint := each initialPoint + ( direction / direction r * rayLength ).
 
 					screenPoints :=
-						{ each initialPoint. farPoint }
-							collect:
-							[ :point |
-								self
-									screenPointFor:	point
-									bounds:	aBoundsRectangle
-									scale:	aScaleNumber
-									extent:	anExtentPoint.
-							].
+					{
+						each initialPoint.
+						farPoint
+					}
+						collect:
+						[ :point |
+							self
+								screenPointFor:	point
+								bounds:	aBoundsRectangle
+								scale:	aScaleNumber
+								extent:	anExtentPoint.
+						].
 
 					path :=
 						aCanvasAthensCanvas
@@ -236,21 +239,27 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 	from one data-driven pass over the pair of combining blocks rather than two near-duplicate
 	inject:into: reductions."
 	extremes :=
-		{
-			[ :accumulator :each | accumulator min: each ].
-			[ :accumulator :each | accumulator max: each ].
-		}
-			collect:
-			[ :combine |
-				points
-					inject:	points first
-					into:
-					[ :accumulator :each |
-						combine
-							value:	accumulator
-							value:	each.
-					].
-			].
+	{
+		[ :accumulator :each |
+			accumulator
+				min:	each.
+		].
+		[ :accumulator :each |
+			accumulator
+				max:	each.
+		]
+	}
+		collect:
+		[ :combine |
+			points
+				inject:	points first
+				into:
+				[ :accumulator :each |
+					combine
+						value:	accumulator
+						value:	each.
+				].
+		].
 
 	minPoint := extremes first.
 	maxPoint := extremes last.
@@ -263,9 +272,24 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 		#( #x #y )
 			collect:
 			[ :axis |
-				( ( axis value: maxPoint ) - ( axis value: minPoint ) ) < 0.0001
-					ifTrue:	[ 0.0005 ]
-					ifFalse:	[ 0 ].
+				(
+					(
+						axis
+							value:	maxPoint
+					) -
+					(
+						axis
+							value:	minPoint
+					)
+				) < 0.0001
+					ifTrue:
+					[
+						0.0005.
+					]
+					ifFalse:
+					[
+						0.
+					].
 			].
 
 	paddingPoint := padding first @ padding last.
