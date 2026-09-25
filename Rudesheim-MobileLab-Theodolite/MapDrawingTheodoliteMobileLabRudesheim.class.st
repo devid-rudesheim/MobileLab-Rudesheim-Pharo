@@ -62,13 +62,14 @@ on: aCanvasAthensCanvas [
 
 			{
 				{
-					aLinesBearingLinesTheodoliteMobileLabRudesheim asArray collect: #initialPoint.
-					Color blue.
+					aLinesBearingLinesTheodoliteMobileLabRudesheim asArray
+						collect:	#initialPoint.
+					Color blue
 				}.
 				{
 					aLinesBearingLinesTheodoliteMobileLabRudesheim intersectionPoint.
-					Color red.
-				}.
+					Color red
+				}
 			}
 				do:
 				[ :pair |
@@ -202,11 +203,11 @@ extent: anExtentPoint [
 	"World point -> canvas pixel point: aBoundsRectangle's center maps to anExtentPoint's center,
 	scaled by aScaleNumber, with Y flipped so world north (+y) draws upward -- (1@-1) flips only
 	the y half of the already-componentwise Point multiplication (Point>>#*'s own comment)."
-	^ ( anExtentPoint / 2 )
-		+
-		(
-			( aPointPoint - aBoundsRectangle center ) * aScaleNumber * ( 1 @ -1 )
-		).
+	^
+	( anExtentPoint / 2 ) +
+	(
+		( ( aPointPoint - aBoundsRectangle center ) ) * aScaleNumber * ( 1 @ -1 )
+	).
 ]
 
 { #category : 'geometry' }
@@ -263,18 +264,30 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 					collect:
 					[ :axis |
 						(
-							( maxPoint perform: axis )
-								-	( minPoint perform: axis )
+							(
+								maxPoint
+									perform:	axis
+							) -
+							(
+								minPoint
+									perform:	axis
+							)
 						) < 0.0001
-							ifTrue:	[ 0.0005 ]
-							ifFalse:	[ 0 ].
+							ifTrue:
+							[
+								0.0005.
+							]
+							ifFalse:
+							[
+								0.
+							].
 					].
 
 			paddingPoint := padding first @ padding last.
 
 			{
-				( minPoint - paddingPoint )
-					corner:	( maxPoint + paddingPoint ).
+				minPoint - paddingPoint
+					corner:	maxPoint + paddingPoint
 			}.
 		].
 ]
