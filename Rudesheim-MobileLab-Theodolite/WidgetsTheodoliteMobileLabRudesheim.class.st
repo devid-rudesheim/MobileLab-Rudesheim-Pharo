@@ -6,9 +6,11 @@ warning readouts and add/remove/open/copy/discard controls, only arranged differ
 as `Rudesheim MobileLab Theodolite Widgets`.
 
 It exists to satisfy exactly the widget protocol SpecBuilderTheodoliteMobileLabRudesheim>>
-#bindModel:toView: needs: #progressLabel/#addressBar/#warningLabel (each a real SpLabelPresenter)
-and #addLineButton/#removeLineButton/#openButton/#copyButton/#discardButton (each a real
-SpButtonPresenter). Each accessor lazily builds its own widget via a matching #defaultXxx method
+#bindModel:toView: needs: #progressLabel/#addressBar/#warningLabel (each a real SpLabelPresenter),
+#mapArea (a real SpAthensPresenter -- the self-drawn map, decision recorded in NocoDB Sections
+項番GM, rendered by MapDrawingTheodoliteMobileLabRudesheim) and #addLineButton/#removeLineButton/
+#openButton/#copyButton/#discardButton (each a real SpButtonPresenter). Each accessor lazily
+builds its own widget via a matching #defaultXxx method
 (~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule, also followed by
 ModelTheodoliteMobileLabRudesheim's #bearingLines/#defaultBearingLines) -- callers never
 construct these presenters themselves and pass them in; they only ever read the accessors.
@@ -33,7 +35,8 @@ Class {
 		'removeLineButton',
 		'openButton',
 		'copyButton',
-		'discardButton'
+		'discardButton',
+		'mapArea'
 	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
@@ -102,6 +105,11 @@ WidgetsTheodoliteMobileLabRudesheim >> defaultDiscardButton [
 ]
 
 { #category : 'private' }
+WidgetsTheodoliteMobileLabRudesheim >> defaultMapArea [
+	^ self owner newAthens.
+]
+
+{ #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultOpenButton [
 	^ self owner newButton
 		label:	'Open';
@@ -135,6 +143,15 @@ WidgetsTheodoliteMobileLabRudesheim >> discardButton [
 		ifNil:
 		[
 			discardButton := self defaultDiscardButton.
+		].
+]
+
+{ #category : 'accessing' }
+WidgetsTheodoliteMobileLabRudesheim >> mapArea [
+	^ mapArea
+		ifNil:
+		[
+			mapArea := self defaultMapArea.
 		].
 ]
 

@@ -27,6 +27,11 @@ TheodoliteMobileLabRudesheim class >> LaunchRequested [
 ]
 
 { #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> MapDrawing [
+	^ MapDrawingTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> Model [
 	^ ModelTheodoliteMobileLabRudesheim.
 ]

@@ -6,10 +6,10 @@ A ViewLandscapeTheodoliteMobileLabRudesheim is Theodolite's landscape-orientatio
 It only arranges the widgets it gets from its `widgets` (a WidgetsTheodoliteMobileLabRudesheim,
 shared with the portrait View so both orientations show the same widget set without duplicating
 it) into the landscape structure: a full-width, fixed-height top row (discard/address/open/copy)
-and a bottom row with a variable-width map placeholder (self-drawn map display is separate,
-not-yet-built work) plus a fixed-width column (add/remove/progress/warning). add/remove expand to
-fill the column's remaining vertical space (larger tap targets); progress/warning stay
-fixed-height. It does not itself
+and a bottom row with a variable-width self-drawn map area (`widgets mapArea`, an SpAthensPresenter
+rendered by MapDrawingTheodoliteMobileLabRudesheim -- decision recorded in NocoDB Sections 項番GM)
+plus a fixed-width column (add/remove/progress/warning). add/remove expand to fill the column's
+remaining vertical space (larger tap targets); progress/warning stay fixed-height. It does not itself
 answer #progressLabel/#addressBar/etc -- callers that need the widget protocol
 SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: needs go through `self widgets`
 directly. The portrait layout (項番FD §2.1) is separate, not-yet-built work.
@@ -44,12 +44,7 @@ ViewLandscapeTheodoliteMobileLabRudesheim >> defaultLayout [
 		add:
 		(
 			SpBoxLayout newLeftToRight
-				add:
-				(
-					self newLabel
-						label:	'Map (self-drawn, not yet implemented)';
-						yourself
-				)
+				add:	self widgets mapArea
 				expand:	true;
 				add:
 				(

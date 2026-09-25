@@ -8,9 +8,9 @@ section 7.4 (NocoDB Sections 項番FL). Stateless: it exists only for its class-
 #bindModel:toView:, called once per View instance.
 
 `toView:` just needs to answer #progressLabel/#addressBar/#warningLabel (each an
-SpAbstractPresenter, for the Spec2-Transmission read direction) and #addLineButton/
-#removeLineButton/#openButton/#copyButton/#discardButton (each an SpButtonPresenter, for the
-write-direction action blocks).
+SpAbstractPresenter, for the Spec2-Transmission read direction), #mapArea (an SpAthensPresenter,
+the self-drawn map -- NocoDB Sections 項番GM) and #addLineButton/#removeLineButton/#openButton/
+#copyButton/#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
 
 #addLineButton's action is just `aModel bearingLines push` -- sourcing the current position/heading
 is BearingLinesTheodoliteMobileLabRudesheim's own concern (via Rudesheim-MobileLab's OS-dispatch
@@ -18,6 +18,14 @@ mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesh
 its own known limitation). #openButton's action and the LaunchRequested handler below open each
 mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a `ZnUrl`-side
 #launch -- see OSLauncherRudesheim's comment for why that dispatch lives there instead.
+
+#mapArea's drawBlock: re-renders from `aModel bearingLines` directly (like the transform blocks
+above, not from whatever raw value Spec2-Transmission's port would hand it), via
+MapDrawingTheodoliteMobileLabRudesheim -- which refits the visible bounds (every origin plus the
+current intersection point) from scratch on every call. #addLineButton/#removeLineButton/
+#discardButton each explicitly send #redraw after mutating `aModel bearingLines`, so every 'Add
+line' press (and every remove/discard) refits and repaints the map; #openButton/#copyButton do not
+mutate the lines, so they do not redraw.
 "
 Class {
 	#name : 'SpecBuilderTheodoliteMobileLabRudesheim',
@@ -93,16 +101,27 @@ toView: aView [
 				].
 		].
 
+	aView mapArea
+		drawBlock:
+		[ :aCanvas |
+			Rudesheim MobileLab Theodolite MapDrawing
+				drawBearingLines:	aModel bearingLines
+				extent:	aView mapArea surfaceExtent
+				on:	aCanvas.
+		].
+
 	aView addLineButton
 		action:
 		[
 			aModel bearingLines push.
+			aView mapArea redraw.
 		].
 
 	aView removeLineButton
 		action:
 		[
 			aModel bearingLines pop.
+			aView mapArea redraw.
 		].
 
 	aView openButton
@@ -127,6 +146,7 @@ toView: aView [
 		action:
 		[
 			aModel discardAll.
+			aView mapArea redraw.
 		].
 
 	aModel bearingLines announcer

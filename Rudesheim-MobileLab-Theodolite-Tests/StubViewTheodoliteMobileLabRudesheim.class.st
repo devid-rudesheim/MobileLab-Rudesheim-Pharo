@@ -2,7 +2,8 @@
 A StubViewTheodoliteMobileLabRudesheim is a minimal stand-in for the (not-yet-built)
 portrait View presenter, exposing exactly the widget protocol
 SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: needs: #progressLabel/#addressBar/
-#warningLabel (each a real SpLabelPresenter, so Spec2-Transmission's #defaultInputPort works) and
+#warningLabel (each a real SpLabelPresenter, so Spec2-Transmission's #defaultInputPort works),
+#mapArea (a real SpAthensPresenter, so #drawBlock:/#redraw/#surfaceExtent work) and
 #addLineButton/#removeLineButton/#openButton/#copyButton/#discardButton (each a real
 SpButtonPresenter, so #action: works). Test-only; never opened as a window.
 
@@ -21,7 +22,8 @@ Class {
 		'removeLineButton',
 		'openButton',
 		'copyButton',
-		'discardButton'
+		'discardButton',
+		'mapArea'
 	],
 	#category : 'Rudesheim-MobileLab-Theodolite-Tests',
 	#package : 'Rudesheim-MobileLab-Theodolite-Tests'
@@ -83,6 +85,13 @@ StubViewTheodoliteMobileLabRudesheim >> defaultDiscardButton [
 ]
 
 { #category : 'private' }
+StubViewTheodoliteMobileLabRudesheim >> defaultMapArea [
+	^ SpAthensPresenter new
+		application:	self application;
+		yourself.
+]
+
+{ #category : 'private' }
 StubViewTheodoliteMobileLabRudesheim >> defaultOpenButton [
 	^ SpButtonPresenter new
 		application:	self application;
@@ -116,6 +125,15 @@ StubViewTheodoliteMobileLabRudesheim >> discardButton [
 		ifNil:
 		[
 			discardButton := self defaultDiscardButton.
+		].
+]
+
+{ #category : 'accessing' }
+StubViewTheodoliteMobileLabRudesheim >> mapArea [
+	^ mapArea
+		ifNil:
+		[
+			mapArea := self defaultMapArea.
 		].
 ]
 
