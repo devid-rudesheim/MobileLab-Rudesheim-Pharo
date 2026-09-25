@@ -2,12 +2,15 @@
 A MapDrawingTheodoliteMobileLabRudesheimTest tests the pure geometry
 MapDrawingTheodoliteMobileLabRudesheim splits out from its actual Athens canvas calls (NocoDB
 Sections 項番GM): class-side #worldBoundsFor: (the fit-to-bounds requirement -- every origin plus
-the current intersection point must stay in frame) and #scaleToFit:inExtent:, plus instance-side
+the current intersection point must stay in frame), #scaleToFit:inExtent: and
+#renderersFor:canvas: (a 0-or-1-element array of ready renderers -- `canvas:`'s setter only checks
+non-nil, so a plain `Object new` stands in for a real AthensCanvas here), plus instance-side
 #screenPointFor: (needs only #bounds:/#extent: set -- it never touches #canvas:/#lines:, so a test
 can build a bare instance for it without a real Athens surface). The actual Athens-calling drawing
-now lives on RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- their own
-#draw needs a real surface, out of scope for a headless SUnit run (see those classes' own test
-classes for what they do cover: just the #renderer/#renderer: accessor contract).
+lives on RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim's stateless
+class-side #drawOn:, which does need a real surface -- out of scope for a headless SUnit run, and
+with no accessor contract of their own left to cover now that they take the renderer as a plain
+argument instead of holding it as instance state.
 "
 Class {
 	#name : 'MapDrawingTheodoliteMobileLabRudesheimTest',
@@ -195,6 +198,61 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForLinesAndIntersec
 	self
 		assert:	bounds corner y
 		closeTo:	50.
+]
+
+{ #category : 'tests' }
+MapDrawingTheodoliteMobileLabRudesheimTest >> testRenderersForNoLinesIsEmpty [
+	|
+		lines
+	|
+
+	lines := Rudesheim MobileLab Theodolite BearingLines new.
+
+	self
+		assert:
+		(
+			self targetClass
+				renderersFor:	lines
+				canvas:	Object new
+		) isEmpty.
+]
+
+{ #category : 'tests' }
+MapDrawingTheodoliteMobileLabRudesheimTest >> testRenderersForSingleLineBuildsOneRendererWithMatchingLinesAndCanvas [
+	|
+		lines
+		canvas
+		renderers
+	|
+
+	lines := Rudesheim MobileLab Theodolite BearingLines new.
+
+	lines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	canvas := Object new.
+
+	renderers :=
+		self targetClass
+			renderersFor:	lines
+			canvas:	canvas.
+
+	self
+		assert:	renderers size
+		equals:	1.
+
+	self
+		assert:	renderers first lines
+		equals:	lines.
+
+	self
+		assert:	renderers first canvas
+		equals:	canvas.
 ]
 
 { #category : 'tests' }

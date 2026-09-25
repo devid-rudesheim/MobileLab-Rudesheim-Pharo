@@ -21,10 +21,10 @@ mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a 
 
 #mapArea's drawBlock: re-renders from `aModel bearingLines` directly (like the transform blocks
 above, not from whatever raw value Spec2-Transmission's port would hand it): it clears the canvas,
-refits the visible bounds (every origin plus the current intersection point,
-MapDrawingTheodoliteMobileLabRudesheim class>>#worldBoundsFor:) from scratch on every call, and,
-for each fitted bounds, builds one MapDrawingTheodoliteMobileLabRudesheim (the shared
-`lines`/`bounds`/`extent`/`canvas`/`scale` context) and dispatches it to
+then asks MapDrawingTheodoliteMobileLabRudesheim class>>#renderersFor:canvas: for a 0-or-1-element
+array of ready renderers (it refits the visible bounds -- every origin plus the current
+intersection point -- from scratch on every call, so the block itself never sees an intermediate
+Rectangle) and dispatches each renderer as a plain argument to
 RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- the two things that
 actually draw, both stateless class-side `#drawOn: aRenderer`. This is inlined here rather than
 behind a class-side `MapDrawing class>>#drawBearingLines:on:` entry point because that method
@@ -121,20 +121,11 @@ toView: aView [
 
 			(
 				theodolite MapDrawing
-					worldBoundsFor:	aModel bearingLines
+					renderersFor:	aModel bearingLines
+					canvas:	aCanvas
 			)
 				do:
-				[ :bounds |
-					|
-						renderer
-					|
-
-					renderer :=
-						theodolite MapDrawing
-							lines:	aModel bearingLines
-							bounds:	bounds
-							canvas:	aCanvas.
-
+				[ :renderer |
 					{
 						theodolite Rays.
 						theodolite Markers.

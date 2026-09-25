@@ -4,12 +4,16 @@ self-drawn map (WidgetsTheodoliteMobileLabRudesheim>>#mapArea, an SpAthensPresen
 recorded in NocoDB Sections 項番GM, 2026-09-25): `lines` (the current
 BearingLinesTheodoliteMobileLabRudesheim), `bounds`/`extent`/`scale` (the world-to-canvas-pixel fit
 that must stay fully visible), and `canvas`. Reached as `Rudesheim MobileLab Theodolite MapDrawing`.
-Built and populated directly in SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView:'s
-mapArea `drawBlock:` (there is exactly one caller, so no separate entry-point method exists for
-it), then handed to RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- the two
-things that actually draw, dispatched polymorphically via their shared #draw, per this project's
-'prefer polymorphism over switch/if on kind' convention (~/.claude/CLAUDE.md's Design section)
-rather than being two named methods on one class.
+Built by class-side #renderersFor:canvas: (a 0-or-1-element array of ready-to-use renderers, one
+per fitted bounds -- mirrors #worldBoundsFor:'s own shape so a caller never sees the intermediate
+Rectangle) and consumed directly in SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView:'s
+mapArea `drawBlock:` (there is exactly one caller, so no separate stateless entry-point method
+exists for that wiring either), then handed as a plain argument to
+RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- the two things that
+actually draw, dispatched polymorphically via their shared class-side #drawOn: (both stateless,
+per this project's 'prefer polymorphism over switch/if on kind' and 'put self-free logic on the
+class side' conventions, ~/.claude/CLAUDE.md's Design section) rather than being two named methods
+on one class.
 
 `extent` is not a separate argument anywhere in this chain: it is always derivable from `canvas`
 alone (#defaultExtent reads `canvas surface extent`, which Athens keeps equal to the presenter's
@@ -20,7 +24,8 @@ else can supply (`canvas`, which only exists because Athens itself passes it int
 Instance state exists specifically to stop `bounds`/`extent`/`canvas` (unchanging within one
 redraw) from being threaded as identical arguments through every drawing method (#screenPointFor:
 alone used to take all three, at every call site, before this class existed) -- Rays/Markers read
-them via `self renderer bounds`/etc instead. `scale` and `extent` are both normally left to their
+them off the renderer argument #drawOn: hands them instead. `scale` and `extent` are both normally
+left to their
 lazy defaults (#defaultScale from `bounds`/`extent`; #defaultExtent from `canvas`) --
 #scale:/#extent: exist only so a test can pin either one directly, independently of what it would
 otherwise be derived from.
@@ -57,6 +62,25 @@ canvas: aCanvasAthensCanvas [
 		bounds:	aBoundsRectangle;
 		canvas:	aCanvasAthensCanvas;
 		yourself.
+]
+
+{ #category : 'instance creation' }
+MapDrawingTheodoliteMobileLabRudesheim class >> renderersFor: aLinesBearingLinesTheodoliteMobileLabRudesheim
+canvas: aCanvasAthensCanvas [
+	"0-or-1-element array (mirrors #worldBoundsFor:'s own shape) of ready-to-use renderers -- one
+	per fitted bounds -- so a caller never has to see the intermediate Rectangle at all."
+	^
+	(
+		self
+			worldBoundsFor:	aLinesBearingLinesTheodoliteMobileLabRudesheim
+	)
+		collect:
+		[ :bounds |
+			self
+				lines:	aLinesBearingLinesTheodoliteMobileLabRudesheim
+				bounds:	bounds
+				canvas:	aCanvasAthensCanvas.
+		].
 ]
 
 { #category : 'geometry' }
