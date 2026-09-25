@@ -58,7 +58,7 @@ block: aBlock [
 
 	callback :=
 		FFICallback
-			signature:	#( void #(void #* rcvr #, void #* objCSel #, void #* arg1 #, void #* arg2) )
+			signature:	#(void (void* rcvr, void* objCSel, void* arg1, void* arg2))
 			block:
 			[ :arg1 :arg2 |
 				aBlock
