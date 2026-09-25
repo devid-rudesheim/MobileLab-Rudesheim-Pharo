@@ -41,40 +41,42 @@ RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 
 			direction := each directionPoint - each initialPoint.
 
-			direction = ( 0 @ 0 )
-				ifFalse:
+			( 0 @ 0 ) = direction
+				ifTrue:
 				[
-					farPoint := each initialPoint + ( direction / direction r * rayLength ).
-
-					screenPoints :=
-					{
-						each initialPoint.
-						farPoint
-					}
-						collect:
-						[ :point |
-							self renderer
-								screenPointFor:	point.
-						].
-
-					path :=
-						anAthensCanvas
-							createPath:
-							[ :aBuilder |
-								aBuilder
-									absolute;
-									moveTo:	screenPoints first;
-									lineTo:	screenPoints last.
-							].
-
-					(
-						anAthensCanvas
-							setStrokePaint:	Color gray
-					)
-						width:	1.
-
-					anAthensCanvas
-						drawShape:	path.
+					thisContext return.
 				].
+
+			farPoint := each initialPoint + ( direction / direction r * rayLength ).
+
+			screenPoints :=
+			{
+				each initialPoint.
+				farPoint
+			}
+				collect:
+				[ :point |
+					self renderer
+						screenPointFor:	point.
+				].
+
+			path :=
+				anAthensCanvas
+					createPath:
+					[ :aBuilder |
+						aBuilder
+							absolute;
+							moveTo:	screenPoints first;
+							lineTo:	screenPoints last.
+					].
+
+			(
+				anAthensCanvas
+					setStrokePaint:	Color gray
+			)
+				width:	1.
+
+			anAthensCanvas
+				drawShape:	path.
 		].
 ]
