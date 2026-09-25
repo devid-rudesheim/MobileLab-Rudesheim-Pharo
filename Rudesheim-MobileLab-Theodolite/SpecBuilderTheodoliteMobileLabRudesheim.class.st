@@ -24,13 +24,13 @@ above, not from whatever raw value Spec2-Transmission's port would hand it): it 
 then asks RendererTheodoliteMobileLabRudesheim class>>#renderersFor:canvas: for a 0-or-1-element
 array of ready renderers (it refits the visible bounds -- every origin plus the current
 intersection point -- from scratch on every call, so the block itself never sees an intermediate
-Rectangle) and, for each renderer, builds one RaysTheodoliteMobileLabRudesheim/
-MarkersTheodoliteMobileLabRudesheim per renderer (via their class-side #renderer:, so it outlives
-this one paint call) and sends `aCanvas draw: each` -- AthensCanvas>>#draw:'s own generic
-double-dispatch (`^ anObject drawOnAthensCanvas: self`, already provided by Athens, not something
-this app defines) is exactly why both classes answer #drawOnAthensCanvas:. `aCanvas` itself is not
-kept anywhere longer-lived than that one send, since it is only valid for the duration of Athens'
-own paint callback. This is inlined here rather than behind a class-side
+Rectangle) and, for each renderer, sends `aCanvas draw: (each renderer: renderer)` for both
+RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim classes -- their class-side
+#renderer: builds the instance right there, as `#draw:`'s argument. AthensCanvas>>#draw:'s own
+generic double-dispatch (`^ anObject drawOnAthensCanvas: self`, already provided by Athens, not
+something this app defines) is exactly why both classes answer #drawOnAthensCanvas:. `aCanvas`
+itself is not kept anywhere longer-lived than that one send, since it is only valid for the
+duration of Athens' own paint callback. This is inlined here rather than behind a class-side
 `Renderer class>>#drawBearingLines:on:` entry point because that method (like the
 Renderer-instance-side #draw it used to call, before Rays/Markers existed) had exactly one
 caller -- this block. #addLineButton/
@@ -131,13 +131,17 @@ toView: aView [
 				do:
 				[ :renderer |
 					{
-						theodolite Rays renderer: renderer.
-						theodolite Markers renderer: renderer.
+						theodolite Rays.
+						theodolite Markers.
 					}
 						do:
 						[ :each |
 							aCanvas
-								draw:	each.
+								draw:
+								(
+									each
+										renderer:	renderer
+								).
 						].
 				].
 		].
