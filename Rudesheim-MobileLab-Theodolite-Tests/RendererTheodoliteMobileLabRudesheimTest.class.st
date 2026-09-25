@@ -23,6 +23,14 @@ RendererTheodoliteMobileLabRudesheimTest class >> targetClass [
 	^ Rudesheim MobileLab Theodolite Renderer.
 ]
 
+{ #category : 'accessing' }
+RendererTheodoliteMobileLabRudesheimTest >> defaultBasicTarget [
+	"TShouldntNewRudesheim blocks #new; #basicTarget (BasicRudesheimTest>>#testBasicInstanceCreation0)
+	only needs *a* instance of #targetClass, so a bare #basicNew stands in for the real constructor
+	here -- same escape hatch #rendererWithBounds:extent:scale: below uses."
+	^ self targetClass basicNew.
+]
+
 { #category : 'private' }
 RendererTheodoliteMobileLabRudesheimTest >> bearingFrom: anOrigin
 toward: aTarget [
