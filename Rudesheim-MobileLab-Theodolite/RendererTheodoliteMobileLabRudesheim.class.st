@@ -29,10 +29,19 @@ Split so the geometry is still unit-testable without an actual Athens surface: c
 recorded line's origin plus the current intersection point, if any) and #scaleToFit:inExtent: stay
 pure class-side functions with no Athens dependency. #screenPointFor: needs only #bounds:/#extent:
 (or #bounds:/#scale:) set directly on a bare instance for a test to exercise it.
+
+`lines`/`bounds`/`extent` have no sensible lazy default (unlike `scale`, there is nothing to derive
+them from on a bare instance), so a plain `new` would answer an unusable renderer that raises
+`nil doesNotUnderstand:` on its very first #screenPointFor: -- TShouldntNewRudesheim blocks `new`
+outright instead, and #renderersFor:canvas: (the sole production constructor) uses `super new` to
+get past that guard; a test wanting a bare instance for #screenPointFor: alone does the same via
+`basicNew`.
 "
 Class {
 	#name : 'RendererTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
+	#traits : 'TShouldntNewRudesheim',
+	#classTraits : 'TShouldntNewRudesheim classTrait',
 	#instVars : [
 		'lines',
 		'bounds',
@@ -55,7 +64,7 @@ canvas: aCanvasAthensCanvas [
 	)
 		collect:
 		[ :bounds |
-			self new
+			super new
 				lines:	aLinesBearingLinesTheodoliteMobileLabRudesheim;
 				bounds:	bounds;
 				extent:	aCanvasAthensCanvas surface extent;

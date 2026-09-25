@@ -12,10 +12,18 @@ Each subclass defines only its own #drawOnAthensCanvas: -- the one piece that ac
 between drawing rays and drawing markers -- per this project's 'prefer polymorphism over switch/if
 on kind' convention (~/.claude/CLAUDE.md's Design section): the shape both share belongs on one
 base, and only the behavior that differs stays on the two leaf classes.
+
+`renderer` has no sensible lazy default, so a plain `new` (on this class or either subclass, since
+a composed trait's classSide method is inherited like any other) would answer an unusable instance
+that raises `nil doesNotUnderstand:` on its very first #drawOnAthensCanvas: --
+TShouldntNewRudesheim blocks `new` outright instead, and class-side #renderer: (the sole
+constructor) uses `super new` to get past that guard.
 "
 Class {
 	#name : 'LayerTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
+	#traits : 'TShouldntNewRudesheim',
+	#classTraits : 'TShouldntNewRudesheim classTrait',
 	#instVars : [
 		'renderer'
 	],
@@ -25,7 +33,7 @@ Class {
 
 { #category : 'instance creation' }
 LayerTheodoliteMobileLabRudesheim class >> renderer: aRendererTheodoliteMobileLabRudesheim [
-	^ self new
+	^ super new
 		renderer:	aRendererTheodoliteMobileLabRudesheim;
 		yourself.
 ]

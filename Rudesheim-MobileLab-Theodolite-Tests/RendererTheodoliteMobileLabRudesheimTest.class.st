@@ -51,8 +51,9 @@ extent: aPoint
 scale: aNumber [
 	"A bare instance with only #bounds:/#extent:/#scale: set -- enough for #screenPointFor:, which
 	never touches #lines:. #scale: pins an exact scale independently of #scaleToFit:inExtent:'s own
-	margin math, which has its own test."
-	^ self targetClass new
+	margin math, which has its own test. #basicNew, not #new: TShouldntNewRudesheim blocks #new since
+	#lines:/#bounds:/#extent: have no lazy default outside #renderersFor:canvas:."
+	^ self targetClass basicNew
 		bounds:	aRectangle;
 		extent:	aPoint;
 		scale:	aNumber;
