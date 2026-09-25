@@ -119,12 +119,7 @@ RendererTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheod
 		[ :combine |
 			points
 				inject:	points first
-				into:
-				[ :accumulator :each |
-					combine
-						value:	accumulator
-						value:	each.
-				].
+				into:	combine.
 		].
 
 	minPoint := extremes first.
