@@ -277,8 +277,7 @@ BearingLinesTheodoliteMobileLabRudesheimTest >> testAddReturnsTheArgumentRegardl
 		(
 			lines
 				add:	accepted
-		)
-		== accepted.
+		) == accepted.
 
 	rejected :=
 		GRay
@@ -290,8 +289,7 @@ BearingLinesTheodoliteMobileLabRudesheimTest >> testAddReturnsTheArgumentRegardl
 		(
 			lines
 				add:	rejected
-		)
-		== rejected.
+		) == rejected.
 
 	lines
 		add:
@@ -311,8 +309,7 @@ BearingLinesTheodoliteMobileLabRudesheimTest >> testAddReturnsTheArgumentRegardl
 		(
 			lines
 				add:	atCapacity
-		)
-		== atCapacity.
+		) == atCapacity.
 ]
 
 { #category : 'tests' }
@@ -625,8 +622,7 @@ BearingLinesTheodoliteMobileLabRudesheimTest >> testRemoveLastRemovesTheLastAdde
 		(
 			lines
 				at:	1
-		)
-		== first.
+		) == first.
 ]
 
 { #category : 'tests' }
@@ -645,8 +641,7 @@ BearingLinesTheodoliteMobileLabRudesheimTest >> testWarningAccessorRoundTrip [
 		warning:	holder.
 
 	self
-		assert:	lines warning
-		== holder.
+		assert:	lines warning == holder.
 ]
 
 { #category : 'tests' }
