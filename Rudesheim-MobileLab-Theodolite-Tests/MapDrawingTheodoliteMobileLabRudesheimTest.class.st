@@ -1,10 +1,12 @@
 "
 A MapDrawingTheodoliteMobileLabRudesheimTest tests the pure geometry
 MapDrawingTheodoliteMobileLabRudesheim splits out from its actual Athens canvas calls (NocoDB
-Sections 項番GM): #worldBoundsFor: (the fit-to-bounds requirement -- every origin plus the current
-intersection point must stay in frame), #scaleToFit:inExtent: and
-#screenPointFor:bounds:scale:extent:. The Athens-calling methods (#drawBearingLines:extent:on: and
-friends) are not covered here -- they need a real surface, out of scope for a headless SUnit run.
+Sections 項番GM): class-side #worldBoundsFor: (the fit-to-bounds requirement -- every origin plus
+the current intersection point must stay in frame) and #scaleToFit:inExtent:, plus instance-side
+#screenPointFor: (needs only #bounds:/#extent: set -- it never touches #canvas:/#lines:, so a test
+can build a bare instance for it without a real Athens surface). The Athens-calling instance
+methods (#draw and friends) are not covered here -- they need a real surface, out of scope for a
+headless SUnit run.
 "
 Class {
 	#name : 'MapDrawingTheodoliteMobileLabRudesheimTest',
@@ -62,23 +64,36 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScaleToFitPicksSmallerAxisWith
 		closeTo:	1.7.
 ]
 
+{ #category : 'private' }
+MapDrawingTheodoliteMobileLabRudesheimTest >> rendererWithBounds: aRectangle
+extent: aPoint
+scale: aNumber [
+	"A bare instance with only #bounds:/#extent:/#scale: set -- enough for #screenPointFor:, which
+	never touches #canvas:/#lines:, without needing a real Athens surface. #scale: pins an exact
+	scale independently of #scaleToFit:inExtent:'s own margin math, which has its own test."
+	^ self targetClass new
+		bounds:	aRectangle;
+		extent:	aPoint;
+		scale:	aNumber;
+		yourself.
+]
+
 { #category : 'tests' }
 MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanvasCenter [
 	|
-		bounds
+		renderer
 		screenPoint
 	|
 
-	bounds :=
-		0 @ 0
-			corner:	100 @ 100.
+	renderer :=
+		self
+			rendererWithBounds:	( 0 @ 0 corner: 100 @ 100 )
+			extent:	200 @ 200
+			scale:	2.
 
 	screenPoint :=
-		self targetClass
-			screenPointFor:	50 @ 50
-			bounds:	bounds
-			scale:	2
-			extent:	200 @ 200.
+		renderer
+			screenPointFor:	50 @ 50.
 
 	self
 		assert:	screenPoint
@@ -88,20 +103,19 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanv
 { #category : 'tests' }
 MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForFlipsYSoWorldNorthDrawsUpward [
 	|
-		bounds
+		renderer
 		screenPoint
 	|
 
-	bounds :=
-		0 @ 0
-			corner:	100 @ 100.
+	renderer :=
+		self
+			rendererWithBounds:	( 0 @ 0 corner: 100 @ 100 )
+			extent:	200 @ 200
+			scale:	2.
 
 	screenPoint :=
-		self targetClass
-			screenPointFor:	50 @ 60
-			bounds:	bounds
-			scale:	2
-			extent:	200 @ 200.
+		renderer
+			screenPointFor:	50 @ 60.
 
 	"10 world units north of center (bigger y) must draw with a *smaller* screen y (higher up)."
 	self
