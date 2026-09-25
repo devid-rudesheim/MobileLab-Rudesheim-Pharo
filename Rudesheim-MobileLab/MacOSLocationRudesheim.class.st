@@ -47,22 +47,73 @@ Class {
 	#package : 'Rudesheim-MobileLab'
 }
 
+{ #category : 'private' }
+MacOSLocationRudesheim class >> addDelegateCallbackFor: aSelectorString
+to: aDelegateClass
+using: lib
+block: aBlock [
+	|
+		callback
+	|
+
+	callback :=
+		FFICallback
+			signature:	#( void #(void #* rcvr #, void #* objCSel #, void #* arg1 #, void #* arg2) )
+			block:
+			[ :arg1 :arg2 |
+				aBlock
+					value:	arg1
+					value:	arg2.
+			].
+
+	lib
+		class_addMethodClass:	aDelegateClass
+		selector:
+		(
+			lib
+				lookupSelector:	aSelectorString
+		)
+		implementation:	callback
+		signature:	'v@:@@'.
+
+	^ callback.
+]
+
 { #category : 'accessing' }
 MacOSLocationRudesheim class >> currentLocation [
-	| lib |
+	|
+		lib
+	|
+
 	lib := ObjCLibrary uniqueInstance.
 	pendingLocationDescription := nil.
 
 	lib
-		sendMessage:	(lib lookupSelector: 'requestLocation')
+		sendMessage:
+		(
+			lib
+				lookupSelector:	'requestLocation'
+		)
 		to:	self locationManager.
 
 	self
-		waitUntil:	[ pendingLocationDescription notNil ]
+		waitUntil:
+		[
+			pendingLocationDescription notNil.
+		]
 		timeoutSeconds:	25.
 
-	( pendingLocationDescription isNil or: [ pendingLocationDescription isEmpty ] )
-		ifTrue:	[ ^ self signalLocationUnavailable ].
+	(
+		pendingLocationDescription isNil
+			or:
+			[
+				pendingLocationDescription isEmpty.
+			]
+	)
+		ifTrue:
+		[
+			^ self signalLocationUnavailable.
+		].
 
 	^ Rudesheim MobileLab Location CoordinateParser
 		parseCLLocationDescription:	pendingLocationDescription.
@@ -70,71 +121,72 @@ MacOSLocationRudesheim class >> currentLocation [
 
 { #category : 'accessing' }
 MacOSLocationRudesheim class >> currentNormalizedBearing [
-	| lib |
+	|
+		lib
+	|
+
 	lib := ObjCLibrary uniqueInstance.
 	pendingHeadingDegrees := nil.
 
 	lib
-		sendMessage:	(lib lookupSelector: 'startUpdatingHeading')
+		sendMessage:
+		(
+			lib
+				lookupSelector:	'startUpdatingHeading'
+		)
 		to:	self locationManager.
 
 	self
-		waitUntil:	[ pendingHeadingDegrees notNil ]
+		waitUntil:
+		[
+			pendingHeadingDegrees notNil.
+		]
 		timeoutSeconds:	25.
 
 	lib
-		sendMessage:	(lib lookupSelector: 'stopUpdatingHeading')
+		sendMessage:
+		(
+			lib
+				lookupSelector:	'stopUpdatingHeading'
+		)
 		to:	self locationManager.
 
-	pendingHeadingDegrees ifNil: [ ^ self signalLocationUnavailable ].
+	pendingHeadingDegrees
+		ifNil:
+		[
+			^ self signalLocationUnavailable.
+		].
 
-	^ Rudesheim Utility Normalizer Angle Degree normalizeAngle: pendingHeadingDegrees.
-]
-
-{ #category : 'private' }
-MacOSLocationRudesheim class >> locationManager [
-	^ locationManager ifNil: [ locationManager := self defaultLocationManager ].
-]
-
-{ #category : 'private' }
-MacOSLocationRudesheim class >> defaultLocationManager [
-	| lib manager |
-	lib := ObjCLibrary uniqueInstance.
-
-	manager := lib sendMessage: (lib lookupSelector: 'alloc') to: (lib lookupClass: 'CLLocationManager').
-	manager := lib sendMessage: (lib lookupSelector: 'init') to: manager.
-
-	lib
-		sendMessage:	(lib lookupSelector: 'setDelegate:')
-		to:	manager
-		with:	self locationDelegate.
-
-	lib
-		sendMessage:	(lib lookupSelector: 'requestWhenInUseAuthorization')
-		to:	manager.
-
-	^ manager.
-]
-
-{ #category : 'private' }
-MacOSLocationRudesheim class >> locationDelegate [
-	^ locationDelegate ifNil: [ locationDelegate := self defaultLocationDelegate ].
+	^ Rudesheim Utility Normalizer Angle Degree
+		normalizeAngle:	pendingHeadingDegrees.
 ]
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> defaultLocationDelegate [
-	| lib delegateClass instance |
-	(DynamicLoader forCurrentPlatform)
+	|
+		lib
+		delegateClass
+		instance
+	|
+
+	DynamicLoader forCurrentPlatform
 		loadLibrary:	'/System/Library/Frameworks/CoreLocation.framework/CoreLocation'
 		flag:	2.
 
 	lib := ObjCLibrary uniqueInstance.
-	delegateClass := lib
-		objc_allocateClassPairSuperclass:	(lib lookupClass: 'NSObject')
-		name:	'RudesheimMobileLabLocationDelegate'
-		extraBytes:	0.
+
+	delegateClass :=
+		lib
+			objc_allocateClassPairSuperclass:
+			(
+				lib
+					lookupClass:	'NSObject'
+			)
+			name:	'RudesheimMobileLabLocationDelegate'
+			extraBytes:	0.
 
 	delegateCallbacks := OrderedCollection new.
+
 	delegateCallbacks
 		add:
 		(
@@ -142,7 +194,12 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 				addDelegateCallbackFor:	'locationManager:didUpdateLocations:'
 				to:	delegateClass
 				using:	lib
-				block:	[ :managerArg :locationsArg | self recordUpdatedLocations: locationsArg using: lib ]
+				block:
+				[ :managerArg :locationsArg |
+					self
+						recordUpdatedLocations:	locationsArg
+						using:	lib.
+				]
 		);
 		add:
 		(
@@ -150,7 +207,10 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 				addDelegateCallbackFor:	'locationManager:didFailWithError:'
 				to:	delegateClass
 				using:	lib
-				block:	[ :managerArg :errorArg | pendingLocationDescription := '' ]
+				block:
+				[ :managerArg :errorArg |
+					pendingLocationDescription := ''.
+				]
 		);
 		add:
 		(
@@ -158,70 +218,201 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 				addDelegateCallbackFor:	'locationManager:didUpdateHeading:'
 				to:	delegateClass
 				using:	lib
-				block:	[ :managerArg :headingArg | self recordUpdatedHeading: headingArg using: lib ]
+				block:
+				[ :managerArg :headingArg |
+					self
+						recordUpdatedHeading:	headingArg
+						using:	lib.
+				]
 		).
 
-	lib objc_registerClassPair: delegateClass.
+	lib
+		objc_registerClassPair:	delegateClass.
 
-	instance := lib sendMessage: (lib lookupSelector: 'alloc') to: delegateClass.
-	instance := lib sendMessage: (lib lookupSelector: 'init') to: instance.
+	instance :=
+		lib
+			sendMessage:
+			(
+				lib
+					lookupSelector:	'alloc'
+			)
+			to:	delegateClass.
+
+	instance :=
+		lib
+			sendMessage:
+			(
+				lib
+					lookupSelector:	'init'
+			)
+			to:	instance.
+
 	^ instance.
 ]
 
 { #category : 'private' }
-MacOSLocationRudesheim class >> addDelegateCallbackFor: aSelectorString to: aDelegateClass using: lib block: aBlock [
-	| callback |
-	callback := FFICallback
-		signature:	#(void (void* rcvr, void* objCSel, void* arg1, void* arg2))
-		block:	[ :arg1 :arg2 | aBlock value: arg1 value: arg2 ].
+MacOSLocationRudesheim class >> defaultLocationManager [
+	|
+		lib
+		manager
+	|
+
+	lib := ObjCLibrary uniqueInstance.
+
+	manager :=
+		lib
+			sendMessage:
+			(
+				lib
+					lookupSelector:	'alloc'
+			)
+			to:
+			(
+				lib
+					lookupClass:	'CLLocationManager'
+			).
+
+	manager :=
+		lib
+			sendMessage:
+			(
+				lib
+					lookupSelector:	'init'
+			)
+			to:	manager.
 
 	lib
-		class_addMethodClass:	aDelegateClass
-		selector:	(lib lookupSelector: aSelectorString)
-		implementation:	callback
-		signature:	'v@:@@'.
+		sendMessage:
+		(
+			lib
+				lookupSelector:	'setDelegate:'
+		)
+		to:	manager
+		with:	self locationDelegate.
 
-	^ callback.
+	lib
+		sendMessage:
+		(
+			lib
+				lookupSelector:	'requestWhenInUseAuthorization'
+		)
+		to:	manager.
+
+	^ manager.
 ]
 
 { #category : 'private' }
-MacOSLocationRudesheim class >> recordUpdatedLocations: locationsArg using: lib [
-	| firstLocation description |
-	firstLocation := lib sendMessage: (lib lookupSelector: 'firstObject') to: locationsArg.
-	description := self
-		nsStringToString:	(lib sendMessage: (lib lookupSelector: 'description') to: firstLocation)
-		using:	lib.
-	pendingLocationDescription := description.
+MacOSLocationRudesheim class >> locationDelegate [
+	^ locationDelegate
+		ifNil:
+		[
+			locationDelegate := self defaultLocationDelegate.
+		].
 ]
 
 { #category : 'private' }
-MacOSLocationRudesheim class >> recordUpdatedHeading: headingArg using: lib [
-	pendingHeadingDegrees := lib
-		sendDoubleMessage:	(lib lookupSelector: 'trueHeading')
-		to:	headingArg.
+MacOSLocationRudesheim class >> locationManager [
+	^ locationManager
+		ifNil:
+		[
+			locationManager := self defaultLocationManager.
+		].
 ]
 
 { #category : 'private' }
-MacOSLocationRudesheim class >> nsStringToString: nsString using: lib [
-	| cString |
-	cString := lib sendMessage: (lib lookupSelector: 'UTF8String') to: nsString.
+MacOSLocationRudesheim class >> nsStringToString: nsString
+using: lib [
+	|
+		cString
+	|
+
+	cString :=
+		lib
+			sendMessage:
+			(
+				lib
+					lookupSelector:	'UTF8String'
+			)
+			to:	nsString.
+
 	^ cString utf8StringFromCString.
 ]
 
 { #category : 'private' }
-MacOSLocationRudesheim class >> waitUntil: aBlock timeoutSeconds: aNumberOfSeconds [
-	| remainingSeconds |
-	remainingSeconds := aNumberOfSeconds.
-	[ aBlock value or: [ 0 >= remainingSeconds ] ]
-		whileFalse:
-		[
-			(Delay forSeconds: 1) wait.
-			remainingSeconds := remainingSeconds - 1.
-		].
+MacOSLocationRudesheim class >> recordUpdatedHeading: headingArg
+using: lib [
+	pendingHeadingDegrees :=
+		lib
+			sendDoubleMessage:
+			(
+				lib
+					lookupSelector:	'trueHeading'
+			)
+			to:	headingArg.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> recordUpdatedLocations: locationsArg
+using: lib [
+	|
+		firstLocation
+		description
+	|
+
+	firstLocation :=
+		lib
+			sendMessage:
+			(
+				lib
+					lookupSelector:	'firstObject'
+			)
+			to:	locationsArg.
+
+	description :=
+		self
+			nsStringToString:
+			(
+				lib
+					sendMessage:
+					(
+						lib
+							lookupSelector:	'description'
+					)
+					to:	firstLocation
+			)
+			using:	lib.
+
+	pendingLocationDescription := description.
 ]
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> signalLocationUnavailable [
 	^ self
 		error:	'CoreLocation authorization was not granted -- macOS only shows the permission dialog to a process running from a proper .app bundle with an Info.plist NSLocationWhenInUseUsageDescription entry, which this headless Pharo process is not (see note/pharo-ops.md section 41).'.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> waitUntil: aBlock
+timeoutSeconds: aNumberOfSeconds [
+	|
+		remainingSeconds
+	|
+
+	remainingSeconds := aNumberOfSeconds.
+	[
+		aBlock value
+			or:
+			[
+				0 >= remainingSeconds.
+			].
+	]
+		whileFalse:
+		[
+			(
+				Delay
+					forSeconds:	1
+			) wait.
+
+			remainingSeconds := remainingSeconds - 1.
+		].
 ]

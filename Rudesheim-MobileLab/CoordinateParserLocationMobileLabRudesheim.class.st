@@ -18,19 +18,49 @@ Class {
 
 { #category : 'parsing' }
 CoordinateParserLocationMobileLabRudesheim class >> parseCLLocationDescription: aString [
-	| stream latitudeString longitudeString |
-	stream := aString readStream.
-	stream upTo: $<.
-	latitudeString := stream upTo: $,.
-	longitudeString := stream upTo: $>.
+	|
+		stream
+		latitudeString
+		longitudeString
+	|
 
-	^ ( self signedNumberFrom: longitudeString ) , ( self signedNumberFrom: latitudeString ).
+	stream := aString readStream.
+
+	stream
+		upTo:	$<.
+
+	latitudeString :=
+		stream
+			upTo:	$,.
+
+	longitudeString :=
+		stream
+			upTo:	$>.
+
+	^
+	(
+		self
+			signedNumberFrom:	longitudeString
+	) ,
+	(
+		self
+			signedNumberFrom:	latitudeString
+	).
 ]
 
 { #category : 'private' }
 CoordinateParserLocationMobileLabRudesheim class >> signedNumberFrom: aNumberString [
-	| digits |
+	|
+		digits
+	|
+
 	digits := aNumberString.
-	$+ = aNumberString first ifTrue: [ digits := aNumberString allButFirst ].
+
+	$+ = aNumberString first
+		ifTrue:
+		[
+			digits := aNumberString allButFirst.
+		].
+
 	^ digits asNumber.
 ]

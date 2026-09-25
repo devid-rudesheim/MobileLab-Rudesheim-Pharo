@@ -17,7 +17,11 @@ normalizedBearing: aNumber [
 		angle
 	|
 
-	angle := ( Rudesheim Utility Normalizer Angle Degree denormalizeAngle: aNumber ) degrees.
+	angle :=
+	(
+		Rudesheim Utility Normalizer Angle Degree
+			denormalizeAngle:	aNumber
+	) degrees.
 
 	^ self
 		origin:	aGPoint
