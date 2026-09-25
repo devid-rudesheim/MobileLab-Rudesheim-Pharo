@@ -1,18 +1,8 @@
 "
 A RaysTheodoliteMobileLabRudesheim draws Theodolite's recorded bearing lines as rays on the map
-(NocoDB Sections 項番GM), one of the two things dispatched to polymorphically alongside
-MarkersTheodoliteMobileLabRudesheim -- `{ Rays renderer: r. Markers renderer: r } do: [ :each |
-aCanvas draw: each ]`, via AthensCanvas>>#draw:'s own generic double-dispatch
-(`^ anObject drawOnAthensCanvas: self`, provided by Athens itself, not defined here) -- both
-answering the same #drawOnAthensCanvas: that convention expects, per this project's 'prefer
-polymorphism over switch/if on kind' convention (~/.claude/CLAUDE.md's Design section) as well as
-Athens' own. Reached as `Rudesheim MobileLab Theodolite Rays`.
-
-`renderer` (a RendererTheodoliteMobileLabRudesheim, one redraw's shared `lines`/`bounds`/`extent`/
-`scale`/#screenPointFor: context) is set once at construction, via the class-side #renderer:
-convenience -- it outlives a single #drawOnAthensCanvas: call, unlike `canvas`, which only exists
-for the duration of Athens' own paint callback and is passed as a plain argument to
-#drawOnAthensCanvas: instead.
+(NocoDB Sections 項番GM), one of the two LayerTheodoliteMobileLabRudesheim subclasses dispatched to
+polymorphically alongside MarkersTheodoliteMobileLabRudesheim -- see that base class's comment for
+`renderer`/#drawOnAthensCanvas:'s shared shape. Reached as `Rudesheim MobileLab Theodolite Rays`.
 
 Each recorded line is drawn as a ray from its origin far enough to cross the fitted frame (a
 multiple of the frame's own diagonal, not a fixed world length, since real GPS-scale coordinates
@@ -22,20 +12,10 @@ thin-design convention (NocoDB Sections 項番FM/GM).
 "
 Class {
 	#name : 'RaysTheodoliteMobileLabRudesheim',
-	#superclass : 'Object',
-	#instVars : [
-		'renderer'
-	],
+	#superclass : 'LayerTheodoliteMobileLabRudesheim',
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
-
-{ #category : 'instance creation' }
-RaysTheodoliteMobileLabRudesheim class >> renderer: aRendererTheodoliteMobileLabRudesheim [
-	^ self new
-		renderer:	aRendererTheodoliteMobileLabRudesheim;
-		yourself.
-]
 
 { #category : 'drawing' }
 RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
@@ -97,14 +77,4 @@ RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 						drawShape:	path.
 				].
 		].
-]
-
-{ #category : 'accessing' }
-RaysTheodoliteMobileLabRudesheim >> renderer [
-	^ renderer.
-]
-
-{ #category : 'accessing' }
-RaysTheodoliteMobileLabRudesheim >> renderer: aRendererTheodoliteMobileLabRudesheim [
-	renderer := aRendererTheodoliteMobileLabRudesheim assertNotNilRudesheim.
 ]

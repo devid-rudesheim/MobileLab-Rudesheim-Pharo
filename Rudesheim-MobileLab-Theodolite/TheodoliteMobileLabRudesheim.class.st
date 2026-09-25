@@ -27,6 +27,11 @@ TheodoliteMobileLabRudesheim class >> LaunchRequested [
 ]
 
 { #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> Layer [
+	^ LayerTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> Markers [
 	^ MarkersTheodoliteMobileLabRudesheim.
 ]
