@@ -236,10 +236,9 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 	computed from it."
 	|
 		points
-		minX
-		maxX
-		minY
-		maxY
+		minPoint
+		maxPoint
+		padding
 	|
 
 	points :=
@@ -257,55 +256,35 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 			^ nil.
 		].
 
-	minX :=
-	(
+	minPoint :=
 		points
-			collect:
-			[ :each |
-				each x.
-			]
-	) min.
+			inject:	points first
+			into:
+			[ :min :each |
+				min min: each.
+			].
 
-	maxX :=
-	(
+	maxPoint :=
 		points
-			collect:
-			[ :each |
-				each x.
-			]
-	) max.
+			inject:	points first
+			into:
+			[ :max :each |
+				max max: each.
+			].
 
-	minY :=
-	(
-		points
-			collect:
-			[ :each |
-				each y.
-			]
-	) min.
+	"A degenerate (zero-width and/or zero-height) box -- one point, or several
+	exactly-coincident points -- is padded per axis to a minimum span so a scale can always be
+	computed from it; #min:/#max: above are already componentwise (Point's own comment), so only
+	the padding threshold itself still has to look at x and y separately."
+	padding :=
+		( ( maxPoint x - minPoint x ) < 0.0001
+			ifTrue:	[ 0.0005 ]
+			ifFalse:	[ 0 ] )
+			@
+			( ( maxPoint y - minPoint y ) < 0.0001
+				ifTrue:	[ 0.0005 ]
+				ifFalse:	[ 0 ] ).
 
-	maxY :=
-	(
-		points
-			collect:
-			[ :each |
-				each y.
-			]
-	) max.
-
-	( maxX - minX ) < 0.0001
-		ifTrue:
-		[
-			minX := minX - 0.0005.
-			maxX := maxX + 0.0005.
-		].
-	( maxY - minY ) < 0.0001
-		ifTrue:
-		[
-			minY := minY - 0.0005.
-			maxY := maxY + 0.0005.
-		].
-
-	^ minX @ minY
-		corner:	maxX @ maxY.
+	^ ( minPoint - padding )
+		corner:	( maxPoint + padding ).
 ]
