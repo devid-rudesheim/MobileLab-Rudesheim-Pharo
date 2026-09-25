@@ -44,17 +44,6 @@ Class {
 }
 
 { #category : 'instance creation' }
-RendererTheodoliteMobileLabRudesheim class >> lines: aLinesBearingLinesTheodoliteMobileLabRudesheim
-bounds: aBoundsRectangle
-extent: anExtentPoint [
-	^ self new
-		lines:	aLinesBearingLinesTheodoliteMobileLabRudesheim;
-		bounds:	aBoundsRectangle;
-		extent:	anExtentPoint;
-		yourself.
-]
-
-{ #category : 'instance creation' }
 RendererTheodoliteMobileLabRudesheim class >> renderersFor: aLinesBearingLinesTheodoliteMobileLabRudesheim
 canvas: aCanvasAthensCanvas [
 	"0-or-1-element array (mirrors #worldBoundsFor:'s own shape) of ready-to-use renderers -- one
@@ -66,10 +55,11 @@ canvas: aCanvasAthensCanvas [
 	)
 		collect:
 		[ :bounds |
-			self
-				lines:	aLinesBearingLinesTheodoliteMobileLabRudesheim
-				bounds:	bounds
-				extent:	aCanvasAthensCanvas surface extent.
+			self new
+				lines:	aLinesBearingLinesTheodoliteMobileLabRudesheim;
+				bounds:	bounds;
+				extent:	aCanvasAthensCanvas surface extent;
+				yourself.
 		].
 ]
 

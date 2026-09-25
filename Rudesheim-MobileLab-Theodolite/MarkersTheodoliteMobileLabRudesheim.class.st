@@ -34,29 +34,14 @@ MarkersTheodoliteMobileLabRudesheim class >> renderer: aRendererTheodoliteMobile
 		yourself.
 ]
 
-{ #category : 'private' }
-MarkersTheodoliteMobileLabRudesheim >> drawMarker: aPointPoint
-color: aColorColor
-on: anAthensCanvas [
+{ #category : 'drawing' }
+MarkersTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 	|
 		radius
 	|
 
 	radius := 4.
 
-	anAthensCanvas
-		setPaint:	aColorColor.
-
-	anAthensCanvas
-		drawShape:
-		(
-			aPointPoint - radius
-				corner:	aPointPoint + radius
-		).
-]
-
-{ #category : 'drawing' }
-MarkersTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 	{
 		{
 			self renderer lines asArray
@@ -73,14 +58,23 @@ MarkersTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 			pair first
 				do:
 				[ :each |
-					self
-						drawMarker:
+					|
+						screenPoint
+					|
+
+					screenPoint :=
+						self renderer
+							screenPointFor:	each.
+
+					anAthensCanvas
+						setPaint:	pair last.
+
+					anAthensCanvas
+						drawShape:
 						(
-							self renderer
-								screenPointFor:	each
-						)
-						color:	pair last
-						on:	anAthensCanvas.
+							screenPoint - radius
+								corner:	screenPoint + radius
+						).
 				].
 		].
 ]
