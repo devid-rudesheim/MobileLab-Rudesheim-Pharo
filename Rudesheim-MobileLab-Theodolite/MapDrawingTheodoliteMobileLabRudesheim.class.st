@@ -261,7 +261,8 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 			inject:	points first
 			into:
 			[ :min :each |
-				min min: each.
+				min
+					min:	each.
 			].
 
 	maxPoint :=
@@ -269,7 +270,8 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 			inject:	points first
 			into:
 			[ :max :each |
-				max max: each.
+				max
+					max:	each.
 			].
 
 	"A degenerate (zero-width and/or zero-height) box -- one point, or several
@@ -277,14 +279,29 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 	computed from it; #min:/#max: above are already componentwise (Point's own comment), so only
 	the padding threshold itself still has to look at x and y separately."
 	padding :=
-		( ( maxPoint x - minPoint x ) < 0.0001
-			ifTrue:	[ 0.0005 ]
-			ifFalse:	[ 0 ] )
-			@
-			( ( maxPoint y - minPoint y ) < 0.0001
-				ifTrue:	[ 0.0005 ]
-				ifFalse:	[ 0 ] ).
+	(
+		( maxPoint x - minPoint x ) < 0.0001
+			ifTrue:
+			[
+				0.0005.
+			]
+			ifFalse:
+			[
+				0.
+			]
+	) @
+	(
+		( maxPoint y - minPoint y ) < 0.0001
+			ifTrue:
+			[
+				0.0005.
+			]
+			ifFalse:
+			[
+				0.
+			]
+	).
 
-	^ ( minPoint - padding )
-		corner:	( maxPoint + padding ).
+	^ minPoint - padding
+		corner:	maxPoint + padding.
 ]
