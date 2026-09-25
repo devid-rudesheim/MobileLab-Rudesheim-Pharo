@@ -26,6 +26,12 @@ section 7.3 (NocoDB Sections 項番FM):
   #value:` on its very first #add:. #warning: still overrides the default when the owning Model
   supplies its own shared holder, as it always does today.
 
+Reads that CollectionValueHolder does not implement directly (#asArray/#allSatisfy:/#isEmpty --
+only reachable at runtime via its #doesNotUnderstand: forwarding to `value`, the wrapped
+OrderedCollection) go through `self value` explicitly instead of bare `self`, so the browser does
+not flag them as possibly-not-understood; #add:/#removeLast/#size/#warning are real methods here
+(declared on this class or CollectionValueHolder itself), so those stay as plain `self` sends.
+
 #push/#pop are the view-facing stack-style entry points action blocks actually call: #push reads
 the current position/heading from `Smalltalk os rudesheim location currentRay` (Rudesheim-MobileLab's
 OS-dispatch mechanism) and passes it through #add:; #pop is a plain alias for #removeLast. A caller
@@ -61,7 +67,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aGRay [
 		].
 
 	(
-		self
+		self value
 			allSatisfy:
 			[ :existing |
 				(
@@ -107,7 +113,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 		average
 	|
 
-	lines := self asArray.
+	lines := self value asArray.
 	points := OrderedCollection new.
 
 	1
@@ -194,7 +200,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> removeLast [
 		result
 	|
 
-	self isEmpty
+	self value isEmpty
 		ifTrue:
 		[
 			^ self.
