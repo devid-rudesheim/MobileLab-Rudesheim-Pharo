@@ -2,19 +2,24 @@
 A MapDrawingTheodoliteMobileLabRudesheim renders Theodolite's self-drawn map
 (WidgetsTheodoliteMobileLabRudesheim>>#mapArea, an SpAthensPresenter -- decision recorded in
 NocoDB Sections 項番GM, 2026-09-25) from the current BearingLinesTheodoliteMobileLabRudesheim.
-Reached as `Rudesheim MobileLab Theodolite MapDrawing`. Class-side #drawBearingLines:extent:on: is
-the stateless entry point wired from SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView:
-as the mapArea's `drawBlock:`, re-invoked on every redraw the add/remove/discard action blocks
+Reached as `Rudesheim MobileLab Theodolite MapDrawing`. Class-side #drawBearingLines:on: is the
+stateless entry point wired from SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: as
+the mapArea's `drawBlock:`, re-invoked on every redraw the add/remove/discard action blocks
 trigger; it always clears the canvas first (even with nothing to fit, so discarding the last line
 blanks the map), then, for each fitted bounds, builds one instance -- an object identical for a
-single redraw's worth of `lines`/`bounds`/`extent`/`canvas` -- and sends it #draw.
+single redraw's worth of `lines`/`bounds`/`extent`/`canvas` -- and sends it #draw. `extent` is not
+a separate argument anywhere in this chain: it is always derivable from `canvas` alone
+(#defaultExtent reads `canvas surface extent`, which Athens keeps equal to the presenter's own
+`surfaceExtent`, per SpAthensPresenter>>#surfaceExtent:'s comment), so the only two things that
+must actually be handed in from outside are the domain data (`lines`) and the one thing nothing
+else can supply (`canvas`, which only exists because Athens itself passes it into `drawBlock:`).
 
 Instance state exists specifically to stop `bounds`/`extent`/`canvas` (unchanging within one
 redraw) from being threaded as identical arguments through every drawing method (#screenPointFor:
 alone used to take all three, at every call site); each drawing method now reads them via `self`
-instead. `scale` is normally left to its lazy default, derived from `bounds`/`extent`
-(#defaultScale) -- #scale: exists only so a test can pin an exact scale independently of
-#scaleToFit:inExtent:'s own (separately tested) margin math.
+instead. `scale` and `extent` are both normally left to their lazy defaults (#defaultScale from
+`bounds`/`extent`; #defaultExtent from `canvas`) -- #scale:/#extent: exist only so a test can pin
+either one directly, independently of what it would otherwise be derived from.
 
 Split so the geometry is still unit-testable without an actual Athens surface: class-side
 #worldBoundsFor: (a 0-or-1-element array, never nil per the project's no-nil convention --
@@ -22,8 +27,8 @@ Split so the geometry is still unit-testable without an actual Athens surface: c
 recorded line's origin plus the current intersection point, if any) and #scaleToFit:inExtent: stay
 pure class-side functions with no Athens dependency. #screenPointFor: became instance-side (it
 needs `bounds`/`extent`/`scale` together, exactly the duplication being removed), but a test can
-still construct a bare instance and set only #bounds:/#extent: on it -- #screenPointFor: never
-touches `canvas`/`lines`, so those can stay unset for a pure-geometry test.
+still construct a bare instance and set #bounds:/#extent: (or #bounds:/#scale:) directly on it --
+#screenPointFor: never touches `canvas`/`lines`, so those can stay unset for a pure-geometry test.
 
 Each recorded line is drawn as a ray from its origin far enough to cross the fitted frame (a
 multiple of the frame's own diagonal, not a fixed world length, since real GPS-scale coordinates
@@ -49,19 +54,16 @@ Class {
 { #category : 'instance creation' }
 MapDrawingTheodoliteMobileLabRudesheim class >> lines: aLinesBearingLinesTheodoliteMobileLabRudesheim
 bounds: aBoundsRectangle
-extent: anExtentPoint
 canvas: aCanvasAthensCanvas [
 	^ self new
 		lines:	aLinesBearingLinesTheodoliteMobileLabRudesheim;
 		bounds:	aBoundsRectangle;
-		extent:	anExtentPoint;
 		canvas:	aCanvasAthensCanvas;
 		yourself.
 ]
 
 { #category : 'drawing' }
 MapDrawingTheodoliteMobileLabRudesheim class >> drawBearingLines: aLinesBearingLinesTheodoliteMobileLabRudesheim
-extent: anExtentPoint
 on: aCanvasAthensCanvas [
 	aCanvasAthensCanvas surface clear.
 
@@ -75,7 +77,6 @@ on: aCanvasAthensCanvas [
 				self
 					lines:	aLinesBearingLinesTheodoliteMobileLabRudesheim
 					bounds:	bounds
-					extent:	anExtentPoint
 					canvas:	aCanvasAthensCanvas
 			) draw.
 		].
@@ -206,6 +207,11 @@ MapDrawingTheodoliteMobileLabRudesheim >> canvas: anAthensCanvas [
 ]
 
 { #category : 'private' }
+MapDrawingTheodoliteMobileLabRudesheim >> defaultExtent [
+	^ self canvas surface extent.
+]
+
+{ #category : 'private' }
 MapDrawingTheodoliteMobileLabRudesheim >> defaultScale [
 	^ self class
 		scaleToFit:	self bounds
@@ -331,7 +337,11 @@ MapDrawingTheodoliteMobileLabRudesheim >> drawRays [
 
 { #category : 'accessing' }
 MapDrawingTheodoliteMobileLabRudesheim >> extent [
-	^ extent.
+	^ extent
+		ifNil:
+		[
+			extent := self defaultExtent.
+		].
 ]
 
 { #category : 'accessing' }

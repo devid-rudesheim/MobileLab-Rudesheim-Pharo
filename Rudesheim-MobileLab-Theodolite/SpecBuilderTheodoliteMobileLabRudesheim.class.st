@@ -106,7 +106,6 @@ toView: aView [
 		[ :aCanvas |
 			Rudesheim MobileLab Theodolite MapDrawing
 				drawBearingLines:	aModel bearingLines
-				extent:	aView mapArea surfaceExtent
 				on:	aCanvas.
 		].
 
