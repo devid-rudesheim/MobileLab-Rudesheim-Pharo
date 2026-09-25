@@ -20,12 +20,18 @@ mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a 
 #launch -- see OSLauncherRudesheim's comment for why that dispatch lives there instead.
 
 #mapArea's drawBlock: re-renders from `aModel bearingLines` directly (like the transform blocks
-above, not from whatever raw value Spec2-Transmission's port would hand it), via
-MapDrawingTheodoliteMobileLabRudesheim -- which refits the visible bounds (every origin plus the
-current intersection point) from scratch on every call. #addLineButton/#removeLineButton/
-#discardButton each explicitly send #redraw after mutating `aModel bearingLines`, so every 'Add
-line' press (and every remove/discard) refits and repaints the map; #openButton/#copyButton do not
-mutate the lines, so they do not redraw.
+above, not from whatever raw value Spec2-Transmission's port would hand it): it clears the canvas,
+refits the visible bounds (every origin plus the current intersection point,
+MapDrawingTheodoliteMobileLabRudesheim class>>#worldBoundsFor:) from scratch on every call, and,
+for each fitted bounds, builds one MapDrawingTheodoliteMobileLabRudesheim (the shared
+`lines`/`bounds`/`extent`/`canvas`/`scale` context) and dispatches to
+RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- the two things that
+actually draw, via their shared #draw. This is inlined here rather than behind a class-side
+`MapDrawing class>>#drawBearingLines:on:` entry point because that method (like the
+MapDrawing-instance-side #draw it called) had exactly one caller -- this block. #addLineButton/
+#removeLineButton/#discardButton each explicitly send #redraw after mutating `aModel bearingLines`,
+so every 'Add line' press (and every remove/discard) refits and repaints the map; #openButton/
+#copyButton do not mutate the lines, so they do not redraw.
 "
 Class {
 	#name : 'SpecBuilderTheodoliteMobileLabRudesheim',
@@ -104,9 +110,39 @@ toView: aView [
 	aView mapArea
 		drawBlock:
 		[ :aCanvas |
-			Rudesheim MobileLab Theodolite MapDrawing
-				drawBearingLines:	aModel bearingLines
-				on:	aCanvas.
+			|
+				theodolite
+			|
+
+			theodolite := Rudesheim MobileLab Theodolite.
+
+			aCanvas surface clear.
+
+			(
+				theodolite MapDrawing
+					worldBoundsFor:	aModel bearingLines
+			)
+				do:
+				[ :bounds |
+					|
+						renderer
+					|
+
+					renderer :=
+						theodolite MapDrawing
+							lines:	aModel bearingLines
+							bounds:	bounds
+							canvas:	aCanvas.
+
+					{
+						theodolite Rays renderer: renderer.
+						theodolite Markers renderer: renderer.
+					}
+						do:
+						[ :each |
+							each draw.
+						].
+				].
 		].
 
 	aView addLineButton

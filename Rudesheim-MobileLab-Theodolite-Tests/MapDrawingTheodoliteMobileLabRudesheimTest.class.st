@@ -4,9 +4,10 @@ MapDrawingTheodoliteMobileLabRudesheim splits out from its actual Athens canvas 
 Sections 項番GM): class-side #worldBoundsFor: (the fit-to-bounds requirement -- every origin plus
 the current intersection point must stay in frame) and #scaleToFit:inExtent:, plus instance-side
 #screenPointFor: (needs only #bounds:/#extent: set -- it never touches #canvas:/#lines:, so a test
-can build a bare instance for it without a real Athens surface). The Athens-calling instance
-methods (#draw and friends) are not covered here -- they need a real surface, out of scope for a
-headless SUnit run.
+can build a bare instance for it without a real Athens surface). The actual Athens-calling drawing
+now lives on RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- their own
+#draw needs a real surface, out of scope for a headless SUnit run (see those classes' own test
+classes for what they do cover: just the #renderer/#renderer: accessor contract).
 "
 Class {
 	#name : 'MapDrawingTheodoliteMobileLabRudesheimTest',
