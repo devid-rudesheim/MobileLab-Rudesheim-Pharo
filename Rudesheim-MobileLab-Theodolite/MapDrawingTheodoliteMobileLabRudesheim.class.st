@@ -7,10 +7,11 @@ Wired from SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: as the ma
 `drawBlock:`, and re-invoked on every redraw the add/remove/discard action blocks trigger.
 
 Split so the geometry is unit-testable without an actual Athens surface:
-- #worldBoundsFor: answers the Rectangle (world coordinates) that must stay fully visible -- every
-  recorded line's origin plus the current intersection point, if any (this is exactly the
+- #worldBoundsFor: answers a 0-or-1-element array (never nil, per the project's no-nil convention
+  -- ~/.claude/CLAUDE.md's Design section) holding the Rectangle that must stay fully visible --
+  every recorded line's origin plus the current intersection point, if any (this is exactly the
   requirement: every 'Add line' press must refit the view so all origins and the intersection stay
-  in frame). nil when there is nothing to fit yet.
+  in frame). Empty when there is nothing to fit yet.
 - #scaleToFit:inExtent: and #screenPointFor:bounds:scale:extent: are pure world-to-canvas-pixel
   math (uniform scale with a 15% margin, Y flipped so world north/+y draws upward) -- no Athens
   dependency, so a test can assert exact Points/scales from known inputs.
@@ -35,65 +36,58 @@ Class {
 MapDrawingTheodoliteMobileLabRudesheim class >> drawBearingLines: aLinesBearingLinesTheodoliteMobileLabRudesheim
 extent: anExtentPoint
 on: aCanvasAthensCanvas [
-	|
-		bounds
-		scale
-	|
-
 	aCanvasAthensCanvas surface clear.
 
-	bounds :=
+	(
 		self
-			worldBoundsFor:	aLinesBearingLinesTheodoliteMobileLabRudesheim.
-
-	bounds
-		ifNil:
-		[
-			^ self.
-		].
-
-	scale :=
-		self
-			scaleToFit:	bounds
-			inExtent:	anExtentPoint.
-
-	self
-		drawRaysOf:	aLinesBearingLinesTheodoliteMobileLabRudesheim asArray
-		bounds:	bounds
-		scale:	scale
-		extent:	anExtentPoint
-		on:	aCanvasAthensCanvas.
-
-	aLinesBearingLinesTheodoliteMobileLabRudesheim
+			worldBoundsFor:	aLinesBearingLinesTheodoliteMobileLabRudesheim
+	)
 		do:
-		[ :each |
-			self
-				drawMarker:
-				(
-					self
-						screenPointFor:	each initialPoint
-						bounds:	bounds
-						scale:	scale
-						extent:	anExtentPoint
-				)
-				color:	Color blue
-				on:	aCanvasAthensCanvas.
-		].
+		[ :bounds |
+			|
+				scale
+			|
 
-	aLinesBearingLinesTheodoliteMobileLabRudesheim intersectionPoint
-		do:
-		[ :each |
+			scale :=
+				self
+					scaleToFit:	bounds
+					inExtent:	anExtentPoint.
+
 			self
-				drawMarker:
-				(
-					self
-						screenPointFor:	each
-						bounds:	bounds
-						scale:	scale
-						extent:	anExtentPoint
-				)
-				color:	Color red
+				drawRaysOf:	aLinesBearingLinesTheodoliteMobileLabRudesheim asArray
+				bounds:	bounds
+				scale:	scale
+				extent:	anExtentPoint
 				on:	aCanvasAthensCanvas.
+
+			{
+				{
+					aLinesBearingLinesTheodoliteMobileLabRudesheim asArray collect: #initialPoint.
+					Color blue.
+				}.
+				{
+					aLinesBearingLinesTheodoliteMobileLabRudesheim intersectionPoint.
+					Color red.
+				}.
+			}
+				do:
+				[ :pair |
+					pair first
+						do:
+						[ :each |
+							self
+								drawMarker:
+								(
+									self
+										screenPointFor:	each
+										bounds:	bounds
+										scale:	scale
+										extent:	anExtentPoint
+								)
+								color:	pair last
+								on:	aCanvasAthensCanvas.
+						].
+				].
 		].
 ]
 
@@ -206,102 +200,81 @@ bounds: aBoundsRectangle
 scale: aScaleNumber
 extent: anExtentPoint [
 	"World point -> canvas pixel point: aBoundsRectangle's center maps to anExtentPoint's center,
-	scaled by aScaleNumber, with Y flipped so world north (+y) draws upward."
-	|
-		worldCenter
-		canvasCenter
-	|
-
-	worldCenter := aBoundsRectangle center.
-	canvasCenter := anExtentPoint / 2.
-
-	^
-	(
-		( aPointPoint x - worldCenter x ) * aScaleNumber + canvasCenter x
-	) @
-	(
-		canvasCenter y -
+	scaled by aScaleNumber, with Y flipped so world north (+y) draws upward -- (1@-1) flips only
+	the y half of the already-componentwise Point multiplication (Point>>#*'s own comment)."
+	^ ( anExtentPoint / 2 )
+		+
 		(
-			( ( aPointPoint y - worldCenter y ) ) * aScaleNumber
-		)
-	).
+			( aPointPoint - aBoundsRectangle center ) * aScaleNumber * ( 1 @ -1 )
+		).
 ]
 
 { #category : 'geometry' }
 MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheodoliteMobileLabRudesheim [
-	"Rectangle enclosing every recorded line's origin plus the current intersection point (if
-	any) -- the set of points that must stay fully visible after every 'Add line' press. nil when
-	there is nothing to fit (no lines recorded yet). A degenerate (zero-area) box -- one point, or
-	several exactly-coincident points -- is padded to a minimum span so a scale can always be
-	computed from it."
+	"0-or-1-element array (never nil, per the project's no-nil convention) holding the Rectangle
+	enclosing every recorded line's origin plus the current intersection point, if any -- the set
+	of points that must stay fully visible after every 'Add line' press. Empty when there is
+	nothing to fit (no lines recorded yet)."
 	|
 		points
+		extremes
 		minPoint
 		maxPoint
 		padding
+		paddingPoint
 	|
 
 	points :=
 	(
-		aBearingLinesTheodoliteMobileLabRudesheim asArray
-			collect:
-			[ :each |
-				each initialPoint.
-			]
+		aBearingLinesTheodoliteMobileLabRudesheim asArray collect: #initialPoint
 	) , aBearingLinesTheodoliteMobileLabRudesheim intersectionPoint.
 
-	points isEmpty
-		ifTrue:
+	^ points
+		ifEmpty:
 		[
-			^ nil.
+			#(  ).
+		]
+		ifNotEmpty:
+		[
+			extremes :=
+				#( #min: #max: )
+					collect:
+					[ :selector |
+						points
+							inject:	points first
+							into:
+							[ :accumulator :each |
+								accumulator
+									perform:	selector
+									with:	each.
+							].
+					].
+
+			minPoint := extremes first.
+			maxPoint := extremes last.
+
+			"A degenerate (zero-width and/or zero-height) box -- one point, or several
+			exactly-coincident points -- is padded per axis to a minimum span so a scale can
+			always be computed from it; #min:/#max: above are already componentwise (Point's own
+			comment), so only this padding threshold itself still has to look at x and y
+			separately -- it decides, independently per axis, whether that axis is degenerate."
+			padding :=
+				#( #x #y )
+					collect:
+					[ :axis |
+						(
+							( maxPoint perform: axis )
+								-	( minPoint perform: axis )
+						) < 0.0001
+							ifTrue:	[ 0.0005 ]
+							ifFalse:	[ 0 ].
+					].
+
+			paddingPoint := padding first @ padding last.
+
+			{
+				( minPoint - paddingPoint )
+					corner:	( maxPoint + paddingPoint ).
+			}.
 		].
-
-	minPoint :=
-		points
-			inject:	points first
-			into:
-			[ :min :each |
-				min
-					min:	each.
-			].
-
-	maxPoint :=
-		points
-			inject:	points first
-			into:
-			[ :max :each |
-				max
-					max:	each.
-			].
-
-	"A degenerate (zero-width and/or zero-height) box -- one point, or several
-	exactly-coincident points -- is padded per axis to a minimum span so a scale can always be
-	computed from it; #min:/#max: above are already componentwise (Point's own comment), so only
-	the padding threshold itself still has to look at x and y separately."
-	padding :=
-	(
-		( maxPoint x - minPoint x ) < 0.0001
-			ifTrue:
-			[
-				0.0005.
-			]
-			ifFalse:
-			[
-				0.
-			]
-	) @
-	(
-		( maxPoint y - minPoint y ) < 0.0001
-			ifTrue:
-			[
-				0.0005.
-			]
-			ifFalse:
-			[
-				0.
-			]
-	).
-
-	^ minPoint - padding
-		corner:	maxPoint + padding.
 ]

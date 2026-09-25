@@ -151,8 +151,10 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForLinesAndIntersec
 		equals:	1.
 
 	bounds :=
-		self targetClass
-			worldBoundsFor:	lines.
+		(
+			self targetClass
+				worldBoundsFor:	lines
+		) first.
 
 	"origins (0,0)/(200,0) plus the intersection (~100,50) -- the fitted box must cover all three."
 	self
@@ -173,7 +175,7 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForLinesAndIntersec
 ]
 
 { #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForNoLinesIsNil [
+MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForNoLinesIsEmpty [
 	|
 		lines
 	|
@@ -185,7 +187,7 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForNoLinesIsNil [
 		(
 			self targetClass
 				worldBoundsFor:	lines
-		) isNil.
+		) isEmpty.
 ]
 
 { #category : 'tests' }
@@ -206,8 +208,10 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForSingleLineIsPadd
 		).
 
 	bounds :=
-		self targetClass
-			worldBoundsFor:	lines.
+		(
+			self targetClass
+				worldBoundsFor:	lines
+		) first.
 
 	"A single point is a zero-area box; it must be padded to a non-zero span so a scale can be
 	computed from it, and that span must still be centered on the origin."
