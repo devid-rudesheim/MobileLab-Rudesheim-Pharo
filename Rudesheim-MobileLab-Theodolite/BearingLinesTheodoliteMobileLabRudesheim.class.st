@@ -13,6 +13,24 @@ section 7.3 (NocoDB Sections 項番FM):
   as living inside #add: itself, not through separate Model-level observation.
 - #intersectionPoint / #mapURL are 0-or-1-element-array query methods (never nil, per the
   project's no-nil convention) computed on demand from the current lines, not cached.
+- #removeLast (and its alias #pop) is a no-op, not an error, when the collection is already empty
+  -- #removeLineButton's action calls it unconditionally with no count guard, so pressing it with
+  nothing recorded must not crash. It used to raise a `CollectionIsEmpty` error instead; fixed
+  alongside the exhaustive interface test suite that caught it (NoteHistory has the details).
+- #warning defaults itself lazily to a fresh, empty NewValueHolder (per
+  ~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule, same as
+  ModelTheodoliteMobileLabRudesheim's own accessors) rather than requiring #warning: to be sent
+  first -- a bare `new` instance (not built through
+  ModelTheodoliteMobileLabRudesheim>>#defaultBearingLines) is otherwise unusable: every #add: path
+  touches #warning, including the success path, so it used to raise `nil doesNotUnderstand:
+  #value:` on its very first #add:. #warning: still overrides the default when the owning Model
+  supplies its own shared holder, as it always does today.
+
+Reads that CollectionValueHolder does not implement directly (#asArray/#allSatisfy:/#ifEmpty: --
+only reachable at runtime via its #doesNotUnderstand: forwarding to `value`, the wrapped
+OrderedCollection) go through `self value` explicitly instead of bare `self`, so the browser does
+not flag them as possibly-not-understood; #add:/#removeLast/#size/#warning are real methods here
+(declared on this class or CollectionValueHolder itself), so those stay as plain `self` sends.
 
 #push/#pop are the view-facing stack-style entry points action blocks actually call: #push reads
 the current position/heading from `Smalltalk os rudesheim location currentRay` (Rudesheim-MobileLab's
@@ -49,7 +67,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> add: aGRay [
 		].
 
 	(
-		self
+		self value
 			allSatisfy:
 			[ :existing |
 				(
@@ -95,7 +113,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> intersectionPoint [
 		average
 	|
 
-	lines := self asArray.
+	lines := self value asArray.
 	points := OrderedCollection new.
 
 	1
@@ -182,6 +200,12 @@ BearingLinesTheodoliteMobileLabRudesheim >> removeLast [
 		result
 	|
 
+	self value
+		ifEmpty:
+		[
+			^ self.
+		].
+
 	result := super removeLast.
 
 	self warning
@@ -190,9 +214,19 @@ BearingLinesTheodoliteMobileLabRudesheim >> removeLast [
 	^ result.
 ]
 
+{ #category : 'private' }
+BearingLinesTheodoliteMobileLabRudesheim >> defaultWarning [
+	^ NewValueHolder
+		value:	#(  ).
+]
+
 { #category : 'accessing' }
 BearingLinesTheodoliteMobileLabRudesheim >> warning [
-	^ warning.
+	^ warning
+		ifNil:
+		[
+			warning := self defaultWarning.
+		].
 ]
 
 { #category : 'accessing' }
