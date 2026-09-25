@@ -128,7 +128,11 @@ toView: aView [
 		action:
 		[
 			aModel bearingLines mapURL
-				do:	[ :url | Smalltalk os rudesheim launcher open: url ].
+				do:
+				[ :url |
+					Smalltalk os rudesheim launcher
+						open:	url.
+				].
 		].
 
 	aView copyButton
@@ -154,7 +158,11 @@ toView: aView [
 		do:
 		[
 			aModel bearingLines mapURL
-				do:	[ :url | Smalltalk os rudesheim launcher open: url ].
+				do:
+				[ :url |
+					Smalltalk os rudesheim launcher
+						open:	url.
+				].
 		]
 		for:	aView.
 ]

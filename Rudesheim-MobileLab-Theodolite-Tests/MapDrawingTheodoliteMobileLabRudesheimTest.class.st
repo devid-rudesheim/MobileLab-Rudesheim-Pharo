@@ -48,8 +48,8 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScaleToFitPicksSmallerAxisWith
 	|
 
 	bounds :=
-		( 0 @ 0 )
-			corner:	( 100 @ 50 ).
+		0 @ 0
+			corner:	100 @ 50.
 
 	scale :=
 		self targetClass
@@ -70,8 +70,8 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanv
 	|
 
 	bounds :=
-		( 0 @ 0 )
-			corner:	( 100 @ 100 ).
+		0 @ 0
+			corner:	100 @ 100.
 
 	screenPoint :=
 		self targetClass
@@ -93,8 +93,8 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForFlipsYSoWorldNor
 	|
 
 	bounds :=
-		( 0 @ 0 )
-			corner:	( 100 @ 100 ).
+		0 @ 0
+			corner:	100 @ 100.
 
 	screenPoint :=
 		self targetClass
@@ -158,12 +158,15 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForLinesAndIntersec
 	self
 		assert:	bounds origin x
 		closeTo:	0.
+
 	self
 		assert:	bounds origin y
 		closeTo:	0.
+
 	self
 		assert:	bounds corner x
 		closeTo:	200.
+
 	self
 		assert:	bounds corner y
 		closeTo:	50.
@@ -209,14 +212,15 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForSingleLineIsPadd
 	"A single point is a zero-area box; it must be padded to a non-zero span so a scale can be
 	computed from it, and that span must still be centered on the origin."
 	self
-		assert:	bounds width
-		> 0.
+		assert:	bounds width > 0.
+
 	self
-		assert:	bounds height
-		> 0.
+		assert:	bounds height > 0.
+
 	self
 		assert:	bounds center x
 		closeTo:	0.
+
 	self
 		assert:	bounds center y
 		closeTo:	0.

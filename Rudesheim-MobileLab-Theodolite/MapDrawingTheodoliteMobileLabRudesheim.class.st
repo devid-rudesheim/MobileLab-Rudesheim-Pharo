@@ -40,8 +40,7 @@ on: aCanvasAthensCanvas [
 		scale
 	|
 
-	aCanvasAthensCanvas surface
-		clear.
+	aCanvasAthensCanvas surface clear.
 
 	bounds :=
 		self
@@ -112,7 +111,11 @@ on: aCanvasAthensCanvas [
 		setPaint:	aColorColor.
 
 	aCanvasAthensCanvas
-		drawShape:	( aPointPoint - radius corner: aPointPoint + radius ).
+		drawShape:
+		(
+			aPointPoint - radius
+				corner:	aPointPoint + radius
+		).
 ]
 
 { #category : 'private' }
@@ -125,7 +128,11 @@ on: aCanvasAthensCanvas [
 		rayLength
 	|
 
-	rayLength := ( anExtentPoint x max: anExtentPoint y ) / aScaleNumber * 3.
+	rayLength :=
+	(
+		anExtentPoint x
+			max:	anExtentPoint y
+	) / aScaleNumber * 3.
 
 	aLinesArray
 		do:
@@ -188,10 +195,9 @@ inExtent: anExtentPoint [
 	15% margin, preserving aspect ratio."
 	^
 	(
-		( anExtentPoint x / aBoundsRectangle width )
-			min:	( anExtentPoint y / aBoundsRectangle height )
-	)
-		* 0.85.
+		anExtentPoint x / aBoundsRectangle width
+			min:	anExtentPoint y / aBoundsRectangle height
+	) * 0.85.
 ]
 
 { #category : 'geometry' }
@@ -212,11 +218,13 @@ extent: anExtentPoint [
 	^
 	(
 		( aPointPoint x - worldCenter x ) * aScaleNumber + canvasCenter x
-	)
-		@
+	) @
+	(
+		canvasCenter y -
 		(
-			canvasCenter y - ( ( aPointPoint y - worldCenter y ) * aScaleNumber )
-		).
+			( ( aPointPoint y - worldCenter y ) ) * aScaleNumber
+		)
+	).
 ]
 
 { #category : 'geometry' }
@@ -235,14 +243,13 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 	|
 
 	points :=
-		(
-			aBearingLinesTheodoliteMobileLabRudesheim asArray
-				collect:
-				[ :each |
-					each initialPoint.
-				]
-		)
-			,	aBearingLinesTheodoliteMobileLabRudesheim intersectionPoint.
+	(
+		aBearingLinesTheodoliteMobileLabRudesheim asArray
+			collect:
+			[ :each |
+				each initialPoint.
+			]
+	) , aBearingLinesTheodoliteMobileLabRudesheim intersectionPoint.
 
 	points isEmpty
 		ifTrue:
@@ -251,41 +258,40 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 		].
 
 	minX :=
-		(
-			points
-				collect:
-				[ :each |
-					each x.
-				]
-		)
-			min.
+	(
+		points
+			collect:
+			[ :each |
+				each x.
+			]
+	) min.
+
 	maxX :=
-		(
-			points
-				collect:
-				[ :each |
-					each x.
-				]
-		)
-			max.
+	(
+		points
+			collect:
+			[ :each |
+				each x.
+			]
+	) max.
+
 	minY :=
-		(
-			points
-				collect:
-				[ :each |
-					each y.
-				]
-		)
-			min.
+	(
+		points
+			collect:
+			[ :each |
+				each y.
+			]
+	) min.
+
 	maxY :=
-		(
-			points
-				collect:
-				[ :each |
-					each y.
-				]
-		)
-			max.
+	(
+		points
+			collect:
+			[ :each |
+				each y.
+			]
+	) max.
 
 	( maxX - minX ) < 0.0001
 		ifTrue:
@@ -300,6 +306,6 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 			maxY := maxY + 0.0005.
 		].
 
-	^ ( minX @ minY )
-		corner:	( maxX @ maxY ).
+	^ minX @ minY
+		corner:	maxX @ maxY.
 ]
