@@ -21,15 +21,17 @@ mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a 
 
 #mapArea's drawBlock: re-renders from `aModel bearingLines` directly (like the transform blocks
 above, not from whatever raw value Spec2-Transmission's port would hand it): it clears the canvas,
-then asks MapDrawingTheodoliteMobileLabRudesheim class>>#renderersFor:canvas: for a 0-or-1-element
+then asks RendererTheodoliteMobileLabRudesheim class>>#renderersFor:canvas: for a 0-or-1-element
 array of ready renderers (it refits the visible bounds -- every origin plus the current
 intersection point -- from scratch on every call, so the block itself never sees an intermediate
-Rectangle) and dispatches each renderer as a plain argument to
-RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- the two things that
-actually draw, both stateless class-side `#drawOn: aRenderer`. This is inlined here rather than
-behind a class-side `MapDrawing class>>#drawBearingLines:on:` entry point because that method
-(like the MapDrawing-instance-side #draw it used to call, before Rays/Markers existed) had exactly
-one caller -- this block. #addLineButton/
+Rectangle) and, for each renderer, builds one RaysTheodoliteMobileLabRudesheim/
+MarkersTheodoliteMobileLabRudesheim per renderer (via their class-side #renderer:, so it outlives
+this one paint call) and sends each `drawOnAthensCanvas: aCanvas` -- `aCanvas` itself is not
+kept anywhere longer-lived than that one send, since it is only valid for the duration of Athens'
+own paint callback. This is inlined here rather than behind a class-side
+`Renderer class>>#drawBearingLines:on:` entry point because that method (like the
+Renderer-instance-side #draw it used to call, before Rays/Markers existed) had exactly one
+caller -- this block. #addLineButton/
 #removeLineButton/#discardButton each explicitly send #redraw after mutating `aModel bearingLines`,
 so every 'Add line' press (and every remove/discard) refits and repaints the map; #openButton/
 #copyButton do not mutate the lines, so they do not redraw.
@@ -120,20 +122,20 @@ toView: aView [
 			aCanvas surface clear.
 
 			(
-				theodolite MapDrawing
+				theodolite Renderer
 					renderersFor:	aModel bearingLines
 					canvas:	aCanvas
 			)
 				do:
 				[ :renderer |
 					{
-						theodolite Rays.
-						theodolite Markers.
+						theodolite Rays renderer: renderer.
+						theodolite Markers renderer: renderer.
 					}
 						do:
 						[ :each |
 							each
-								drawOn:	renderer.
+								drawOnAthensCanvas:	aCanvas.
 						].
 				].
 		].

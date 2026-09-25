@@ -1,15 +1,17 @@
 "
 A MarkersTheodoliteMobileLabRudesheim draws origin/intersection markers on Theodolite's map
 (NocoDB Sections 項番GM), one of the two things dispatched to polymorphically alongside
-RaysTheodoliteMobileLabRudesheim -- `{ Rays. Markers } do: [ :each | each drawOn: renderer ]` --
-both answering the same class-side #drawOn:, per this project's 'prefer polymorphism over
-switch/if on kind' convention (~/.claude/CLAUDE.md's Design section), rather than being two named
-methods on one class. Reached as `Rudesheim MobileLab Theodolite Markers`.
+RaysTheodoliteMobileLabRudesheim -- `{ Rays renderer: r. Markers renderer: r } do: [ :each |
+each drawOnAthensCanvas: aCanvas ]` -- both answering the same #drawOnAthensCanvas:, per this
+project's 'prefer polymorphism over switch/if on kind' convention (~/.claude/CLAUDE.md's Design
+section), rather than being two named methods on one class. Reached as `Rudesheim MobileLab
+Theodolite Markers`.
 
-Stateless: #drawOn: never references self, so it stays a class-side method
-(~/.claude/CLAUDE.md's 'put self-free logic on the class side' rule) taking `aRenderer` (a
-MapDrawingTheodoliteMobileLabRudesheim, one redraw's shared `lines`/`canvas`/`screenPointFor:`
-context) as a plain argument rather than holding it as instance state.
+`renderer` (a RendererTheodoliteMobileLabRudesheim, one redraw's shared `lines`/`bounds`/`extent`/
+`scale`/#screenPointFor: context) is set once at construction, via the class-side #renderer:
+convenience -- it outlives a single #drawOnAthensCanvas: call, unlike `canvas`, which only exists
+for the duration of Athens' own paint callback and is passed as a plain argument to
+#drawOnAthensCanvas: instead.
 
 Draws every recorded line's origin in blue and the current intersection point (if any) in red, via
 one data-driven pass over `{ points. color }` pairs rather than two near-duplicate loops.
@@ -17,24 +19,34 @@ one data-driven pass over `{ points. color }` pairs rather than two near-duplica
 Class {
 	#name : 'MarkersTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
+	#instVars : [
+		'renderer'
+	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
-{ #category : 'drawing' }
-MarkersTheodoliteMobileLabRudesheim class >> drawMarker: aPointPoint
+{ #category : 'instance creation' }
+MarkersTheodoliteMobileLabRudesheim class >> renderer: aRendererTheodoliteMobileLabRudesheim [
+	^ self new
+		renderer:	aRendererTheodoliteMobileLabRudesheim;
+		yourself.
+]
+
+{ #category : 'private' }
+MarkersTheodoliteMobileLabRudesheim >> drawMarker: aPointPoint
 color: aColorColor
-on: aRendererMapDrawingTheodoliteMobileLabRudesheim [
+on: anAthensCanvas [
 	|
 		radius
 	|
 
 	radius := 4.
 
-	aRendererMapDrawingTheodoliteMobileLabRudesheim canvas
+	anAthensCanvas
 		setPaint:	aColorColor.
 
-	aRendererMapDrawingTheodoliteMobileLabRudesheim canvas
+	anAthensCanvas
 		drawShape:
 		(
 			aPointPoint - radius
@@ -43,15 +55,15 @@ on: aRendererMapDrawingTheodoliteMobileLabRudesheim [
 ]
 
 { #category : 'drawing' }
-MarkersTheodoliteMobileLabRudesheim class >> drawOn: aRenderer [
+MarkersTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 	{
 		{
-			aRenderer lines asArray
+			self renderer lines asArray
 				collect:	#initialPoint.
 			Color blue
 		}.
 		{
-			aRenderer lines intersectionPoint.
+			self renderer lines intersectionPoint.
 			Color red
 		}
 	}
@@ -63,11 +75,21 @@ MarkersTheodoliteMobileLabRudesheim class >> drawOn: aRenderer [
 					self
 						drawMarker:
 						(
-							aRenderer
+							self renderer
 								screenPointFor:	each
 						)
 						color:	pair last
-						on:	aRenderer.
+						on:	anAthensCanvas.
 				].
 		].
+]
+
+{ #category : 'accessing' }
+MarkersTheodoliteMobileLabRudesheim >> renderer [
+	^ renderer.
+]
+
+{ #category : 'accessing' }
+MarkersTheodoliteMobileLabRudesheim >> renderer: aRendererTheodoliteMobileLabRudesheim [
+	renderer := aRendererTheodoliteMobileLabRudesheim assertNotNilRudesheim.
 ]

@@ -1,31 +1,30 @@
 "
-A MapDrawingTheodoliteMobileLabRudesheimTest tests the pure geometry
-MapDrawingTheodoliteMobileLabRudesheim splits out from its actual Athens canvas calls (NocoDB
+A RendererTheodoliteMobileLabRudesheimTest tests the pure geometry
+RendererTheodoliteMobileLabRudesheim splits out from its actual Athens canvas calls (NocoDB
 Sections 項番GM): class-side #worldBoundsFor: (the fit-to-bounds requirement -- every origin plus
 the current intersection point must stay in frame), #scaleToFit:inExtent: and
-#renderersFor:canvas: (a 0-or-1-element array of ready renderers -- `canvas:`'s setter only checks
-non-nil, so a plain `Object new` stands in for a real AthensCanvas here), plus instance-side
-#screenPointFor: (needs only #bounds:/#extent: set -- it never touches #canvas:/#lines:, so a test
-can build a bare instance for it without a real Athens surface). The actual Athens-calling drawing
-lives on RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim's stateless
-class-side #drawOn:, which does need a real surface -- out of scope for a headless SUnit run, and
-with no accessor contract of their own left to cover now that they take the renderer as a plain
-argument instead of holding it as instance state.
+#renderersFor:canvas: (a 0-or-1-element array of ready renderers --
+StubAthensCanvasTheodoliteMobileLabRudesheim stands in for a real AthensCanvas, exposing just
+`surface extent`), plus instance-side #screenPointFor: (needs only #bounds:/#extent: set, so a
+test can build a bare instance for it without a real Athens surface -- this class holds no
+`canvas` at all, so there is nothing to leave unset). The actual Athens-calling drawing lives on
+RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim's #drawOnAthensCanvas:, which
+does need a real surface -- out of scope for a headless SUnit run.
 "
 Class {
-	#name : 'MapDrawingTheodoliteMobileLabRudesheimTest',
+	#name : 'RendererTheodoliteMobileLabRudesheimTest',
 	#superclass : 'BasicRudesheimTest',
 	#category : 'Rudesheim-MobileLab-Theodolite-Tests',
 	#package : 'Rudesheim-MobileLab-Theodolite-Tests'
 }
 
 { #category : 'accessing' }
-MapDrawingTheodoliteMobileLabRudesheimTest class >> targetClass [
-	^ Rudesheim MobileLab Theodolite MapDrawing.
+RendererTheodoliteMobileLabRudesheimTest class >> targetClass [
+	^ Rudesheim MobileLab Theodolite Renderer.
 ]
 
 { #category : 'private' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> bearingFrom: anOrigin
+RendererTheodoliteMobileLabRudesheimTest >> bearingFrom: anOrigin
 toward: aTarget [
 	"Duplicated from ModelTheodoliteMobileLabRudesheimTest -- see that method's comment for why
 	dividing the atan2-form radians straight by 360 already lands on Rudesheim-MobileLab's
@@ -46,8 +45,77 @@ toward: aTarget [
 	^ degrees / 360.
 ]
 
+{ #category : 'private' }
+RendererTheodoliteMobileLabRudesheimTest >> rendererWithBounds: aRectangle
+extent: aPoint
+scale: aNumber [
+	"A bare instance with only #bounds:/#extent:/#scale: set -- enough for #screenPointFor:, which
+	never touches #lines:. #scale: pins an exact scale independently of #scaleToFit:inExtent:'s own
+	margin math, which has its own test."
+	^ self targetClass new
+		bounds:	aRectangle;
+		extent:	aPoint;
+		scale:	aNumber;
+		yourself.
+]
+
 { #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testScaleToFitPicksSmallerAxisWithMargin [
+RendererTheodoliteMobileLabRudesheimTest >> testRenderersForNoLinesIsEmpty [
+	|
+		lines
+	|
+
+	lines := Rudesheim MobileLab Theodolite BearingLines new.
+
+	self
+		assert:
+		(
+			self targetClass
+				renderersFor:	lines
+				canvas:	Object new
+		) isEmpty.
+]
+
+{ #category : 'tests' }
+RendererTheodoliteMobileLabRudesheimTest >> testRenderersForSingleLineBuildsOneRendererWithMatchingLinesAndExtent [
+	|
+		lines
+		canvas
+		renderers
+	|
+
+	lines := Rudesheim MobileLab Theodolite BearingLines new.
+
+	lines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	canvas := StubAthensCanvasTheodoliteMobileLabRudesheim new.
+
+	renderers :=
+		self targetClass
+			renderersFor:	lines
+			canvas:	canvas.
+
+	self
+		assert:	renderers size
+		equals:	1.
+
+	self
+		assert:	renderers first lines
+		equals:	lines.
+
+	self
+		assert:	renderers first extent
+		equals:	canvas surface extent.
+]
+
+{ #category : 'tests' }
+RendererTheodoliteMobileLabRudesheimTest >> testScaleToFitPicksSmallerAxisWithMargin [
 	|
 		bounds
 		scale
@@ -68,22 +136,8 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScaleToFitPicksSmallerAxisWith
 		closeTo:	1.7.
 ]
 
-{ #category : 'private' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> rendererWithBounds: aRectangle
-extent: aPoint
-scale: aNumber [
-	"A bare instance with only #bounds:/#extent:/#scale: set -- enough for #screenPointFor:, which
-	never touches #canvas:/#lines:, without needing a real Athens surface. #scale: pins an exact
-	scale independently of #scaleToFit:inExtent:'s own margin math, which has its own test."
-	^ self targetClass new
-		bounds:	aRectangle;
-		extent:	aPoint;
-		scale:	aNumber;
-		yourself.
-]
-
 { #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanvasCenter [
+RendererTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanvasCenter [
 	|
 		renderer
 		screenPoint
@@ -109,7 +163,7 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanv
 ]
 
 { #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForFlipsYSoWorldNorthDrawsUpward [
+RendererTheodoliteMobileLabRudesheimTest >> testScreenPointForFlipsYSoWorldNorthDrawsUpward [
 	|
 		renderer
 		screenPoint
@@ -136,7 +190,7 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForFlipsYSoWorldNor
 ]
 
 { #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForLinesAndIntersectionSpansAll [
+RendererTheodoliteMobileLabRudesheimTest >> testWorldBoundsForLinesAndIntersectionSpansAll [
 	|
 		lines
 		target
@@ -201,62 +255,7 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForLinesAndIntersec
 ]
 
 { #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testRenderersForNoLinesIsEmpty [
-	|
-		lines
-	|
-
-	lines := Rudesheim MobileLab Theodolite BearingLines new.
-
-	self
-		assert:
-		(
-			self targetClass
-				renderersFor:	lines
-				canvas:	Object new
-		) isEmpty.
-]
-
-{ #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testRenderersForSingleLineBuildsOneRendererWithMatchingLinesAndCanvas [
-	|
-		lines
-		canvas
-		renderers
-	|
-
-	lines := Rudesheim MobileLab Theodolite BearingLines new.
-
-	lines
-		add:
-		(
-			GRay
-				origin:	0 , 0
-				normalizedBearing:	0.25
-		).
-
-	canvas := Object new.
-
-	renderers :=
-		self targetClass
-			renderersFor:	lines
-			canvas:	canvas.
-
-	self
-		assert:	renderers size
-		equals:	1.
-
-	self
-		assert:	renderers first lines
-		equals:	lines.
-
-	self
-		assert:	renderers first canvas
-		equals:	canvas.
-]
-
-{ #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForNoLinesIsEmpty [
+RendererTheodoliteMobileLabRudesheimTest >> testWorldBoundsForNoLinesIsEmpty [
 	|
 		lines
 	|
@@ -272,7 +271,7 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForNoLinesIsEmpty [
 ]
 
 { #category : 'tests' }
-MapDrawingTheodoliteMobileLabRudesheimTest >> testWorldBoundsForSingleLineIsPaddedAroundOrigin [
+RendererTheodoliteMobileLabRudesheimTest >> testWorldBoundsForSingleLineIsPaddedAroundOrigin [
 	|
 		lines
 		bounds

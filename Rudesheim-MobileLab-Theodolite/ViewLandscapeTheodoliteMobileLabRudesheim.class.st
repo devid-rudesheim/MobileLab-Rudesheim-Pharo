@@ -7,7 +7,8 @@ It only arranges the widgets it gets from its `widgets` (a WidgetsTheodoliteMobi
 shared with the portrait View so both orientations show the same widget set without duplicating
 it) into the landscape structure: a full-width, fixed-height top row (discard/address/open/copy)
 and a bottom row with a variable-width self-drawn map area (`widgets mapArea`, an SpAthensPresenter
-rendered by MapDrawingTheodoliteMobileLabRudesheim -- decision recorded in NocoDB Sections 項番GM)
+rendered by RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim -- decision
+recorded in NocoDB Sections 項番GM)
 plus a fixed-width column (add/remove/progress/warning). add/remove expand to fill the column's
 remaining vertical space (larger tap targets); progress/warning stay fixed-height. It does not itself
 answer #progressLabel/#addressBar/etc -- callers that need the widget protocol

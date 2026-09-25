@@ -1,15 +1,17 @@
 "
 A RaysTheodoliteMobileLabRudesheim draws Theodolite's recorded bearing lines as rays on the map
 (NocoDB Sections 項番GM), one of the two things dispatched to polymorphically alongside
-MarkersTheodoliteMobileLabRudesheim -- `{ Rays. Markers } do: [ :each | each drawOn: renderer ]` --
-both answering the same class-side #drawOn:, per this project's 'prefer polymorphism over
-switch/if on kind' convention (~/.claude/CLAUDE.md's Design section), rather than being two named
-methods on one class. Reached as `Rudesheim MobileLab Theodolite Rays`.
+MarkersTheodoliteMobileLabRudesheim -- `{ Rays renderer: r. Markers renderer: r } do: [ :each |
+each drawOnAthensCanvas: aCanvas ]` -- both answering the same #drawOnAthensCanvas:, per this
+project's 'prefer polymorphism over switch/if on kind' convention (~/.claude/CLAUDE.md's Design
+section), rather than being two named methods on one class. Reached as `Rudesheim MobileLab
+Theodolite Rays`.
 
-Stateless: #drawOn: never references self, so it stays a class-side method
-(~/.claude/CLAUDE.md's 'put self-free logic on the class side' rule) taking `aRenderer` (a
-MapDrawingTheodoliteMobileLabRudesheim, one redraw's shared `lines`/`canvas`/`screenPointFor:`
-context) as a plain argument rather than holding it as instance state.
+`renderer` (a RendererTheodoliteMobileLabRudesheim, one redraw's shared `lines`/`bounds`/`extent`/
+`scale`/#screenPointFor: context) is set once at construction, via the class-side #renderer:
+convenience -- it outlives a single #drawOnAthensCanvas: call, unlike `canvas`, which only exists
+for the duration of Athens' own paint callback and is passed as a plain argument to
+#drawOnAthensCanvas: instead.
 
 Each recorded line is drawn as a ray from its origin far enough to cross the fitted frame (a
 multiple of the frame's own diagonal, not a fixed world length, since real GPS-scale coordinates
@@ -20,23 +22,33 @@ thin-design convention (NocoDB Sections 項番FM/GM).
 Class {
 	#name : 'RaysTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
+	#instVars : [
+		'renderer'
+	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
+{ #category : 'instance creation' }
+RaysTheodoliteMobileLabRudesheim class >> renderer: aRendererTheodoliteMobileLabRudesheim [
+	^ self new
+		renderer:	aRendererTheodoliteMobileLabRudesheim;
+		yourself.
+]
+
 { #category : 'drawing' }
-RaysTheodoliteMobileLabRudesheim class >> drawOn: aRenderer [
+RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 	|
 		rayLength
 	|
 
 	rayLength :=
 	(
-		aRenderer extent x
-			max:	aRenderer extent y
-	) / aRenderer scale * 3.
+		self renderer extent x
+			max:	self renderer extent y
+	) / self renderer scale * 3.
 
-	aRenderer lines asArray
+	self renderer lines asArray
 		do:
 		[ :each |
 			|
@@ -60,12 +72,12 @@ RaysTheodoliteMobileLabRudesheim class >> drawOn: aRenderer [
 					}
 						collect:
 						[ :point |
-							aRenderer
+							self renderer
 								screenPointFor:	point.
 						].
 
 					path :=
-						aRenderer canvas
+						anAthensCanvas
 							createPath:
 							[ :aBuilder |
 								aBuilder
@@ -75,13 +87,23 @@ RaysTheodoliteMobileLabRudesheim class >> drawOn: aRenderer [
 							].
 
 					(
-						aRenderer canvas
+						anAthensCanvas
 							setStrokePaint:	Color gray
 					)
 						width:	1.
 
-					aRenderer canvas
+					anAthensCanvas
 						drawShape:	path.
 				].
 		].
+]
+
+{ #category : 'accessing' }
+RaysTheodoliteMobileLabRudesheim >> renderer [
+	^ renderer.
+]
+
+{ #category : 'accessing' }
+RaysTheodoliteMobileLabRudesheim >> renderer: aRendererTheodoliteMobileLabRudesheim [
+	renderer := aRendererTheodoliteMobileLabRudesheim assertNotNilRudesheim.
 ]

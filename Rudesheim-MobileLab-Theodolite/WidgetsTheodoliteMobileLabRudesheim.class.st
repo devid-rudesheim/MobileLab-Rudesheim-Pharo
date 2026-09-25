@@ -8,7 +8,8 @@ as `Rudesheim MobileLab Theodolite Widgets`.
 It exists to satisfy exactly the widget protocol SpecBuilderTheodoliteMobileLabRudesheim>>
 #bindModel:toView: needs: #progressLabel/#addressBar/#warningLabel (each a real SpLabelPresenter),
 #mapArea (a real SpAthensPresenter -- the self-drawn map, decision recorded in NocoDB Sections
-項番GM, rendered by MapDrawingTheodoliteMobileLabRudesheim) and #addLineButton/#removeLineButton/
+項番GM, rendered by RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim) and
+#addLineButton/#removeLineButton/
 #openButton/#copyButton/#discardButton (each a real SpButtonPresenter). Each accessor lazily
 builds its own widget via a matching #defaultXxx method
 (~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule, also followed by
