@@ -26,7 +26,9 @@ array of ready renderers (it refits the visible bounds -- every origin plus the 
 intersection point -- from scratch on every call, so the block itself never sees an intermediate
 Rectangle) and, for each renderer, builds one RaysTheodoliteMobileLabRudesheim/
 MarkersTheodoliteMobileLabRudesheim per renderer (via their class-side #renderer:, so it outlives
-this one paint call) and sends each `drawOnAthensCanvas: aCanvas` -- `aCanvas` itself is not
+this one paint call) and sends `aCanvas draw: each` -- AthensCanvas>>#draw:'s own generic
+double-dispatch (`^ anObject drawOnAthensCanvas: self`, already provided by Athens, not something
+this app defines) is exactly why both classes answer #drawOnAthensCanvas:. `aCanvas` itself is not
 kept anywhere longer-lived than that one send, since it is only valid for the duration of Athens'
 own paint callback. This is inlined here rather than behind a class-side
 `Renderer class>>#drawBearingLines:on:` entry point because that method (like the
@@ -134,8 +136,8 @@ toView: aView [
 					}
 						do:
 						[ :each |
-							each
-								drawOnAthensCanvas:	aCanvas.
+							aCanvas
+								draw:	each.
 						].
 				].
 		].

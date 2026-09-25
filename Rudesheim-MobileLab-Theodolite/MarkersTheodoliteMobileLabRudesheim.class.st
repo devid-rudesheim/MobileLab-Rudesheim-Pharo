@@ -2,10 +2,11 @@
 A MarkersTheodoliteMobileLabRudesheim draws origin/intersection markers on Theodolite's map
 (NocoDB Sections 項番GM), one of the two things dispatched to polymorphically alongside
 RaysTheodoliteMobileLabRudesheim -- `{ Rays renderer: r. Markers renderer: r } do: [ :each |
-each drawOnAthensCanvas: aCanvas ]` -- both answering the same #drawOnAthensCanvas:, per this
-project's 'prefer polymorphism over switch/if on kind' convention (~/.claude/CLAUDE.md's Design
-section), rather than being two named methods on one class. Reached as `Rudesheim MobileLab
-Theodolite Markers`.
+aCanvas draw: each ]`, via AthensCanvas>>#draw:'s own generic double-dispatch
+(`^ anObject drawOnAthensCanvas: self`, provided by Athens itself, not defined here) -- both
+answering the same #drawOnAthensCanvas: that convention expects, per this project's 'prefer
+polymorphism over switch/if on kind' convention (~/.claude/CLAUDE.md's Design section) as well as
+Athens' own. Reached as `Rudesheim MobileLab Theodolite Markers`.
 
 `renderer` (a RendererTheodoliteMobileLabRudesheim, one redraw's shared `lines`/`bounds`/`extent`/
 `scale`/#screenPointFor: context) is set once at construction, via the class-side #renderer:
