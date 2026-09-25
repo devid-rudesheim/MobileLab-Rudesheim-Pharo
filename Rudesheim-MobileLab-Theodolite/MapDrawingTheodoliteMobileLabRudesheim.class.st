@@ -77,8 +77,7 @@ on: aCanvasAthensCanvas [
 					bounds:	bounds
 					extent:	anExtentPoint
 					canvas:	aCanvasAthensCanvas
-			)
-				draw.
+			) draw.
 		].
 ]
 
@@ -243,7 +242,8 @@ color: aColorColor [
 MapDrawingTheodoliteMobileLabRudesheim >> drawMarkers [
 	{
 		{
-			self lines asArray collect: #initialPoint.
+			self lines asArray
+				collect:	#initialPoint.
 			Color blue
 		}.
 		{
@@ -257,7 +257,11 @@ MapDrawingTheodoliteMobileLabRudesheim >> drawMarkers [
 				do:
 				[ :each |
 					self
-						drawMarker:	( self screenPointFor: each )
+						drawMarker:
+						(
+							self
+								screenPointFor:	each
+						)
 						color:	pair last.
 				].
 		].
@@ -367,6 +371,6 @@ MapDrawingTheodoliteMobileLabRudesheim >> screenPointFor: aPoint [
 	^
 	( self extent / 2 ) +
 	(
-		( aPoint - self bounds center ) * self scale * ( 1 @ -1 )
+		( ( aPoint - self bounds center ) ) * self scale * ( 1 @ -1 )
 	).
 ]

@@ -87,7 +87,11 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanv
 
 	renderer :=
 		self
-			rendererWithBounds:	( 0 @ 0 corner: 100 @ 100 )
+			rendererWithBounds:
+			(
+				0 @ 0
+					corner:	100 @ 100
+			)
 			extent:	200 @ 200
 			scale:	2.
 
@@ -109,7 +113,11 @@ MapDrawingTheodoliteMobileLabRudesheimTest >> testScreenPointForFlipsYSoWorldNor
 
 	renderer :=
 		self
-			rendererWithBounds:	( 0 @ 0 corner: 100 @ 100 )
+			rendererWithBounds:
+			(
+				0 @ 0
+					corner:	100 @ 100
+			)
 			extent:	200 @ 200
 			scale:	2.
 
