@@ -120,7 +120,6 @@ toView: aView [
 			|
 
 			theodolite := Rudesheim MobileLab Theodolite.
-
 			aCanvas surface clear.
 
 			(
@@ -132,7 +131,7 @@ toView: aView [
 				[ :renderer |
 					{
 						theodolite Rays.
-						theodolite Markers.
+						theodolite Markers
 					}
 						do:
 						[ :each |
