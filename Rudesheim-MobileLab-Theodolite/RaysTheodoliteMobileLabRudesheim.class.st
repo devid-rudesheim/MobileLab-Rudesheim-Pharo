@@ -30,7 +30,11 @@ RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 	) / self renderer scale * 3.
 
 	self renderer lines asArray
-		do:
+		select:
+		[ :each |
+			( 0 @ 0 ) ~= ( each directionPoint - each initialPoint ).
+		]
+		thenDo:
 		[ :each |
 			|
 				direction
@@ -40,12 +44,6 @@ RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 			|
 
 			direction := each directionPoint - each initialPoint.
-
-			( 0 @ 0 ) = direction
-				ifTrue:
-				[
-					thisContext return.
-				].
 
 			farPoint := each initialPoint + ( direction / direction r * rayLength ).
 
