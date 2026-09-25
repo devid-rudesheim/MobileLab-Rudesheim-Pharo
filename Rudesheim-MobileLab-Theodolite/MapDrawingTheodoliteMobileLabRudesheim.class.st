@@ -135,9 +135,8 @@ on: aCanvasAthensCanvas [
 			|
 				direction
 				farPoint
+				screenPoints
 				path
-				from
-				to
 			|
 
 			direction := each directionPoint - each initialPoint.
@@ -147,19 +146,16 @@ on: aCanvasAthensCanvas [
 				[
 					farPoint := each initialPoint + ( direction / direction r * rayLength ).
 
-					from :=
-						self
-							screenPointFor:	each initialPoint
-							bounds:	aBoundsRectangle
-							scale:	aScaleNumber
-							extent:	anExtentPoint.
-
-					to :=
-						self
-							screenPointFor:	farPoint
-							bounds:	aBoundsRectangle
-							scale:	aScaleNumber
-							extent:	anExtentPoint.
+					screenPoints :=
+						{ each initialPoint. farPoint }
+							collect:
+							[ :point |
+								self
+									screenPointFor:	point
+									bounds:	aBoundsRectangle
+									scale:	aScaleNumber
+									extent:	anExtentPoint.
+							].
 
 					path :=
 						aCanvasAthensCanvas
@@ -167,8 +163,8 @@ on: aCanvasAthensCanvas [
 							[ :aBuilder |
 								aBuilder
 									absolute;
-									moveTo:	from;
-									lineTo:	to.
+									moveTo:	screenPoints first;
+									lineTo:	screenPoints last.
 							].
 
 					(
@@ -230,64 +226,53 @@ MapDrawingTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesThe
 		aBearingLinesTheodoliteMobileLabRudesheim asArray collect: #initialPoint
 	) , aBearingLinesTheodoliteMobileLabRudesheim intersectionPoint.
 
-	^ points
+	points
 		ifEmpty:
 		[
-			#(  ).
-		]
-		ifNotEmpty:
-		[
-			extremes :=
-				#( #min: #max: )
-					collect:
-					[ :selector |
-						points
-							inject:	points first
-							into:
-							[ :accumulator :each |
-								accumulator
-									perform:	selector
-									with:	each.
-							].
-					].
-
-			minPoint := extremes first.
-			maxPoint := extremes last.
-
-			"A degenerate (zero-width and/or zero-height) box -- one point, or several
-			exactly-coincident points -- is padded per axis to a minimum span so a scale can
-			always be computed from it; #min:/#max: above are already componentwise (Point's own
-			comment), so only this padding threshold itself still has to look at x and y
-			separately -- it decides, independently per axis, whether that axis is degenerate."
-			padding :=
-				#( #x #y )
-					collect:
-					[ :axis |
-						(
-							(
-								maxPoint
-									perform:	axis
-							) -
-							(
-								minPoint
-									perform:	axis
-							)
-						) < 0.0001
-							ifTrue:
-							[
-								0.0005.
-							]
-							ifFalse:
-							[
-								0.
-							].
-					].
-
-			paddingPoint := padding first @ padding last.
-
-			{
-				minPoint - paddingPoint
-					corner:	maxPoint + paddingPoint
-			}.
+			^ #(  ).
 		].
+
+	"Point>>#min:/#max: are already componentwise (Point's own comment), so the two extremes come
+	from one data-driven pass over the pair of combining blocks rather than two near-duplicate
+	inject:into: reductions."
+	extremes :=
+		{
+			[ :accumulator :each | accumulator min: each ].
+			[ :accumulator :each | accumulator max: each ].
+		}
+			collect:
+			[ :combine |
+				points
+					inject:	points first
+					into:
+					[ :accumulator :each |
+						combine
+							value:	accumulator
+							value:	each.
+					].
+			].
+
+	minPoint := extremes first.
+	maxPoint := extremes last.
+
+	"A degenerate (zero-width and/or zero-height) box -- one point, or several exactly-coincident
+	points -- is padded per axis to a minimum span so a scale can always be computed from it; the
+	padding threshold itself still has to look at x and y separately -- it decides, independently
+	per axis, whether that axis is degenerate."
+	padding :=
+		#( #x #y )
+			collect:
+			[ :axis |
+				( ( axis value: maxPoint ) - ( axis value: minPoint ) ) < 0.0001
+					ifTrue:	[ 0.0005 ]
+					ifFalse:	[ 0 ].
+			].
+
+	paddingPoint := padding first @ padding last.
+
+	^
+	{
+		minPoint - paddingPoint
+			corner:	maxPoint + paddingPoint
+	}.
 ]
