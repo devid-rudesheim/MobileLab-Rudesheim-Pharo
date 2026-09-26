@@ -13,10 +13,10 @@ section 7.3 (NocoDB Sections 項番FM):
   as living inside #add: itself, not through separate Model-level observation.
 - #intersectionPoint / #mapURL are 0-or-1-element-array query methods (never nil, per the
   project's no-nil convention) computed on demand from the current lines, not cached.
-- #removeLast (and its alias #pop) is a no-op, not an error, when the collection is already empty
-  -- #removeLineButton's action calls it unconditionally with no count guard, so pressing it with
-  nothing recorded must not crash. It used to raise a `CollectionIsEmpty` error instead; fixed
-  alongside the exhaustive interface test suite that caught it (NoteHistory has the details).
+- #removeLast is a no-op, not an error, when the collection is already empty -- #removeLineButton's
+  action calls it unconditionally with no count guard, so pressing it with nothing recorded must
+  not crash. It used to raise a `CollectionIsEmpty` error instead; fixed alongside the exhaustive
+  interface test suite that caught it (NoteHistory has the details).
 - #warning defaults itself lazily to a fresh, empty NewValueHolder (per
   ~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule, same as
   ModelTheodoliteMobileLabRudesheim's own accessors) rather than requiring #warning: to be sent
@@ -32,13 +32,14 @@ OrderedCollection) go through `self value` explicitly instead of bare `self`, so
 not flag them as possibly-not-understood; #add:/#removeLast/#size/#warning are real methods here
 (declared on this class or CollectionValueHolder itself), so those stay as plain `self` sends.
 
-#push/#pop are the view-facing stack-style entry points action blocks actually call: #push reads
-the current position/heading from `Smalltalk os rudesheim location currentRay` (Rudesheim-MobileLab's
-OS-dispatch mechanism) and passes it through #add:; #pop is a plain alias for #removeLast. A caller
-that already has (or can build) a GRay -- e.g. a test supplying a synthetic origin/normalized
-bearing via `GRay origin:normalizedBearing:` -- uses #add:/#removeLast directly instead; #add:'s
-capacity/intersection
-coordination above applies either way.
+There is no #push/#pop wrapping #add:/#removeLast with the OS-dispatch position/heading read
+(`Smalltalk os rudesheim location currentRay`) baked in -- that read is slow (up to ~50 seconds,
+see MacOSLocationRudesheim's comment) and its own caller, the 'Add line' button's Spec2 action
+block, needs to disable/re-enable the add/remove buttons around it (see
+SpecBuilderTheodoliteMobileLabRudesheim's comment), which only that action block can do -- so it
+owns the `#future`/button-disabling entirely and calls #add:/#removeLast directly on this class with
+a GRay it already has, the same as a test supplying a synthetic one via
+`GRay origin:normalizedBearing:`.
 "
 Class {
 	#name : 'BearingLinesTheodoliteMobileLabRudesheim',
@@ -181,17 +182,6 @@ BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
 				put:	point y printString , ',' , point x printString;
 				yourself.
 		].
-]
-
-{ #category : 'removing' }
-BearingLinesTheodoliteMobileLabRudesheim >> pop [
-	^ self removeLast.
-]
-
-{ #category : 'adding' }
-BearingLinesTheodoliteMobileLabRudesheim >> push [
-	^ self
-		add:	Smalltalk os rudesheim location currentRay.
 ]
 
 { #category : 'removing' }

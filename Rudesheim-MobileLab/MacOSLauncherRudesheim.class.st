@@ -16,48 +16,48 @@ Class {
 { #category : 'accessing' }
 MacOSLauncherRudesheim class >> open: aZnUrl [
 	|
-		lib
+		library
 		workspace
 		url
 	|
 
-	lib := ObjCLibrary uniqueInstance.
+	library := ObjCLibrary uniqueInstance.
 
 	workspace :=
-		lib
+		library
 			sendMessage:
 			(
-				lib
+				library
 					lookupSelector:	'sharedWorkspace'
 			)
 			to:
 			(
-				lib
+				library
 					lookupClass:	'NSWorkspace'
 			).
 
 	url :=
-		lib
+		library
 			sendMessage:
 			(
-				lib
+				library
 					lookupSelector:	'URLWithString:'
 			)
 			to:
 			(
-				lib
+				library
 					lookupClass:	'NSURL'
 			)
 			with:
 			(
-				lib
+				library
 					nsStringOf:	aZnUrl displayString
 			).
 
-	^ lib
+	^ library
 		sendMessage:
 		(
-			lib
+			library
 				lookupSelector:	'openURL:'
 		)
 		to:	workspace

@@ -50,7 +50,7 @@ Class {
 { #category : 'private' }
 MacOSLocationRudesheim class >> addDelegateCallbackFor: aSelectorString
 to: aDelegateClass
-using: lib
+using: aLibrary
 block: aBlock [
 	|
 		callback
@@ -66,11 +66,11 @@ block: aBlock [
 					value:	arg2.
 			].
 
-	lib
+	aLibrary
 		class_addMethodClass:	aDelegateClass
 		selector:
 		(
-			lib
+			aLibrary
 				lookupSelector:	aSelectorString
 		)
 		implementation:	callback
@@ -82,16 +82,16 @@ block: aBlock [
 { #category : 'accessing' }
 MacOSLocationRudesheim class >> currentLocation [
 	|
-		lib
+		library
 	|
 
-	lib := ObjCLibrary uniqueInstance.
+	library := ObjCLibrary uniqueInstance.
 	pendingLocationDescription := nil.
 
-	lib
+	library
 		sendMessage:
 		(
-			lib
+			library
 				lookupSelector:	'requestLocation'
 		)
 		to:	self locationManager.
@@ -122,16 +122,16 @@ MacOSLocationRudesheim class >> currentLocation [
 { #category : 'accessing' }
 MacOSLocationRudesheim class >> currentNormalizedBearing [
 	|
-		lib
+		library
 	|
 
-	lib := ObjCLibrary uniqueInstance.
+	library := ObjCLibrary uniqueInstance.
 	pendingHeadingDegrees := nil.
 
-	lib
+	library
 		sendMessage:
 		(
-			lib
+			library
 				lookupSelector:	'startUpdatingHeading'
 		)
 		to:	self locationManager.
@@ -143,10 +143,10 @@ MacOSLocationRudesheim class >> currentNormalizedBearing [
 		]
 		timeoutSeconds:	25.
 
-	lib
+	library
 		sendMessage:
 		(
-			lib
+			library
 				lookupSelector:	'stopUpdatingHeading'
 		)
 		to:	self locationManager.
@@ -164,7 +164,7 @@ MacOSLocationRudesheim class >> currentNormalizedBearing [
 { #category : 'private' }
 MacOSLocationRudesheim class >> defaultLocationDelegate [
 	|
-		lib
+		library
 		delegateClass
 		instance
 	|
@@ -173,13 +173,13 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 		loadLibrary:	'/System/Library/Frameworks/CoreLocation.framework/CoreLocation'
 		flag:	2.
 
-	lib := ObjCLibrary uniqueInstance.
+	library := ObjCLibrary uniqueInstance.
 
 	delegateClass :=
-		lib
+		library
 			objc_allocateClassPairSuperclass:
 			(
-				lib
+				library
 					lookupClass:	'NSObject'
 			)
 			name:	'RudesheimMobileLabLocationDelegate'
@@ -193,12 +193,12 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 			self
 				addDelegateCallbackFor:	'locationManager:didUpdateLocations:'
 				to:	delegateClass
-				using:	lib
+				using:	library
 				block:
 				[ :managerArg :locationsArg |
 					self
 						recordUpdatedLocations:	locationsArg
-						using:	lib.
+						using:	library.
 				]
 		);
 		add:
@@ -206,7 +206,7 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 			self
 				addDelegateCallbackFor:	'locationManager:didFailWithError:'
 				to:	delegateClass
-				using:	lib
+				using:	library
 				block:
 				[ :managerArg :errorArg |
 					pendingLocationDescription := ''.
@@ -217,32 +217,32 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 			self
 				addDelegateCallbackFor:	'locationManager:didUpdateHeading:'
 				to:	delegateClass
-				using:	lib
+				using:	library
 				block:
 				[ :managerArg :headingArg |
 					self
 						recordUpdatedHeading:	headingArg
-						using:	lib.
+						using:	library.
 				]
 		).
 
-	lib
+	library
 		objc_registerClassPair:	delegateClass.
 
 	instance :=
-		lib
+		library
 			sendMessage:
 			(
-				lib
+				library
 					lookupSelector:	'alloc'
 			)
 			to:	delegateClass.
 
 	instance :=
-		lib
+		library
 			sendMessage:
 			(
-				lib
+				library
 					lookupSelector:	'init'
 			)
 			to:	instance.
@@ -253,47 +253,47 @@ MacOSLocationRudesheim class >> defaultLocationDelegate [
 { #category : 'private' }
 MacOSLocationRudesheim class >> defaultLocationManager [
 	|
-		lib
+		library
 		manager
 	|
 
-	lib := ObjCLibrary uniqueInstance.
+	library := ObjCLibrary uniqueInstance.
 
 	manager :=
-		lib
+		library
 			sendMessage:
 			(
-				lib
+				library
 					lookupSelector:	'alloc'
 			)
 			to:
 			(
-				lib
+				library
 					lookupClass:	'CLLocationManager'
 			).
 
 	manager :=
-		lib
+		library
 			sendMessage:
 			(
-				lib
+				library
 					lookupSelector:	'init'
 			)
 			to:	manager.
 
-	lib
+	library
 		sendMessage:
 		(
-			lib
+			library
 				lookupSelector:	'setDelegate:'
 		)
 		to:	manager
 		with:	self locationDelegate.
 
-	lib
+	library
 		sendMessage:
 		(
-			lib
+			library
 				lookupSelector:	'requestWhenInUseAuthorization'
 		)
 		to:	manager.
@@ -321,16 +321,16 @@ MacOSLocationRudesheim class >> locationManager [
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> nsStringToString: nsString
-using: lib [
+using: aLibrary [
 	|
 		cString
 	|
 
 	cString :=
-		lib
+		aLibrary
 			sendMessage:
 			(
-				lib
+				aLibrary
 					lookupSelector:	'UTF8String'
 			)
 			to:	nsString.
@@ -340,12 +340,12 @@ using: lib [
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> recordUpdatedHeading: headingArg
-using: lib [
+using: aLibrary [
 	pendingHeadingDegrees :=
-		lib
+		aLibrary
 			sendDoubleMessage:
 			(
-				lib
+				aLibrary
 					lookupSelector:	'trueHeading'
 			)
 			to:	headingArg.
@@ -353,17 +353,17 @@ using: lib [
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> recordUpdatedLocations: locationsArg
-using: lib [
+using: aLibrary [
 	|
 		firstLocation
 		description
 	|
 
 	firstLocation :=
-		lib
+		aLibrary
 			sendMessage:
 			(
-				lib
+				aLibrary
 					lookupSelector:	'firstObject'
 			)
 			to:	locationsArg.
@@ -372,15 +372,15 @@ using: lib [
 		self
 			nsStringToString:
 			(
-				lib
+				aLibrary
 					sendMessage:
 					(
-						lib
+						aLibrary
 							lookupSelector:	'description'
 					)
 					to:	firstLocation
 			)
-			using:	lib.
+			using:	aLibrary.
 
 	pendingLocationDescription := description.
 ]
