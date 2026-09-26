@@ -10,3 +10,8 @@ Class {
 MobileLabRudesheim class >> Location [
 	^ LocationMobileLabRudesheim.
 ]
+
+{ #category : 'namespace' }
+MobileLabRudesheim class >> WorldMenu [
+	^ WorldMenuMobileLabRudesheim.
+]

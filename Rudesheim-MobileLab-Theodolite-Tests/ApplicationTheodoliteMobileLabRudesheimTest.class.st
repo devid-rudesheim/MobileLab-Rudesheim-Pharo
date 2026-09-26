@@ -15,6 +15,13 @@ ApplicationTheodoliteMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testMenuLabel [
+	self
+		assert:	self targetClass menuLabel
+		equals:	'Theodolite'.
+]
+
+{ #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 	self
 		shouldnt:
@@ -22,6 +29,12 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 			self basicTarget run.
 		]
 		raise:	Error.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testWorldMenuApplicationClassesIncludesTheodolite [
+	self
+		assert:	(Rudesheim MobileLab WorldMenu applicationClasses includes: self targetClass).
 ]
 
 { #category : 'tests' }
