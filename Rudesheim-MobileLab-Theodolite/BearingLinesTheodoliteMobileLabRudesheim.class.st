@@ -39,6 +39,17 @@ that already has (or can build) a GRay -- e.g. a test supplying a synthetic orig
 bearing via `GRay origin:normalizedBearing:` -- uses #add:/#removeLast directly instead; #add:'s
 capacity/intersection
 coordination above applies either way.
+
+#push runs `currentRay` on a TaskIt background process (`#future`), not on its caller's own process:
+`currentRay` synchronously blocks for up to ~50 seconds (two 25-second `waitUntil:timeoutSeconds:`
+polls inside MacOSLocationRudesheim, see its comment) waiting on a CoreLocation delegate callback,
+and #push's only real caller is the 'Add line' button's Spec2 action block, which runs on the UI
+process -- calling `currentRay` there directly used to freeze the whole UI for the length of the
+wait. The future's callbacks (#onSuccessDo:/#onFailureDo:) run #add: or update #warning back on the
+UI process via `UIManager default defer:`, since Spec2/Morphic's own display updates (driven by
+NewValueHolder's announcer, which both #add: and #warning go through) are UI-process-only, like any
+other Morphic mutation. A location/heading failure (timeout or otherwise) surfaces through the
+existing #warning mechanism instead of raising into the UI process.
 "
 Class {
 	#name : 'BearingLinesTheodoliteMobileLabRudesheim',
@@ -190,8 +201,30 @@ BearingLinesTheodoliteMobileLabRudesheim >> pop [
 
 { #category : 'adding' }
 BearingLinesTheodoliteMobileLabRudesheim >> push [
-	^ self
-		add:	Smalltalk os rudesheim location currentRay.
+	[
+		Smalltalk os rudesheim location currentRay.
+	] future
+		onSuccessDo:
+		[ :aGRay |
+			UIManager default
+				defer:
+				[
+					self
+						add:	aGRay.
+				].
+		];
+		onFailureDo:
+		[ :anError |
+			UIManager default
+				defer:
+				[
+					self warning
+						value:
+						{
+							anError messageText
+						}.
+				].
+		].
 ]
 
 { #category : 'removing' }
