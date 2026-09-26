@@ -3,13 +3,16 @@ A RendererTheodoliteMobileLabRudesheimTest tests the pure geometry
 RendererTheodoliteMobileLabRudesheim splits out from its actual Athens canvas calls (NocoDB
 Sections 項番GM): class-side #worldBoundsFor: (the fit-to-bounds requirement -- every origin plus
 the current intersection point must stay in frame), #scaleToFit:inExtent: and
-#renderersFor:canvas: (a 0-or-1-element array of ready renderers --
-StubAthensCanvasTheodoliteMobileLabRudesheim stands in for a real AthensCanvas, exposing just
-`surface extent`), plus instance-side #screenPointFor: (needs only #bounds:/#extent: set, so a
-test can build a bare instance for it without a real Athens surface -- this class holds no
-`canvas` at all, so there is nothing to leave unset). The actual Athens-calling drawing lives on
+#renderersFor:canvas: (a 0-or-1-element array of ready renderers -- since #renderersFor:canvas:
+only ever sends `surface extent` to its canvas argument, a real, in-memory
+`(AthensCairoSurface extent: aPoint) newCanvas` -- fully headless, no OS window involved --
+answers that identically to a dedicated stub, so no stub class is kept around just for this),
+plus instance-side #screenPointFor: (needs only #bounds:/#extent: set, so a test can build a bare
+instance for it without a real Athens surface -- this class holds no `canvas` at all, so there is
+nothing to leave unset). The actual Athens-calling drawing lives on
 RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim's #drawOnAthensCanvas:, which
-does need a real surface -- out of scope for a headless SUnit run.
+does need a real presenter-owned surface (not just a bare in-memory one) -- out of scope for a
+headless SUnit run.
 "
 Class {
 	#name : 'RendererTheodoliteMobileLabRudesheimTest',
@@ -103,7 +106,7 @@ RendererTheodoliteMobileLabRudesheimTest >> testRenderersForSingleLineBuildsOneR
 				normalizedBearing:	0.25
 		).
 
-	canvas := StubAthensCanvasTheodoliteMobileLabRudesheim new.
+	canvas := (AthensCairoSurface extent: 200 @ 200) newCanvas.
 
 	renderers :=
 		self targetClass
