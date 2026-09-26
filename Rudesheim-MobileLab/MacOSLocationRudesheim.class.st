@@ -387,7 +387,7 @@ using: lib [
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> signalLocationUnavailable [
-	^ LocationUnavailableMobileLabRudesheim signal.
+	^ Smalltalk os rudesheim locationUnavailable signal.
 ]
 
 { #category : 'private' }

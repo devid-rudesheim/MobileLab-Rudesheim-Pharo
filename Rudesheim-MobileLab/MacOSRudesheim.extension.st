@@ -9,3 +9,8 @@ MacOSRudesheim class >> launcher [
 MacOSRudesheim class >> location [
 	^ MacOSLocationRudesheim.
 ]
+
+{ #category : '*Rudesheim-MobileLab' }
+MacOSRudesheim class >> locationUnavailable [
+	^ LocationUnavailableMobileLabRudesheim.
+]

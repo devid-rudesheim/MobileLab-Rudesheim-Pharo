@@ -5,6 +5,12 @@ heading fix -- a known external-cause condition (e.g. macOS never granting CoreL
 authorization to a bare headless Pharo process, see MacOSLocationRudesheim's own comment), not a
 bug in this app. Dedicated so a UI action block can `on:do:` it specifically and show the user a
 message instead of dropping into the debugger, without also swallowing unrelated Errors.
+
+Placed alongside MacOSLocationRudesheim in the same OS-dispatch namespace, rather than as a bare
+global: reached as `Smalltalk os rudesheim locationUnavailable` (or, for reflective discovery,
+`Rudesheim OS Mac locationUnavailable`) via MacOSRudesheim's own `#location`/`#locationUnavailable`
+extension accessors (MacOSRudesheim.extension.st, Rudesheim-MobileLab) -- mirroring how
+MacOSLocationRudesheim itself is reached.
 "
 Class {
 	#name : 'LocationUnavailableMobileLabRudesheim',

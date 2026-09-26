@@ -15,8 +15,8 @@ the self-drawn map -- NocoDB Sections 項番GM) and #addLineButton/#removeLineBu
 #addLineButton's action is just `aModel bearingLines push` -- sourcing the current position/heading
 is BearingLinesTheodoliteMobileLabRudesheim's own concern (via Rudesheim-MobileLab's OS-dispatch
 mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesheim's comment for
-its own known limitation) -- guarded by an `on: LocationUnavailableMobileLabRudesheim do:` around
-just `push`/`redraw` (not the whole action) so that known, external-cause failure (the OS never
+its own known limitation) -- guarded by an `on: Smalltalk os rudesheim locationUnavailable do:`
+around just `push`/`redraw` (not the whole action) so that known, external-cause failure (the OS never
 granting location access) shows the user a plain `UIManager default inform:` message instead of
 opening the debugger, while any other, unexpected Error still does.
 
@@ -157,7 +157,7 @@ toView: aView [
 				aModel bearingLines push.
 				aView mapArea redraw.
 			]
-				on:	LocationUnavailableMobileLabRudesheim
+				on:	Smalltalk os rudesheim locationUnavailable
 				do:
 				[ :anException |
 					UIManager default
