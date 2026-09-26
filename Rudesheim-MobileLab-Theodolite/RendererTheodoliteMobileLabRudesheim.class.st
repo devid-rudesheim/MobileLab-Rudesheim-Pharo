@@ -110,29 +110,21 @@ RendererTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheod
 			^ #(  ).
 		].
 
-	"Point>>#min:/#max: are already componentwise (Point's own comment), so the two extremes come
-	from one data-driven pass over the pair of combining blocks rather than two near-duplicate
-	inject:into: reductions."
+	"points are GRay>>#initialPoint/BearingLines>>#intersectionPoint's actual answer, GPoint, not
+	plain kernel Point -- GPoint has no #min:/#max: (confirmed by a real `doesNotUnderstand: #min:`
+	on CI; #x/#y and Number's own #min/#max are what's actually guaranteed on it), so the two
+	extremes are computed per-axis from those and reassembled as plain Points via @ -- like
+	paddingPoint below already is; nothing downstream needs GPoint-ness preserved past this point."
 	extremes :=
-	{
-		[ :accumulator :each |
-			accumulator
-				min:	each.
-		].
-		[ :accumulator :each |
-			accumulator
-				max:	each.
-		]
-	}
-		collect:
-		[ :combine |
-			points
-				inject:	points first
-				into:	combine.
-		].
+		#( #x #y )
+			collect:
+			[ :axis |
+				points
+					collect:	axis.
+			].
 
-	minPoint := extremes first.
-	maxPoint := extremes last.
+	minPoint := extremes first min @ extremes last min.
+	maxPoint := extremes first max @ extremes last max.
 
 	"A degenerate (zero-width and/or zero-height) box -- one point, or several exactly-coincident
 	points -- is padded per axis to a minimum span so a scale can always be computed from it; the
