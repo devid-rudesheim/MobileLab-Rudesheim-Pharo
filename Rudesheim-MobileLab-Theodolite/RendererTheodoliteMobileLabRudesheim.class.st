@@ -92,7 +92,7 @@ RendererTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheod
 	nothing to fit (no lines recorded yet)."
 	|
 		points
-		extremes
+		bounds
 		minPoint
 		maxPoint
 		padding
@@ -112,19 +112,24 @@ RendererTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheod
 
 	"points are GRay>>#initialPoint/BearingLines>>#intersectionPoint's actual answer, GPoint, not
 	plain kernel Point -- GPoint has no #min:/#max: (confirmed by a real `doesNotUnderstand: #min:`
-	on CI; #x/#y and Number's own #min/#max are what's actually guaranteed on it), so the two
-	extremes are computed per-axis from those and reassembled as plain Points via @ -- like
-	paddingPoint below already is; nothing downstream needs GPoint-ness preserved past this point."
-	extremes :=
-		#( #x #y )
-			collect:
-			[ :axis |
+	on CI; #x/#y is what's actually guaranteed on it). Rectangle class>>#encompassing: already is
+	the 'smallest Rectangle enclosing these points' operation, so it is reused here rather than
+	hand-rolling the same per-axis min/max reduction again -- but #encompassing: itself sends
+	#min:/#max: straight to the points it's given, so each point is converted to a plain Point via
+	@ first (a Point's #min:/#max: are componentwise) before being handed to it."
+	bounds :=
+		Rectangle
+			encompassing:
+			(
 				points
-					collect:	axis.
-			].
+					collect:
+					[ :each |
+						each x @ each y.
+					]
+			).
 
-	minPoint := extremes first min @ extremes last min.
-	maxPoint := extremes first max @ extremes last max.
+	minPoint := bounds origin.
+	maxPoint := bounds corner.
 
 	"A degenerate (zero-width and/or zero-height) box -- one point, or several exactly-coincident
 	points -- is padded per axis to a minimum span so a scale can always be computed from it; the
