@@ -18,13 +18,16 @@ comment for its own known limitation) rather than delegating that to
 BearingLinesTheodoliteMobileLabRudesheim (see its own comment for why): `currentRay` blocks its
 caller for up to ~50 seconds waiting on a CoreLocation delegate callback, so it runs on a TaskIt
 background process (`#future`) instead of the UI process, with #addLineButton/#removeLineButton
-both disabled for the duration via the local `setButtonsEnabled` block (`aBoolean ->` both buttons'
-`#enabled:`) -- this button owns that whole fetch, so it is the natural (and only) place that can
-also own disabling itself and its sibling button around it, which is why the fetch was not left
-inside BearingLinesTheodoliteMobileLabRudesheim's own #push (now removed). The future's callbacks
-run back on the UI process via `aView addLineButton defer:` (an SpPresenter, so this routes through
-the app's own SpApplication/backend, unlike the UI-agnostic `UIManager default defer:`) -- #add: on
-success, re-enabling both buttons via `setButtonsEnabled` either way. A location/heading failure
+and #discardButton all disabled for the duration via the local `setButtonsEnabled` block
+(`aBoolean ->` all three buttons' `#enabled:`) -- this button owns that whole fetch, so it is the
+natural (and only) place that can also own disabling itself and the other two around it, which is
+why the fetch was not left inside BearingLinesTheodoliteMobileLabRudesheim's own #push (now
+removed). #discardButton is included because a discard landing mid-fetch (before the fetched line
+is added) would otherwise let that line get added right back onto what was just supposed to be an
+empty collection. The future's callbacks run back on the UI process via
+`aView addLineButton defer:` (an SpPresenter, so this routes through the app's own
+SpApplication/backend, unlike the UI-agnostic `UIManager default defer:`) -- #add: on success,
+re-enabling all three buttons via `setButtonsEnabled` either way. A location/heading failure
 (timeout or otherwise) surfaces through the existing #warning mechanism (same as #add:'s own
 near-parallel-line rejection) rather than a dialog, so there is no `on:do:` guard to open the
 debugger for.
@@ -73,16 +76,17 @@ toView: aView [
 
 	setButtonsEnabled :=
 	[ :aBoolean |
-			{
-				aView addLineButton.
-				aView removeLineButton
-			}
-				do:
-				[ :each |
-					each
-						enabled:	aBoolean.
-				].
-		].
+		{
+			aView addLineButton.
+			aView removeLineButton.
+			aView discardButton
+		}
+			do:
+			[ :each |
+				each
+					enabled:	aBoolean.
+			].
+	].
 
 	(
 		SpPresenterWithModel new
