@@ -18,15 +18,16 @@ comment for its own known limitation) rather than delegating that to
 BearingLinesTheodoliteMobileLabRudesheim (see its own comment for why): `currentRay` blocks its
 caller for up to ~50 seconds waiting on a CoreLocation delegate callback, so it runs on a TaskIt
 background process (`#future`) instead of the UI process, with #addLineButton/#removeLineButton
-both disabled (`#enabled: false`) for the duration -- this button owns that whole fetch, so it is
-the natural (and only) place that can also own disabling itself and its sibling button around it,
-which is why the fetch was not left inside BearingLinesTheodoliteMobileLabRudesheim's own #push
-(now removed). The future's callbacks run back on the UI process via `aView addLineButton defer:`
-(an SpPresenter, so this routes through the app's own SpApplication/backend, unlike the
-UI-agnostic `UIManager default defer:`) -- #add: on success, re-enabling both buttons either way.
-A location/heading failure (timeout or otherwise) surfaces through the existing #warning mechanism
-(same as #add:'s own near-parallel-line rejection) rather than a dialog, so there is no `on:do:`
-guard to open the debugger for.
+both disabled for the duration via the local `setButtonsEnabled` block (`aBoolean ->` both buttons'
+`#enabled:`) -- this button owns that whole fetch, so it is the natural (and only) place that can
+also own disabling itself and its sibling button around it, which is why the fetch was not left
+inside BearingLinesTheodoliteMobileLabRudesheim's own #push (now removed). The future's callbacks
+run back on the UI process via `aView addLineButton defer:` (an SpPresenter, so this routes through
+the app's own SpApplication/backend, unlike the UI-agnostic `UIManager default defer:`) -- #add: on
+success, re-enabling both buttons via `setButtonsEnabled` either way. A location/heading failure
+(timeout or otherwise) surfaces through the existing #warning mechanism (same as #add:'s own
+near-parallel-line rejection) rather than a dialog, so there is no `on:do:` guard to open the
+debugger for.
 
 #openButton's action and the LaunchRequested handler below open each
 mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a `ZnUrl`-side
@@ -66,6 +67,23 @@ toView: aView [
 	rather than trusting the raw value SpPresenterWithModel's port hands them (that value is
 	whatever the underlying NewValueHolder is holding right now -- a plain OrderedCollection or
 	Array, not the richer BearingLinesTheodoliteMobileLabRudesheim/warning holder itself)."
+	|
+		setButtonsEnabled
+	|
+
+	setButtonsEnabled :=
+	[ :aBoolean |
+			{
+				aView addLineButton.
+				aView removeLineButton
+			}
+				do:
+				[ :each |
+					each
+						enabled:	aBoolean.
+				].
+		].
+
 	(
 		SpPresenterWithModel new
 			model:	aModel bearingLines
@@ -162,11 +180,8 @@ toView: aView [
 	aView addLineButton
 		action:
 		[
-			aView addLineButton
-				enabled:	false.
-
-			aView removeLineButton
-				enabled:	false.
+			setButtonsEnabled
+				value:	false.
 
 			[
 				Smalltalk os rudesheim location currentRay.
@@ -181,11 +196,8 @@ toView: aView [
 
 							aView mapArea redraw.
 
-							aView addLineButton
-								enabled:	true.
-
-							aView removeLineButton
-								enabled:	true.
+							setButtonsEnabled
+								value:	true.
 						].
 				];
 				onFailureDo:
@@ -199,11 +211,8 @@ toView: aView [
 									anError messageText
 								}.
 
-							aView addLineButton
-								enabled:	true.
-
-							aView removeLineButton
-								enabled:	true.
+							setButtonsEnabled
+								value:	true.
 						].
 				].
 		].
