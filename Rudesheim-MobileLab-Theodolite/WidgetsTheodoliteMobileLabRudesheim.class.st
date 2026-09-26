@@ -6,9 +6,12 @@ warning readouts and add/remove/open/copy/discard controls, only arranged differ
 as `Rudesheim MobileLab Theodolite Widgets`.
 
 It exists to satisfy exactly the widget protocol SpecBuilderTheodoliteMobileLabRudesheim>>
-#bindModel:toView: needs: #progressLabel/#addressBar/#warningLabel (each a real SpLabelPresenter)
-and #addLineButton/#removeLineButton/#openButton/#copyButton/#discardButton (each a real
-SpButtonPresenter). Each accessor lazily builds its own widget via a matching #defaultXxx method
+#bindModel:toView: needs: #progressLabel/#addressBar/#warningLabel (each a real SpLabelPresenter),
+#mapArea (a real SpAthensPresenter -- the self-drawn map, decision recorded in NocoDB Sections
+項番GM, rendered by RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim) and
+#addLineButton/#removeLineButton/
+#openButton/#copyButton/#discardButton (each a real SpButtonPresenter). Each accessor lazily
+builds its own widget via a matching #defaultXxx method
 (~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule, also followed by
 ModelTheodoliteMobileLabRudesheim's #bearingLines/#defaultBearingLines) -- callers never
 construct these presenters themselves and pass them in; they only ever read the accessors.
@@ -20,10 +23,17 @@ already resolves to that owning presenter's own trait-provided factory methods a
 widget's SpAbstractPresenter-owner chain correctly (matching `SpPresenter>>#instantiate:`'s own
 `aPresenterClass owner: self`, so there is no need to reimplement that wiring here). Each View
 gets its own Widgets instance; the widget protocol is shared, not the widget instances.
+
+`owner` has no sensible lazy default (there is no default presenter to build widgets under), so a
+plain `new` would answer an unusable instance that raises `nil doesNotUnderstand:` on its very
+first widget accessor -- TShouldntNewRudesheim blocks `new` outright instead, and class-side
+#owner: (the sole constructor) uses `super new` to get past that guard.
 "
 Class {
 	#name : 'WidgetsTheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
+	#traits : 'TShouldntNewRudesheim',
+	#classTraits : 'TShouldntNewRudesheim classTrait',
 	#instVars : [
 		'owner',
 		'progressLabel',
@@ -33,7 +43,8 @@ Class {
 		'removeLineButton',
 		'openButton',
 		'copyButton',
-		'discardButton'
+		'discardButton',
+		'mapArea'
 	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
@@ -41,7 +52,7 @@ Class {
 
 { #category : 'instance creation' }
 WidgetsTheodoliteMobileLabRudesheim class >> owner: anOwningPresenter [
-	^ self new
+	^ super new
 		owner:	anOwningPresenter;
 		yourself.
 ]
@@ -102,6 +113,11 @@ WidgetsTheodoliteMobileLabRudesheim >> defaultDiscardButton [
 ]
 
 { #category : 'private' }
+WidgetsTheodoliteMobileLabRudesheim >> defaultMapArea [
+	^ self owner newAthens.
+]
+
+{ #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultOpenButton [
 	^ self owner newButton
 		label:	'Open';
@@ -135,6 +151,15 @@ WidgetsTheodoliteMobileLabRudesheim >> discardButton [
 		ifNil:
 		[
 			discardButton := self defaultDiscardButton.
+		].
+]
+
+{ #category : 'accessing' }
+WidgetsTheodoliteMobileLabRudesheim >> mapArea [
+	^ mapArea
+		ifNil:
+		[
+			mapArea := self defaultMapArea.
 		].
 ]
 

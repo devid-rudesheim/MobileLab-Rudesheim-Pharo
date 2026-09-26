@@ -8,16 +8,40 @@ section 7.4 (NocoDB Sections 項番FL). Stateless: it exists only for its class-
 #bindModel:toView:, called once per View instance.
 
 `toView:` just needs to answer #progressLabel/#addressBar/#warningLabel (each an
-SpAbstractPresenter, for the Spec2-Transmission read direction) and #addLineButton/
-#removeLineButton/#openButton/#copyButton/#discardButton (each an SpButtonPresenter, for the
-write-direction action blocks).
+SpAbstractPresenter, for the Spec2-Transmission read direction), #mapArea (an SpAthensPresenter,
+the self-drawn map -- NocoDB Sections 項番GM) and #addLineButton/#removeLineButton/#openButton/
+#copyButton/#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
 
 #addLineButton's action is just `aModel bearingLines push` -- sourcing the current position/heading
 is BearingLinesTheodoliteMobileLabRudesheim's own concern (via Rudesheim-MobileLab's OS-dispatch
 mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesheim's comment for
-its own known limitation). #openButton's action and the LaunchRequested handler below open each
+its own known limitation) -- guarded by an `on: Smalltalk os rudesheim locationUnavailable do:`
+around just `push`/`redraw` (not the whole action) so that known, external-cause failure (the OS never
+granting location access) shows the user a plain `UIManager default inform:` message instead of
+opening the debugger, while any other, unexpected Error still does.
+
+#openButton's action and the LaunchRequested handler below open each
 mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a `ZnUrl`-side
 #launch -- see OSLauncherRudesheim's comment for why that dispatch lives there instead.
+
+#mapArea's drawBlock: re-renders from `aModel bearingLines` directly (like the transform blocks
+above, not from whatever raw value Spec2-Transmission's port would hand it): it clears the canvas,
+then asks RendererTheodoliteMobileLabRudesheim class>>#renderersFor:canvas: for a 0-or-1-element
+array of ready renderers (it refits the visible bounds -- every origin plus the current
+intersection point -- from scratch on every call, so the block itself never sees an intermediate
+Rectangle) and, for each renderer, sends `aCanvas draw: (each renderer: renderer)` for both
+RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim classes -- their class-side
+#renderer: builds the instance right there, as `#draw:`'s argument. AthensCanvas>>#draw:'s own
+generic double-dispatch (`^ anObject drawOnAthensCanvas: self`, already provided by Athens, not
+something this app defines) is exactly why both classes answer #drawOnAthensCanvas:. `aCanvas`
+itself is not kept anywhere longer-lived than that one send, since it is only valid for the
+duration of Athens' own paint callback. This is inlined here rather than behind a class-side
+`Renderer class>>#drawBearingLines:on:` entry point because that method (like the
+Renderer-instance-side #draw it used to call, before Rays/Markers existed) had exactly one
+caller -- this block. #addLineButton/
+#removeLineButton/#discardButton each explicitly send #redraw after mutating `aModel bearingLines`,
+so every 'Add line' press (and every remove/discard) refits and repaints the map; #openButton/
+#copyButton do not mutate the lines, so they do not redraw.
 "
 Class {
 	#name : 'SpecBuilderTheodoliteMobileLabRudesheim',
@@ -93,23 +117,70 @@ toView: aView [
 				].
 		].
 
+	aView mapArea
+		drawBlock:
+		[ :aCanvas |
+			|
+				theodolite
+			|
+
+			theodolite := Rudesheim MobileLab Theodolite.
+			aCanvas surface clear.
+
+			(
+				theodolite Renderer
+					renderersFor:	aModel bearingLines
+					canvas:	aCanvas
+			)
+				do:
+				[ :renderer |
+					{
+						theodolite Rays.
+						theodolite Markers
+					}
+						do:
+						[ :each |
+							aCanvas
+								draw:
+								(
+									each
+										renderer:	renderer
+								).
+						].
+				].
+		].
+
 	aView addLineButton
 		action:
 		[
-			aModel bearingLines push.
+			[
+				aModel bearingLines push.
+				aView mapArea redraw.
+			]
+				on:	Smalltalk os rudesheim locationUnavailable
+				do:
+				[ :anException |
+					UIManager default
+						inform:	anException messageText.
+				].
 		].
 
 	aView removeLineButton
 		action:
 		[
 			aModel bearingLines pop.
+			aView mapArea redraw.
 		].
 
 	aView openButton
 		action:
 		[
 			aModel bearingLines mapURL
-				do:	[ :url | Smalltalk os rudesheim launcher open: url ].
+				do:
+				[ :url |
+					Smalltalk os rudesheim launcher
+						open:	url.
+				].
 		].
 
 	aView copyButton
@@ -127,6 +198,7 @@ toView: aView [
 		action:
 		[
 			aModel discardAll.
+			aView mapArea redraw.
 		].
 
 	aModel bearingLines announcer
@@ -134,7 +206,11 @@ toView: aView [
 		do:
 		[
 			aModel bearingLines mapURL
-				do:	[ :url | Smalltalk os rudesheim launcher open: url ].
+				do:
+				[ :url |
+					Smalltalk os rudesheim launcher
+						open:	url.
+				].
 		]
 		for:	aView.
 ]
