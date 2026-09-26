@@ -93,8 +93,6 @@ RendererTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheod
 	|
 		points
 		bounds
-		minPoint
-		maxPoint
 		padding
 		paddingPoint
 	|
@@ -112,43 +110,32 @@ RendererTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheod
 
 	"points are GRay>>#initialPoint/BearingLines>>#intersectionPoint's actual answer, GPoint, not
 	plain kernel Point -- GPoint has no #min:/#max: (confirmed by a real `doesNotUnderstand: #min:`
-	on CI; #x/#y is what's actually guaranteed on it). Rectangle class>>#encompassing: already is
-	the 'smallest Rectangle enclosing these points' operation, so it is reused here rather than
-	hand-rolling the same per-axis min/max reduction again -- but #encompassing: itself sends
-	#min:/#max: straight to the points it's given, so each point is converted to a plain Point via
-	@ first (a Point's #min:/#max: are componentwise) before being handed to it."
+	on CI; #x/#y is what's actually guaranteed on it, and #asPoint is GPoint's own conversion to a
+	real Point using exactly that). Rectangle class>>#encompassing: already is the 'smallest
+	Rectangle enclosing these points' operation, so it is reused here rather than hand-rolling the
+	same per-axis min/max reduction again -- but #encompassing: itself sends #min:/#max: straight to
+	the points it's given, so each point is converted to a plain Point first (a Point's #min:/#max:
+	are componentwise) before being handed to it."
 	bounds :=
 		Rectangle
 			encompassing:
 			(
 				points
-					collect:
-					[ :each |
-						each x @ each y.
-					]
+					collect:	#asPoint
 			).
 
-	minPoint := bounds origin.
-	maxPoint := bounds corner.
-
 	"A degenerate (zero-width and/or zero-height) box -- one point, or several exactly-coincident
-	points -- is padded per axis to a minimum span so a scale can always be computed from it; the
-	padding threshold itself still has to look at x and y separately -- it decides, independently
+	points -- is padded to a minimum span so a scale can always be computed from it; the padding
+	threshold itself still has to look at width and height separately -- it decides, independently
 	per axis, whether that axis is degenerate."
 	padding :=
-		#( #x #y )
+		{
+			bounds width.
+			bounds height
+		}
 			collect:
-			[ :axis |
-				(
-					(
-						axis
-							value:	maxPoint
-					) -
-					(
-						axis
-							value:	minPoint
-					)
-				) < 0.0001
+			[ :span |
+				span < 0.0001
 					ifTrue:
 					[
 						0.0005.
@@ -163,8 +150,8 @@ RendererTheodoliteMobileLabRudesheim class >> worldBoundsFor: aBearingLinesTheod
 
 	^
 	{
-		minPoint - paddingPoint
-			corner:	maxPoint + paddingPoint
+		bounds
+			expandBy:	paddingPoint
 	}.
 ]
 

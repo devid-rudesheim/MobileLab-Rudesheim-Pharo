@@ -53,8 +53,9 @@ MarkersTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 					anAthensCanvas
 						drawShape:
 						(
-							screenPoint - radius
-								corner:	screenPoint + radius
+							Rectangle
+								center:	screenPoint
+								extent:	radius * 2
 						).
 				].
 		].
