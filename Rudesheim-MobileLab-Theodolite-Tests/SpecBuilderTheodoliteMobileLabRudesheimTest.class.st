@@ -120,7 +120,7 @@ SpecBuilderTheodoliteMobileLabRudesheimTest >> testCopyButtonCopiesMapURL [
 ]
 
 { #category : 'tests' }
-SpecBuilderTheodoliteMobileLabRudesheimTest >> testRemoveLineButtonPopsLastLine [
+SpecBuilderTheodoliteMobileLabRudesheimTest >> testRemoveLineButtonRemovesLastLine [
 	|
 		theodolite
 		app

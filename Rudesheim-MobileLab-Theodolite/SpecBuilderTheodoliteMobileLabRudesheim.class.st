@@ -12,13 +12,21 @@ SpAbstractPresenter, for the Spec2-Transmission read direction), #mapArea (an Sp
 the self-drawn map -- NocoDB Sections 項番GM) and #addLineButton/#removeLineButton/#openButton/
 #copyButton/#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
 
-#addLineButton's action is just `aModel bearingLines push` -- sourcing the current position/heading
-is BearingLinesTheodoliteMobileLabRudesheim's own concern (via Rudesheim-MobileLab's OS-dispatch
-mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesheim's comment for
-its own known limitation) -- guarded by an `on: Smalltalk os rudesheim locationUnavailable do:`
-around just `push`/`redraw` (not the whole action) so that known, external-cause failure (the OS never
-granting location access) shows the user a plain `UIManager default inform:` message instead of
-opening the debugger, while any other, unexpected Error still does.
+#addLineButton's action reads the current position/heading itself (via Rudesheim-MobileLab's
+OS-dispatch mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesheim's
+comment for its own known limitation) rather than delegating that to
+BearingLinesTheodoliteMobileLabRudesheim (see its own comment for why): `currentRay` blocks its
+caller for up to ~50 seconds waiting on a CoreLocation delegate callback, so it runs on a TaskIt
+background process (`#future`) instead of the UI process, with #addLineButton/#removeLineButton
+both disabled (`#enabled: false`) for the duration -- this button owns that whole fetch, so it is
+the natural (and only) place that can also own disabling itself and its sibling button around it,
+which is why the fetch was not left inside BearingLinesTheodoliteMobileLabRudesheim's own #push
+(now removed). The future's callbacks run back on the UI process via `aView addLineButton defer:`
+(an SpPresenter, so this routes through the app's own SpApplication/backend, unlike the
+UI-agnostic `UIManager default defer:`) -- #add: on success, re-enabling both buttons either way.
+A location/heading failure (timeout or otherwise) surfaces through the existing #warning mechanism
+(same as #add:'s own near-parallel-line rejection) rather than a dialog, so there is no `on:do:`
+guard to open the debugger for.
 
 #openButton's action and the LaunchRequested handler below open each
 mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a `ZnUrl`-side
@@ -38,10 +46,11 @@ itself is not kept anywhere longer-lived than that one send, since it is only va
 duration of Athens' own paint callback. This is inlined here rather than behind a class-side
 `Renderer class>>#drawBearingLines:on:` entry point because that method (like the
 Renderer-instance-side #draw it used to call, before Rays/Markers existed) had exactly one
-caller -- this block. #addLineButton/
-#removeLineButton/#discardButton each explicitly send #redraw after mutating `aModel bearingLines`,
-so every 'Add line' press (and every remove/discard) refits and repaints the map; #openButton/
-#copyButton do not mutate the lines, so they do not redraw.
+caller -- this block. #removeLineButton/#discardButton each explicitly send #redraw right after
+mutating `aModel bearingLines`, since both do so synchronously; #addLineButton's own #redraw send
+is inside its future's success callback instead, since that is the point its mutation actually
+happens. Either way every accepted 'Add line' press (and every remove/discard) refits and repaints
+the map; #openButton/#copyButton do not mutate the lines, so they do not redraw.
 "
 Class {
 	#name : 'SpecBuilderTheodoliteMobileLabRudesheim',
@@ -153,22 +162,56 @@ toView: aView [
 	aView addLineButton
 		action:
 		[
+			aView addLineButton
+				enabled:	false.
+
+			aView removeLineButton
+				enabled:	false.
+
 			[
-				aModel bearingLines push.
-				aView mapArea redraw.
-			]
-				on:	Smalltalk os rudesheim locationUnavailable
-				do:
-				[ :anException |
-					UIManager default
-						inform:	anException messageText.
+				Smalltalk os rudesheim location currentRay.
+			] future
+				onSuccessDo:
+				[ :aGRay |
+					aView addLineButton
+						defer:
+						[
+							aModel bearingLines
+								add:	aGRay.
+
+							aView mapArea redraw.
+
+							aView addLineButton
+								enabled:	true.
+
+							aView removeLineButton
+								enabled:	true.
+						].
+				];
+				onFailureDo:
+				[ :anError |
+					aView addLineButton
+						defer:
+						[
+							aModel warning
+								value:
+								{
+									anError messageText
+								}.
+
+							aView addLineButton
+								enabled:	true.
+
+							aView removeLineButton
+								enabled:	true.
+						].
 				].
 		].
 
 	aView removeLineButton
 		action:
 		[
-			aModel bearingLines pop.
+			aModel bearingLines removeLast.
 			aView mapArea redraw.
 		].
 

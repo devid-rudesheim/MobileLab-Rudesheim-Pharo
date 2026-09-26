@@ -7,12 +7,12 @@ the Model the way ModelTheodoliteMobileLabRudesheimTest does. That distinction c
 implementation bugs neither ModelTheodoliteMobileLabRudesheimTest nor
 SpecBuilderTheodoliteMobileLabRudesheimTest had surfaced, because both of those only ever exercise
 a BearingLines instance the Model already wired up with #warning: -- entirely unrelated to the
-app's own OS-dispatch surface (#push/#pop's `Smalltalk os rudesheim location currentRay`, out of
+app's own OS-dispatch surface (`Smalltalk os rudesheim location currentRay`, sourced by
+SpecBuilderTheodoliteMobileLabRudesheim's #addLineButton action rather than this class, out of
 scope here, see BearingLinesTheodoliteMobileLabRudesheim's own comment):
-- #removeLast (and #pop) used to raise a `CollectionIsEmpty` error when the collection was already
-  empty -- #removeLineButton's action calls it unconditionally with no count guard, so this was
-  reachable directly from the UI. Fixed to no-op instead (#testRemoveLastOnEmptyIsNoOpNotError /
-  #testPopOnEmptyIsNoOpNotError below).
+- #removeLast used to raise a `CollectionIsEmpty` error when the collection was already empty --
+  #removeLineButton's action calls it unconditionally with no count guard, so this was reachable
+  directly from the UI. Fixed to no-op instead (#testRemoveLastOnEmptyIsNoOpNotError below).
 - #warning used to answer whatever the `warning` instance variable held, which is nil until
   #warning: is sent -- but every #add: branch (including the success path) sends `self warning
   value:`, so a bare `new` instance crashed with `nil doesNotUnderstand: #value:` on its very
@@ -471,63 +471,6 @@ BearingLinesTheodoliteMobileLabRudesheimTest >> testNewInstanceIsEmpty [
 ]
 
 { #category : 'tests' }
-BearingLinesTheodoliteMobileLabRudesheimTest >> testPopIsAliasForRemoveLast [
-	|
-		lines
-		first
-		second
-		result
-	|
-
-	lines := self basicTarget.
-
-	first :=
-		GRay
-			origin:	0 , 0
-			normalizedBearing:	0.25.
-	second :=
-		GRay
-			origin:	5 , -5
-			normalizedBearing:	0.0.
-
-	lines
-		add:	first;
-		add:	second.
-
-	result := lines pop.
-
-	self
-		assert:	result == second.
-
-	self
-		assert:	lines size
-		equals:	1.
-
-	self
-		assert:	lines warning value isEmpty.
-]
-
-{ #category : 'tests' }
-BearingLinesTheodoliteMobileLabRudesheimTest >> testPopOnEmptyIsNoOpNotError [
-	|
-		lines
-	|
-
-	lines := self basicTarget.
-
-	self
-		shouldnt:
-		[
-			lines pop.
-		]
-		raise:	Error.
-
-	self
-		assert:	lines size
-		equals:	0.
-]
-
-{ #category : 'tests' }
 BearingLinesTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
 	|
 		lines
@@ -563,8 +506,8 @@ BearingLinesTheodoliteMobileLabRudesheimTest >> testRemoveLastClearsWarning [
 
 { #category : 'tests' }
 BearingLinesTheodoliteMobileLabRudesheimTest >> testRemoveLastOnEmptyIsNoOpNotError [
-	"#removeLineButton's action calls #pop (an alias for this) unconditionally, with no size guard
-	-- pressing 'Remove line' with nothing recorded must not crash. This used to raise
+	"#removeLineButton's action calls this unconditionally, with no size guard -- pressing
+	'Remove line' with nothing recorded must not crash. This used to raise
 	`CollectionIsEmpty: an OrderedCollection() is empty`."
 	|
 		lines

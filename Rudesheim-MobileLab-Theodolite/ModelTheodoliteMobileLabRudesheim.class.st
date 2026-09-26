@@ -12,10 +12,11 @@ value-holding classes themselves:
   wrapper class -- there is nothing for one to add beyond the message itself)
 
 There is deliberately no Controller class: every operation (adding a line, opening/copying the
-map URL, discarding everything) is either a standard Collection/Dictionary-protocol call, one of
-BearingLinesTheodoliteMobileLabRudesheim's own #push/#pop, or #discardAll below, called directly
-from view action blocks. Adding a line is #bearingLines push directly -- there is no Model-level
-wrapper for it (see BearingLinesTheodoliteMobileLabRudesheim's comment).
+map URL, discarding everything) is either a standard Collection/Dictionary-protocol call
+(#bearingLines add:/removeLast) or #discardAll below, called directly from view action blocks --
+there is no Model-level wrapper for any of them. Sourcing the GRay #add: needs for 'Add line' is
+the SpecBuilder action block's own concern, not this Model's (see
+SpecBuilderTheodoliteMobileLabRudesheim's comment).
 
 Both entries are created lazily (on first #bearingLines/#warning read) rather than eagerly in
 #initialize, per ~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule.
