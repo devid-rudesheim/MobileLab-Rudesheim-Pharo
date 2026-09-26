@@ -387,8 +387,7 @@ using: lib [
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> signalLocationUnavailable [
-	^ self
-		error:	'CoreLocation authorization was not granted -- macOS only shows the permission dialog to a process running from a proper .app bundle with an Info.plist NSLocationWhenInUseUsageDescription entry, which this headless Pharo process is not (see note/pharo-ops.md section 41).'.
+	^ LocationUnavailableMobileLabRudesheim signal.
 ]
 
 { #category : 'private' }
