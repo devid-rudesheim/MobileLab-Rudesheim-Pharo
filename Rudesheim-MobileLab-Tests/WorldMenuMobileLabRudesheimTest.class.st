@@ -28,10 +28,18 @@ WorldMenuMobileLabRudesheimTest >> testApplicationClassesAreAllSpApplicationSubc
 		do:
 		[ :anApplicationClass |
 			self
-				assert:	(anApplicationClass inheritsFrom: SpApplication).
+				assert:
+				(
+					anApplicationClass
+						inheritsFrom:	SpApplication
+				).
 
 			self
-				assert:	(anApplicationClass name endsWith: 'MobileLabRudesheim').
+				assert:
+				(
+					anApplicationClass name
+						endsWith:	'MobileLabRudesheim'
+				).
 		].
 ]
 
@@ -41,7 +49,11 @@ WorldMenuMobileLabRudesheimTest >> testApplicationClassesEachRespondToMenuLabel 
 		do:
 		[ :anApplicationClass |
 			self
-				assert:	(anApplicationClass respondsTo: #menuLabel).
+				assert:
+				(
+					anApplicationClass
+						respondsTo:	#menuLabel
+				).
 
 			self
 				assert:	anApplicationClass menuLabel isString.

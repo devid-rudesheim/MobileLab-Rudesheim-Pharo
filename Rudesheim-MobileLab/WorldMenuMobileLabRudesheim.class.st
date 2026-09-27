@@ -26,7 +26,8 @@ WorldMenuMobileLabRudesheim class >> applicationClasses [
 		SpApplication allSubclasses
 			select:
 			[ :anApplicationClass |
-				anApplicationClass name endsWith: 'MobileLabRudesheim'.
+				anApplicationClass name
+					endsWith:	'MobileLabRudesheim'.
 			]
 	)
 		asSortedCollection:
@@ -53,7 +54,10 @@ WorldMenuMobileLabRudesheim class >> menuOn: aBuilder [
 							item:	anApplicationClass name
 					)
 						label:	anApplicationClass menuLabel;
-						action:	[ anApplicationClass new run ].
+						action:
+						[
+							anApplicationClass new run.
+						].
 				].
 		].
 ]

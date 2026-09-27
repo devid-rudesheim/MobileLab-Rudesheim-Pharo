@@ -17,21 +17,6 @@ CoordinateParserLocationMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'tests' }
-CoordinateParserLocationMobileLabRudesheimTest >> testParseCLLocationDescriptionPositiveCoordinates [
-	| point |
-	point := self targetClass
-		parseCLLocationDescription:	'<+35.68123600,+139.76712500> +/- 0.00m (speed -1.00 mps / course -1.00) @ 2026/09/24, 0:01:02 Japan Standard Time'.
-
-	self
-		assert:	point x
-		closeTo:	139.767125.
-
-	self
-		assert:	point y
-		closeTo:	35.681236.
-]
-
-{ #category : 'tests' }
 CoordinateParserLocationMobileLabRudesheimTest >> testParseCLLocationDescriptionNegativeCoordinates [
 	| point |
 	point := self targetClass
@@ -44,4 +29,19 @@ CoordinateParserLocationMobileLabRudesheimTest >> testParseCLLocationDescription
 	self
 		assert:	point y
 		closeTo:	-33.8688.
+]
+
+{ #category : 'tests' }
+CoordinateParserLocationMobileLabRudesheimTest >> testParseCLLocationDescriptionPositiveCoordinates [
+	| point |
+	point := self targetClass
+		parseCLLocationDescription:	'<+35.68123600,+139.76712500> +/- 0.00m (speed -1.00 mps / course -1.00) @ 2026/09/24, 0:01:02 Japan Standard Time'.
+
+	self
+		assert:	point x
+		closeTo:	139.767125.
+
+	self
+		assert:	point y
+		closeTo:	35.681236.
 ]

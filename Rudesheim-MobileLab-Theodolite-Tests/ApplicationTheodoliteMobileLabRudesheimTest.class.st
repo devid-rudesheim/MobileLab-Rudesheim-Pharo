@@ -32,12 +32,6 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 ]
 
 { #category : 'tests' }
-ApplicationTheodoliteMobileLabRudesheimTest >> testWorldMenuApplicationClassesIncludesTheodolite [
-	self
-		assert:	(Rudesheim MobileLab WorldMenu applicationClasses includes: self targetClass).
-]
-
-{ #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresDiscardButton [
 	|
 		target
@@ -111,4 +105,14 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresRemoveLineButton [
 	self
 		assert:	target model bearingLines size
 		equals:	0.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testWorldMenuApplicationClassesIncludesTheodolite [
+	self
+		assert:
+		(
+			Rudesheim MobileLab WorldMenu applicationClasses
+				includes:	self targetClass
+		).
 ]
