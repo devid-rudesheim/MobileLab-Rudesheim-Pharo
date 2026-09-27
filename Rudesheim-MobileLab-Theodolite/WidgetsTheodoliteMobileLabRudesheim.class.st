@@ -6,9 +6,11 @@ warning readouts and add/remove/open/copy/discard controls, only arranged differ
 as `Rudesheim MobileLab Theodolite Widgets`.
 
 It exists to satisfy exactly the widget protocol SpecBuilderTheodoliteMobileLabRudesheim>>
-#bindModel:toView: needs: #progressLabel/#addressBar/#warningLabel (each a real SpLabelPresenter),
-#mapArea (a real SpAthensPresenter -- the self-drawn map, decision recorded in NocoDB Sections
-項番GM, rendered by RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim) and
+#bindModel:toView: needs: #progressLabel (a real SpLabelPresenter), #addressBar/#warningLabel
+(each a real SpTextInputFieldPresenter, `beNotEditable` -- a read-only text box rather than a
+label, so the user can select and copy the map URL or warning text to the clipboard), #mapArea
+(a real SpAthensPresenter -- the self-drawn map, decision recorded in NocoDB Sections 項番GM,
+rendered by RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim) and
 #addLineButton/#removeLineButton/
 #openButton/#copyButton/#discardButton (each a real SpButtonPresenter). Each accessor lazily
 builds its own widget via a matching #defaultXxx method
@@ -93,8 +95,9 @@ WidgetsTheodoliteMobileLabRudesheim >> defaultAddLineButton [
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultAddressBar [
-	^ self owner newLabel
-		label:	'';
+	^ self owner newTextInput
+		text:	'';
+		beNotEditable;
 		yourself.
 ]
 
@@ -140,8 +143,9 @@ WidgetsTheodoliteMobileLabRudesheim >> defaultRemoveLineButton [
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultWarningLabel [
-	^ self owner newLabel
-		label:	'';
+	^ self owner newTextInput
+		text:	'';
+		beNotEditable;
 		yourself.
 ]
 
