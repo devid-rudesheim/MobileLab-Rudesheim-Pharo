@@ -112,7 +112,7 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testWorldMenuApplicationClassesIn
 	self
 		assert:
 		(
-			Rudesheim MobileLab WorldMenu applicationClasses
+			Rudesheim MobileLab applicationClasses
 				includes:	self targetClass
 		).
 ]
