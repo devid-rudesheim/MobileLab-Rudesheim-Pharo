@@ -18,7 +18,7 @@ Trait {
 }
 
 { #category : 'discovery' }
-TApplicationDiscoveryMobileLabRudesheim >> applicationClasses [
+TApplicationDiscoveryMobileLabRudesheim class >> applicationClasses [
 	|
 		namespaceClasses
 	|
