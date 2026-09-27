@@ -23,24 +23,16 @@ WorldMenuMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'tests' }
-WorldMenuMobileLabRudesheimTest >> testApplicationClassesAreAllSpApplicationSubclassesEndingInMobileLabRudesheim [
-	self targetClass applicationClasses
-		do:
-		[ :anApplicationClass |
-			self
-				assert:
-				(
-					anApplicationClass
-						inheritsFrom:	SpApplication
-				).
-
-			self
-				assert:
-				(
-					anApplicationClass name
-						endsWith:	'MobileLabRudesheim'
-				).
-		].
+WorldMenuMobileLabRudesheimTest >> testApplicationClassesExcludesNamespacesWithoutAnApplication [
+	"Rudesheim MobileLab WorldMenu itself is a namespace accessor (Rudesheim MobileLab class>>
+	#WorldMenu, protocol #namespace) whose target -- this very class -- has no class-side
+	#Application, so #applicationClasses must skip it rather than looping back on itself."
+	self
+		deny:
+		(
+			self targetClass applicationClasses
+				includes:	self targetClass
+		).
 ]
 
 { #category : 'tests' }
