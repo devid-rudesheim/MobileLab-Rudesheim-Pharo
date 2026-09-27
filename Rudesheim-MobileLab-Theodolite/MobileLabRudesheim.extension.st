@@ -1,6 +1,6 @@
 Extension { #name : 'MobileLabRudesheim' }
 
-{ #category : '*Rudesheim-MobileLab-Theodolite' }
+{ #category : 'namespace' }
 MobileLabRudesheim class >> Theodolite [
 	^ TheodoliteMobileLabRudesheim.
 ]

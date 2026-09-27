@@ -15,6 +15,13 @@ ApplicationTheodoliteMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testMenuLabel [
+	self
+		assert:	self targetClass menuLabel
+		equals:	'Theodolite'.
+]
+
+{ #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 	self
 		shouldnt:
@@ -98,4 +105,14 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresRemoveLineButton [
 	self
 		assert:	target model bearingLines size
 		equals:	0.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testWorldMenuApplicationClassesIncludesTheodolite [
+	self
+		assert:
+		(
+			Rudesheim MobileLab applicationClasses
+				includes:	self targetClass
+		).
 ]

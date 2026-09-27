@@ -13,6 +13,10 @@ holding the actual widget protocol SpecBuilder needs -- the View itself only arr
 `SpecBuilderTheodoliteMobileLabRudesheim class>>#bindModel:toView:` (項番FL). The portrait View
 (項番FD §2.1) and the ObjC-bridge location/heading sourcing (項番FJ §8 item 4) are separate,
 not-yet-built work.
+
+`menuLabel` is this app's display name in the `MobileLab` World Menu item
+(`WorldMenuMobileLabRudesheim class>>#menuOn:` discovers every `Rudesheim MobileLab * Application`
+class and reads its `menuLabel`).
 "
 Class {
 	#name : 'ApplicationTheodoliteMobileLabRudesheim',
@@ -24,6 +28,11 @@ Class {
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
+
+{ #category : 'accessing' }
+ApplicationTheodoliteMobileLabRudesheim class >> menuLabel [
+	^ 'Theodolite'.
+]
 
 { #category : 'private' }
 ApplicationTheodoliteMobileLabRudesheim >> defaultModel [

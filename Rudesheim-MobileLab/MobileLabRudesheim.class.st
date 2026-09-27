@@ -2,6 +2,7 @@ Class {
 	#name : 'MobileLabRudesheim',
 	#superclass : 'Object',
 	#category : 'Rudesheim-MobileLab-Namespace',
+	#classTraits : 'TApplicationDiscoveryMobileLabRudesheim classTrait',
 	#package : 'Rudesheim-MobileLab',
 	#tag : 'Namespace'
 }
@@ -9,4 +10,9 @@ Class {
 { #category : 'namespace' }
 MobileLabRudesheim class >> Location [
 	^ LocationMobileLabRudesheim.
+]
+
+{ #category : 'namespace' }
+MobileLabRudesheim class >> WorldMenu [
+	^ WorldMenuMobileLabRudesheim.
 ]
