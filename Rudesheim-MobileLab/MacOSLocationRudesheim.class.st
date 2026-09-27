@@ -24,6 +24,17 @@ through `ObjCLibrary>>#sendDoubleMessage:to:`, a small extension added in `ObjCL
 specifically to declare that one method's `double`-typed FFI return, unlike the library's own
 generic pointer-returning `sendMessage:to:`.
 
+`#addDelegateCallbackFor:to:using:block:`'s FFICallback declares 4 parameters in its own
+`#signature:` (`rcvr`/`objCSel`, the Objective-C calling convention's own implicit receiver and
+selector, plus the delegate method's own 2 arguments) -- its wrapping Smalltalk block must itself
+declare all 4, even though `aBlock` (the actual per-callback handler, e.g.
+#recordUpdatedHeading:using:) only wants the trailing 2. Declaring only 2 parameters compiles and
+loads without error but crashes with `ArgumentsCountMismatch` the moment the real Objective-C
+runtime actually invokes the callback with all 4 arguments (`FFICallback>>#valueWithArguments:`,
+see MacOSLocationRudesheimTest's own comment) -- invisible in every headless run, since (per the
+next paragraph) CoreLocation's delegate callbacks never fire there at all, so this only ever
+surfaced once the app was actually run somewhere CoreLocation could authorize it.
+
 **Known limitation, not a bug here**: macOS only shows CoreLocation's permission dialog to a
 process running from a proper `.app` bundle with an `Info.plist`
 `NSLocationWhenInUseUsageDescription` entry -- a bare headless `Pharo` binary invocation (as used
@@ -60,7 +71,7 @@ block: aBlock [
 		FFICallback
 			signature:	#(void (void* rcvr, void* objCSel, void* arg1, void* arg2))
 			block:
-			[ :arg1 :arg2 |
+			[ :rcvr :objCSel :arg1 :arg2 |
 				aBlock
 					value:	arg1
 					value:	arg2.
