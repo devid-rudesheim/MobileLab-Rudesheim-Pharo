@@ -26,6 +26,20 @@ Metacello new
 
 This also loads the required `RudesheimKernel` and `RudesheimUtility` dependencies from GitHub.
 
+### Troubleshooting: `MetacelloConflictingProjectError`
+
+If the load above raises a `MetacelloConflictingProjectError` mentioning
+`BaselineOfRudesheimMobileLab`, some other repository is already registered in your image under
+this same project name -- typically a local Iceberg checkout of this repository (registered from
+`filetree://...`), or a stale registration left over from an earlier load attempt that didn't
+specify `repository:`. Metacello refuses to guess which one you want, so unregister the existing
+one first, then retry the `Metacello new ... load` above:
+
+```smalltalk
+(MetacelloProjectRegistration registrationForClassNamed: 'BaselineOfRudesheimMobileLab' ifAbsent: [ nil ])
+	ifNotNil: [ :aRegistration | aRegistration unregisterProject ]
+```
+
 ## Requirements
 
 - Pharo with Metacello.
