@@ -10,9 +10,8 @@ answers that identically to a dedicated stub, so no stub class is kept around ju
 plus instance-side #screenPointFor: (needs only #bounds:/#extent: set, so a test can build a bare
 instance for it without a real Athens surface -- this class holds no `canvas` at all, so there is
 nothing to leave unset). The actual Athens-calling drawing lives on
-RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim's #drawOnAthensCanvas:, which
-does need a real presenter-owned surface (not just a bare in-memory one) -- out of scope for a
-headless SUnit run.
+RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim's #drawOnAthensCanvas:;
+RaysTheodoliteMobileLabRudesheimTest draws Rays onto the same kind of in-memory surface.
 "
 Class {
 	#name : 'RendererTheodoliteMobileLabRudesheimTest',
@@ -146,6 +145,34 @@ RendererTheodoliteMobileLabRudesheimTest >> testScaleToFitPicksSmallerAxisWithMa
 	self
 		assert:	scale
 		closeTo:	1.7.
+]
+
+{ #category : 'tests' }
+RendererTheodoliteMobileLabRudesheimTest >> testScreenPointForAcceptsGPoint [
+	"Rays/Markers hand #screenPointFor: Geometry GPoints (GRay>>#initialPoint,
+	BearingLines>>#intersectionPoint), not kernel Points."
+	|
+		renderer
+		screenPoint
+	|
+
+	renderer :=
+		self
+			rendererWithBounds:
+			(
+				0 @ 0
+					corner:	100 @ 100
+			)
+			extent:	200 @ 200
+			scale:	2.
+
+	screenPoint :=
+		renderer
+			screenPointFor:	50 , 50.
+
+	self
+		assert:	screenPoint
+		equals:	100 @ 100.
 ]
 
 { #category : 'tests' }

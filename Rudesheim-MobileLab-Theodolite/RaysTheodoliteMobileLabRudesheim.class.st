@@ -30,9 +30,9 @@ RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 	) / self renderer scale * 3.
 
 	self renderer lines asArray
-		select:
+		reject:
 		[ :each |
-			( 0 @ 0 ) ~= ( each directionPoint - each initialPoint ).
+			each directionPoint = each initialPoint.
 		]
 		thenDo:
 		[ :each |
@@ -45,7 +45,7 @@ RaysTheodoliteMobileLabRudesheim >> drawOnAthensCanvas: anAthensCanvas [
 
 			direction := each directionPoint - each initialPoint.
 
-			farPoint := each initialPoint + ( direction / direction r * rayLength ).
+			farPoint := each initialPoint + ( direction * ( rayLength / direction length ) ).
 
 			screenPoints :=
 			{
