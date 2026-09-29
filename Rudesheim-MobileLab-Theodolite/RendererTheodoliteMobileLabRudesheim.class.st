@@ -210,10 +210,12 @@ RendererTheodoliteMobileLabRudesheim >> scale: aNumber [
 RendererTheodoliteMobileLabRudesheim >> screenPointFor: aPoint [
 	"World point -> canvas pixel point: self bounds' center maps to self extent's center, scaled
 	by self scale, with Y flipped so world north (+y) draws upward -- (1@-1) flips only the y half
-	of the already-componentwise Point multiplication (Point>>#*'s own comment)."
+	of the already-componentwise Point multiplication (Point>>#*'s own comment). aPoint is usually a
+	Geometry GPoint (GRay>>#initialPoint, BearingLines>>#intersectionPoint), which cannot subtract a
+	kernel Point, so it is converted with #asPoint first (a kernel Point answers itself)."
 	^
 	( self extent / 2 ) +
 	(
-		( ( aPoint - self bounds center ) ) * self scale * ( 1 @ -1 )
+		( ( aPoint asPoint - self bounds center ) ) * self scale * ( 1 @ -1 )
 	).
 ]
