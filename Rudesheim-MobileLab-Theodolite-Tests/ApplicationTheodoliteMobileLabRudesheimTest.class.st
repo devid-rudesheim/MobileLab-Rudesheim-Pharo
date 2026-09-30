@@ -108,6 +108,63 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresRemoveLineButton [
 ]
 
 { #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartWiresPortraitViewToTheSameModel [
+	|
+		target
+		view
+	|
+
+	target := self basicTarget.
+	view := target viewPortrait.
+	target start.
+
+	target model bearingLines
+		add:
+		(
+			GRay
+				origin:	0 , 0
+				normalizedBearing:	0.25
+		).
+
+	self
+		assert:	view widgets progressLabel label
+		equals:	'1/3 lines'.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testViewForLandscapeExtentAnswersViewLandscape [
+	self
+		assert:
+		(
+			self basicTarget
+				viewFor:	800 @ 600
+		)
+		equals:	self basicTarget viewLandscape.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testViewForPortraitExtentAnswersViewPortrait [
+	self
+		assert:
+		(
+			self basicTarget
+				viewFor:	600 @ 800
+		)
+		equals:	self basicTarget viewPortrait.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testViewForSquareExtentAnswersViewLandscape [
+	self
+		assert:
+		(
+			self basicTarget
+				viewFor:	600 @ 600
+		)
+		equals:	self basicTarget viewLandscape.
+]
+
+{ #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testWorldMenuApplicationClassesIncludesTheodolite [
 	self
 		assert:

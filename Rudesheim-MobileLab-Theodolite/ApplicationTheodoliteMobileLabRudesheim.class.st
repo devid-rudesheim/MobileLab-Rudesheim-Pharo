@@ -4,15 +4,18 @@ bearing-line triangulation prototype (resection from three recorded bearings, se
 note/ios-triangulation-app.md in the main project repository). Reached as
 `Rudesheim MobileLab Theodolite Application`.
 
-`start` builds the Model, opens the landscape View (`ViewLandscapeTheodoliteMobileLabRudesheim`,
-note/ios-triangulation-app.md section 2.2 / NocoDB Sections 項番FD §2.2, lazily via
-#viewLandscape/#defaultViewLandscape -- same pattern as #model, and exposed for the same reason:
-so a test can grab `target viewLandscape` before calling `target start` and assert on it
-afterward), and wires the Model to the View's `widgets` (a WidgetsTheodoliteMobileLabRudesheim,
-holding the actual widget protocol SpecBuilder needs -- the View itself only arranges them) with
-`SpecBuilderTheodoliteMobileLabRudesheim class>>#bindModel:toView:` (項番FL). The portrait View
-(項番FD §2.1) and the ObjC-bridge location/heading sourcing (項番FJ §8 item 4) are separate,
-not-yet-built work.
+`start` builds the Model, opens whichever View suits the display's orientation (#viewFor: -- the
+portrait View, `ViewPortraitTheodoliteMobileLabRudesheim`, when the display is taller than wide,
+otherwise the landscape View, `ViewLandscapeTheodoliteMobileLabRudesheim`; note/ios-triangulation-app.md
+sections 2.1/2.2 / NocoDB Sections 項番FD), and wires the one Model to the `widgets` (a
+WidgetsTheodoliteMobileLabRudesheim, holding the actual widget protocol SpecBuilder needs -- the
+View itself only arranges them) of *both* Views with
+`SpecBuilderTheodoliteMobileLabRudesheim class>>#bindModel:toView:` (項番FL), so the recorded
+bearing lines are shared whichever View is showing. Each View is built lazily via
+#viewPortrait/#viewLandscape (and their #defaultXxx) -- same pattern as #model, and exposed for
+the same reason: so a test can grab `target viewPortrait` before calling `target start` and
+assert on it afterward. Swapping Views live when the device rotates (項番FI §7.1 (b)) and the
+ObjC-bridge location/heading sourcing (項番FJ §8 item 4) are separate, not-yet-built work.
 
 `menuLabel` is this app's display name in the `MobileLab` World Menu item
 (`WorldMenuMobileLabRudesheim class>>#menuOn:` discovers every `Rudesheim MobileLab * Application`
@@ -23,7 +26,8 @@ Class {
 	#superclass : 'SpApplication',
 	#instVars : [
 		'model',
-		'viewLandscape'
+		'viewLandscape',
+		'viewPortrait'
 	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
@@ -44,6 +48,16 @@ ApplicationTheodoliteMobileLabRudesheim >> defaultViewLandscape [
 	^ Rudesheim MobileLab Theodolite ViewLandscape new.
 ]
 
+{ #category : 'private' }
+ApplicationTheodoliteMobileLabRudesheim >> defaultViewPortrait [
+	^ Rudesheim MobileLab Theodolite ViewPortrait new.
+]
+
+{ #category : 'private' }
+ApplicationTheodoliteMobileLabRudesheim >> defaultWindowExtent [
+	^ World extent.
+]
+
 { #category : 'accessing' }
 ApplicationTheodoliteMobileLabRudesheim >> model [
 	^ model
@@ -60,7 +74,10 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 		window
 	|
 
-	view := self viewLandscape.
+	view :=
+		self
+			viewFor:	self defaultWindowExtent.
+
 	window := view open    title: 'Theodolite';    yourself.
 
 	self
@@ -68,7 +85,22 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 
 	Rudesheim MobileLab Theodolite SpecBuilder
 		bindModel:	self model
-		toView:	view widgets.
+		toView:	self viewLandscape widgets.
+
+	Rudesheim MobileLab Theodolite SpecBuilder
+		bindModel:	self model
+		toView:	self viewPortrait widgets.
+]
+
+{ #category : 'accessing' }
+ApplicationTheodoliteMobileLabRudesheim >> viewFor: aPoint [
+	aPoint y > aPoint x
+		ifTrue:
+		[
+			^ self viewPortrait.
+		].
+
+	^ self viewLandscape.
 ]
 
 { #category : 'accessing' }
@@ -77,5 +109,14 @@ ApplicationTheodoliteMobileLabRudesheim >> viewLandscape [
 		ifNil:
 		[
 			viewLandscape := self defaultViewLandscape.
+		].
+]
+
+{ #category : 'accessing' }
+ApplicationTheodoliteMobileLabRudesheim >> viewPortrait [
+	^ viewPortrait
+		ifNil:
+		[
+			viewPortrait := self defaultViewPortrait.
 		].
 ]

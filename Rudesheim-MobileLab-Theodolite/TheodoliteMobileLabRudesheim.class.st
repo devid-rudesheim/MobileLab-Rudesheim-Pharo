@@ -62,6 +62,11 @@ TheodoliteMobileLabRudesheim class >> ViewLandscape [
 ]
 
 { #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> ViewPortrait [
+	^ ViewPortraitTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> Widgets [
 	^ WidgetsTheodoliteMobileLabRudesheim.
 ]
