@@ -212,10 +212,13 @@ RendererTheodoliteMobileLabRudesheim >> screenPointFor: aPoint [
 	by self scale, with Y flipped so world north (+y) draws upward -- (1@-1) flips only the y half
 	of the already-componentwise Point multiplication (Point>>#*'s own comment). aPoint is usually a
 	Geometry GPoint (GRay>>#initialPoint, BearingLines>>#intersectionPoint), which cannot subtract a
-	kernel Point, so it is converted with #asPoint first (a kernel Point answers itself)."
+	kernel Point, so it is converted with #asPoint first (a kernel Point answers itself). The center
+	is #floatCenter, not #center: Rectangle>>#center truncates with #//, which moves the center of
+	GPS-scale bounds (well under one unit wide) by up to a whole degree and pushes every point off
+	the canvas."
 	^
 	( self extent / 2 ) +
 	(
-		( ( aPoint asPoint - self bounds center ) ) * self scale * ( 1 @ -1 )
+		( ( aPoint asPoint - self bounds floatCenter ) ) * self scale * ( 1 @ -1 )
 	).
 ]
