@@ -176,6 +176,34 @@ RendererTheodoliteMobileLabRudesheimTest >> testScreenPointForAcceptsGPoint [
 ]
 
 { #category : 'tests' }
+RendererTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterOfSubUnitBoundsMapsToCanvasCenter [
+	"Real bounds are GPS-scale (a fraction of a degree wide); Rectangle>>#center would truncate
+	their center to whole units."
+	|
+		renderer
+		screenPoint
+	|
+
+	renderer :=
+		self
+			rendererWithBounds:
+			(
+				0 @ 0
+					corner:	1 @ 1
+			)
+			extent:	200 @ 200
+			scale:	100.
+
+	screenPoint :=
+		renderer
+			screenPointFor:	0.5 , 0.5.
+
+	self
+		assert:	screenPoint
+		equals:	100 @ 100.
+]
+
+{ #category : 'tests' }
 RendererTheodoliteMobileLabRudesheimTest >> testScreenPointForCenterMapsToCanvasCenter [
 	|
 		renderer
