@@ -17,6 +17,23 @@ ViewPortraitTheodoliteMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'tests' }
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutGivesAddLineButtonThreeTimesAStandardButtonHeight [
+	|
+		layout
+	|
+
+	layout := self basicTarget defaultLayout.
+
+	self
+		assert:
+		(
+			layout
+				constraintsFor:	self basicTarget widgets addLineButton
+		) height
+		equals:	self basicTarget buttonHeight * 3.
+]
+
+{ #category : 'tests' }
 ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesAddLineButtonFifth [
 	self
 		assert:	self basicTarget defaultLayout children fifth
