@@ -19,13 +19,15 @@ ViewPortraitTheodoliteMobileLabRudesheimTest class >> targetClass [
 { #category : 'tests' }
 ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesMapAreaFirst [
 	self
-		assert:	self basicTarget widgets mapArea == self basicTarget defaultLayout children first.
+		assert:	self basicTarget widgets mapArea
+		identicalTo:	self basicTarget defaultLayout children first.
 ]
 
 { #category : 'tests' }
 ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesWarningLabelLastAsItsOwnRow [
 	self
-		assert:	self basicTarget widgets warningLabel == self basicTarget defaultLayout children last.
+		assert:	self basicTarget widgets warningLabel
+		identicalTo:	self basicTarget defaultLayout children last.
 ]
 
 { #category : 'tests' }
@@ -60,5 +62,6 @@ ViewPortraitTheodoliteMobileLabRudesheimTest >> testOpenSucceeds [
 { #category : 'tests' }
 ViewPortraitTheodoliteMobileLabRudesheimTest >> testWidgetsAreLazilyCreatedOnceAndShared [
 	self
-		assert:	self basicTarget widgets == self basicTarget widgets.
+		assert:	self basicTarget widgets
+		identicalTo:	self basicTarget widgets.
 ]
