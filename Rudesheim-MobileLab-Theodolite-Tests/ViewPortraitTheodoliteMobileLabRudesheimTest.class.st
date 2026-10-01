@@ -17,24 +17,55 @@ ViewPortraitTheodoliteMobileLabRudesheimTest class >> targetClass [
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesMapAreaFirst [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesAddLineButtonFifth [
 	self
-		assert:	self basicTarget widgets mapArea
-		identicalTo:	self basicTarget defaultLayout children first.
+		assert:	self basicTarget defaultLayout children fifth
+		identicalTo:	self basicTarget widgets addLineButton.
+]
+
+{ #category : 'tests' }
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesMapAreaSecond [
+	self
+		assert:	self basicTarget defaultLayout children second
+		identicalTo:	self basicTarget widgets mapArea.
+]
+
+{ #category : 'tests' }
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesProgressLabelThird [
+	self
+		assert:	self basicTarget defaultLayout children third
+		identicalTo:	self basicTarget widgets progressLabel.
+]
+
+{ #category : 'tests' }
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesRarelyUsedRowFirstWithAddressBarInIt [
+	self
+		assert:
+		(
+			self basicTarget defaultLayout children first children
+				includes:	self basicTarget widgets addressBar
+		).
+]
+
+{ #category : 'tests' }
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesRemoveLineButtonFourth [
+	self
+		assert:	self basicTarget defaultLayout children fourth
+		identicalTo:	self basicTarget widgets removeLineButton.
 ]
 
 { #category : 'tests' }
 ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesWarningLabelLastAsItsOwnRow [
 	self
-		assert:	self basicTarget widgets warningLabel
-		identicalTo:	self basicTarget defaultLayout children last.
+		assert:	self basicTarget defaultLayout children last
+		identicalTo:	self basicTarget widgets warningLabel.
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutStacksFourRows [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutStacksSixRows [
 	self
 		assert:	self basicTarget defaultLayout children size
-		equals:	4.
+		equals:	6.
 ]
 
 { #category : 'tests' }

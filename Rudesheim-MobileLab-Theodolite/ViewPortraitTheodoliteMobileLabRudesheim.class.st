@@ -5,16 +5,16 @@ A ViewPortraitTheodoliteMobileLabRudesheim is Theodolite's portrait-orientation 
 
 Like ViewLandscapeTheodoliteMobileLabRudesheim, it only arranges the widgets it gets from its
 `widgets` (a WidgetsTheodoliteMobileLabRudesheim, the widget set shared by both orientations) into
-the portrait structure, top to bottom: the variable-height self-drawn map area (`widgets mapArea`,
-項番GM), a fixed-height main operation row (add/remove/progress), a fixed-height rarely-used row
-(discard/address/open/copy), and `widgets warningLabel` alone as a full-width, fixed-height row
-pinned to the bottom of the window, below everything else -- per the layout decision recorded in
-NocoDB Sections 項番GO (which supersedes 項番FD §2.1's original placement of the warning area
-between the map and the main row). add/remove expand to share the main row's width equally
-(larger tap targets); progress stays fixed-width. It does not itself answer
-#progressLabel/#addressBar/etc -- callers that need the widget protocol
-SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: needs go through `self widgets`
-directly.
+the portrait structure, top to bottom: the fixed-height rarely-used row (discard/address/open/copy)
+-- the same top row the landscape View has, so the address readout is always the topmost thing --
+then the variable-height self-drawn map area (`widgets mapArea`, 項番GM), then the controls
+stacked vertically as three full-width fixed-height rows in the order progress, remove, add (the
+horizontal add/remove/progress order mirrored left-right, then each part given its own row, left
+part on top), and finally `widgets warningLabel` alone as a full-width, fixed-height row pinned to
+the bottom of the window, below everything else -- per the layout decision recorded in NocoDB
+Sections 項番GO. It does not itself answer #progressLabel/#addressBar/etc -- callers that need the
+widget protocol SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: needs go through
+`self widgets` directly.
 "
 Class {
 	#name : 'ViewPortraitTheodoliteMobileLabRudesheim',
@@ -29,20 +29,6 @@ Class {
 { #category : 'layout' }
 ViewPortraitTheodoliteMobileLabRudesheim >> defaultLayout [
 	^ SpBoxLayout newTopToBottom
-		add:	self widgets mapArea
-		expand:	true;
-		add:
-		(
-			SpBoxLayout newLeftToRight
-				add:	self widgets addLineButton
-				expand:	true;
-				add:	self widgets removeLineButton
-				expand:	true;
-				add:	self widgets progressLabel
-				expand:	false;
-				yourself
-		)
-		expand:	false;
 		add:
 		(
 			SpBoxLayout newLeftToRight
@@ -56,6 +42,14 @@ ViewPortraitTheodoliteMobileLabRudesheim >> defaultLayout [
 				expand:	false;
 				yourself
 		)
+		expand:	false;
+		add:	self widgets mapArea
+		expand:	true;
+		add:	self widgets progressLabel
+		expand:	false;
+		add:	self widgets removeLineButton
+		expand:	false;
+		add:	self widgets addLineButton
 		expand:	false;
 		add:	self widgets warningLabel
 		expand:	false;
