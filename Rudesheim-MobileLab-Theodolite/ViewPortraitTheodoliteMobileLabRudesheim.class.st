@@ -13,7 +13,7 @@ horizontal add/remove/progress order mirrored left-right, then each part given i
 part on top), and finally `widgets warningLabel` alone as a full-width, fixed-height row pinned to
 the bottom of the window, below everything else -- per the layout decision recorded in NocoDB
 Sections 項番GO. `add` is the primary action, so its row is three times as tall as a standard
-button (#addLineButtonHeight) -- a bigger tap target. It does not itself answer #progressLabel/#addressBar/etc -- callers that need the
+button (`self buttonHeight * 3` in #defaultLayout) -- a bigger tap target. It does not itself answer #progressLabel/#addressBar/etc -- callers that need the
 widget protocol SpecBuilderTheodoliteMobileLabRudesheim>>#bindModel:toView: needs go through
 `self widgets` directly.
 "
@@ -31,11 +31,6 @@ Class {
 ViewPortraitTheodoliteMobileLabRudesheim class >> buttonHeight [
 	"The height Spec2 gives a standard one-line button with the default font (measured: 28)."
 	^ 28.
-]
-
-{ #category : 'layout' }
-ViewPortraitTheodoliteMobileLabRudesheim >> addLineButtonHeight [
-	^ self buttonHeight * 3.
 ]
 
 { #category : 'accessing' }
@@ -67,7 +62,7 @@ ViewPortraitTheodoliteMobileLabRudesheim >> defaultLayout [
 		add:	self widgets removeLineButton
 		expand:	false;
 		add:	self widgets addLineButton
-		height:	self addLineButtonHeight;
+		height:	self buttonHeight * 3;
 		add:	self widgets warningLabel
 		expand:	false;
 		yourself.
