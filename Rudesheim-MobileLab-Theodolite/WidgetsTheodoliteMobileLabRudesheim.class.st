@@ -12,7 +12,10 @@ label, so the user can select and copy the map URL or warning text to the clipbo
 (a real SpAthensPresenter -- the self-drawn map, decision recorded in NocoDB Sections 項番GM,
 rendered by RaysTheodoliteMobileLabRudesheim/MarkersTheodoliteMobileLabRudesheim) and
 #addLineButton/#removeLineButton/
-#openButton/#copyButton/#discardButton (each a real SpButtonPresenter). Each accessor lazily
+#openButton/#copyButton/#discardButton (each a real SpButtonPresenter showing a Pharo
+`Smalltalk ui icons` icon instead of a text label -- add: #glamorousEdit, remove: #undo,
+discard: #trash, copy: #smallCopy, open: #glamorousOpenFromUrl -- with the former label kept as
+the button's tooltip via #help:). Each accessor lazily
 builds its own widget via a matching #defaultXxx method
 (~/.claude/CLAUDE.md's Smalltalk-specific default-to-lazy-initialization rule, also followed by
 ModelTheodoliteMobileLabRudesheim's #bearingLines/#defaultBearingLines) -- callers never
@@ -89,7 +92,8 @@ WidgetsTheodoliteMobileLabRudesheim >> copyButton [
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultAddLineButton [
 	^ self owner newButton
-		label:	'Add line';
+		icon:	(Smalltalk ui icons iconNamed: #glamorousEdit);
+		help:	'Add line';
 		yourself.
 ]
 
@@ -104,14 +108,16 @@ WidgetsTheodoliteMobileLabRudesheim >> defaultAddressBar [
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultCopyButton [
 	^ self owner newButton
-		label:	'Copy';
+		icon:	(Smalltalk ui icons iconNamed: #smallCopy);
+		help:	'Copy';
 		yourself.
 ]
 
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultDiscardButton [
 	^ self owner newButton
-		label:	'Discard all';
+		icon:	(Smalltalk ui icons iconNamed: #trash);
+		help:	'Discard all';
 		yourself.
 ]
 
@@ -123,7 +129,8 @@ WidgetsTheodoliteMobileLabRudesheim >> defaultMapArea [
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultOpenButton [
 	^ self owner newButton
-		label:	'Open';
+		icon:	(Smalltalk ui icons iconNamed: #glamorousOpenFromUrl);
+		help:	'Open';
 		yourself.
 ]
 
@@ -137,7 +144,8 @@ WidgetsTheodoliteMobileLabRudesheim >> defaultProgressLabel [
 { #category : 'private' }
 WidgetsTheodoliteMobileLabRudesheim >> defaultRemoveLineButton [
 	^ self owner newButton
-		label:	'Remove line';
+		icon:	(Smalltalk ui icons iconNamed: #undo);
+		help:	'Remove line';
 		yourself.
 ]
 
