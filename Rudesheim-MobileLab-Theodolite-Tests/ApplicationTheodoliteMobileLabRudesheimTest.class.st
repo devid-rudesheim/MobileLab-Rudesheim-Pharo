@@ -173,3 +173,96 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testWorldMenuApplicationClassesIn
 				includes:	self targetClass
 		).
 ]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testScreenPolicyAccessorRoundTrip [
+	|
+		target
+	|
+
+	target := self basicTarget.
+
+	target
+		screenPolicy:	Rudesheim MobileLab ScreenPolicy World.
+
+	self
+		assert:	target screenPolicy
+		identicalTo:	Rudesheim MobileLab ScreenPolicy World.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testScreenPolicyDefaultsToWindow [
+	self
+		assert:	self basicTarget screenPolicy
+		identicalTo:	Rudesheim MobileLab ScreenPolicy Window.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartOpensTheViewForTheWindowExtentThroughTheScreenPolicy [
+	|
+		target
+		policy
+	|
+
+	target := self basicTarget.
+	policy := StubScreenPolicyTheodoliteMobileLabRudesheim new.
+
+	target
+		screenPolicy:	policy.
+
+	target start.
+
+	self
+		assert:	policy views asArray
+		equals:
+		{
+			target
+				viewFor:	target defaultWindowExtent
+		}.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartOpensTheViewTitledTheodolite [
+	|
+		target
+		policy
+	|
+
+	target := self basicTarget.
+	policy := StubScreenPolicyTheodoliteMobileLabRudesheim new.
+
+	target
+		screenPolicy:	policy.
+
+	target start.
+
+	self
+		assert:	policy titles asArray
+		equals:
+		{
+			'Theodolite'
+		}.
+]
+
+{ #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartRegistersTheWindowTheScreenPolicyAnswers [
+	|
+		target
+		policy
+	|
+
+	target := self basicTarget.
+	policy := StubScreenPolicyTheodoliteMobileLabRudesheim new.
+
+	target
+		screenPolicy:	policy.
+
+	target start.
+
+	self
+		assert:
+		(
+			target windows
+				includes:	policy
+		).
+]
