@@ -14,7 +14,12 @@ View itself only arranges them) of *both* Views with
 bearing lines are shared whichever View is showing. Each View is built lazily via
 #viewPortrait/#viewLandscape (and their #defaultXxx) -- same pattern as #model, and exposed for
 the same reason: so a test can grab `target viewPortrait` before calling `target start` and
-assert on it afterward. Swapping Views live when the device rotates (項番FI §7.1 (b)) and the
+assert on it afterward. How much of the screen the opened View takes is the `screenPolicy` (a `Rudesheim MobileLab
+ScreenPolicy` object: `Window`, the default, opens an ordinary window; `World` opens the View as the
+Pharo World itself, for a native-looking app -- irreversible, see WorldScreenPolicyMobileLabRudesheim),
+given with `screenPolicy:` before `run`, e.g.
+`mobileLib Theodolite Application new screenPolicy: mobileLib ScreenPolicy World; run`.
+Swapping Views live when the device rotates (項番FI §7.1 (b)) and the
 ObjC-bridge location/heading sourcing (項番FJ §8 item 4) are separate, not-yet-built work.
 
 `menuLabel` is this app's display name in the `MobileLab` World Menu item
@@ -27,7 +32,8 @@ Class {
 	#instVars : [
 		'model',
 		'viewLandscape',
-		'viewPortrait'
+		'viewPortrait',
+		'screenPolicy'
 	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
@@ -41,6 +47,11 @@ ApplicationTheodoliteMobileLabRudesheim class >> menuLabel [
 { #category : 'private' }
 ApplicationTheodoliteMobileLabRudesheim >> defaultModel [
 	^ Rudesheim MobileLab Theodolite Model new.
+]
+
+{ #category : 'private' }
+ApplicationTheodoliteMobileLabRudesheim >> defaultScreenPolicy [
+	^ Rudesheim MobileLab ScreenPolicy Window.
 ]
 
 { #category : 'private' }
@@ -67,6 +78,20 @@ ApplicationTheodoliteMobileLabRudesheim >> model [
 		].
 ]
 
+{ #category : 'accessing' }
+ApplicationTheodoliteMobileLabRudesheim >> screenPolicy [
+	^ screenPolicy
+		ifNil:
+		[
+			screenPolicy := self defaultScreenPolicy.
+		].
+]
+
+{ #category : 'accessing' }
+ApplicationTheodoliteMobileLabRudesheim >> screenPolicy: aScreenPolicyMobileLabRudesheim [
+	screenPolicy := aScreenPolicyMobileLabRudesheim.
+]
+
 { #category : 'starting' }
 ApplicationTheodoliteMobileLabRudesheim >> start [
 	|
@@ -78,7 +103,10 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 		self
 			viewFor:	self defaultWindowExtent.
 
-	window := view open    title: 'Theodolite';    yourself.
+	window :=
+		self screenPolicy
+			open:	view
+			titled:	'Theodolite'.
 
 	self
 		registerWindow:	window.
