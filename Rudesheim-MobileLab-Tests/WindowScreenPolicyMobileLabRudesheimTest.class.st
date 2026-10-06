@@ -21,7 +21,7 @@ WindowScreenPolicyMobileLabRudesheimTest >> testOpenTitledAnswersTheWindowTheVie
 		view
 	|
 
-	view := StubPresenterMobileLabRudesheim new.
+	view := Rudesheim MobileLab ScreenPolicy StubPresenter new.
 
 	self
 		assert:
@@ -39,7 +39,7 @@ WindowScreenPolicyMobileLabRudesheimTest >> testOpenTitledNeverTakesOverTheWorld
 		view
 	|
 
-	view := StubPresenterMobileLabRudesheim new.
+	view := Rudesheim MobileLab ScreenPolicy StubPresenter new.
 
 	self targetClass
 		open:	view
@@ -59,7 +59,7 @@ WindowScreenPolicyMobileLabRudesheimTest >> testOpenTitledOpensTheViewThenTitles
 		view
 	|
 
-	view := StubPresenterMobileLabRudesheim new.
+	view := Rudesheim MobileLab ScreenPolicy StubPresenter new.
 
 	self targetClass
 		open:	view

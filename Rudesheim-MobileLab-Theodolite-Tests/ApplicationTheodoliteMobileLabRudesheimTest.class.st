@@ -205,7 +205,7 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testStartOpensTheViewForTheWindow
 	|
 
 	target := self basicTarget.
-	policy := StubScreenPolicyTheodoliteMobileLabRudesheim new.
+	policy := Rudesheim MobileLab Theodolite StubScreenPolicy new.
 
 	target
 		screenPolicy:	policy.
@@ -229,7 +229,7 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testStartOpensTheViewTitledTheodo
 	|
 
 	target := self basicTarget.
-	policy := StubScreenPolicyTheodoliteMobileLabRudesheim new.
+	policy := Rudesheim MobileLab Theodolite StubScreenPolicy new.
 
 	target
 		screenPolicy:	policy.
@@ -252,7 +252,7 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testStartRegistersTheWindowTheScr
 	|
 
 	target := self basicTarget.
-	policy := StubScreenPolicyTheodoliteMobileLabRudesheim new.
+	policy := Rudesheim MobileLab Theodolite StubScreenPolicy new.
 
 	target
 		screenPolicy:	policy.

@@ -27,7 +27,7 @@ OSLocationRudesheimTest >> testCurrentLocationIsSubclassResponsibility [
 	self
 		should:
 		[
-			OSLocationRudesheim currentLocation.
+			self targetClass currentLocation.
 		]
 		raise:	Error.
 ]
@@ -37,7 +37,7 @@ OSLocationRudesheimTest >> testCurrentNormalizedBearingIsSubclassResponsibility 
 	self
 		should:
 		[
-			OSLocationRudesheim currentNormalizedBearing.
+			self targetClass currentNormalizedBearing.
 		]
 		raise:	Error.
 ]
@@ -47,7 +47,7 @@ OSLocationRudesheimTest >> testCurrentRayIsSubclassResponsibility [
 	self
 		should:
 		[
-			OSLocationRudesheim currentRay.
+			self targetClass currentRay.
 		]
 		raise:	Error.
 ]
@@ -55,6 +55,6 @@ OSLocationRudesheimTest >> testCurrentRayIsSubclassResponsibility [
 { #category : 'tests' }
 OSLocationRudesheimTest >> testMacDispatchResolvesToMacOSLocationRudesheim [
 	self
-		assert:	Rudesheim OS Mac location
-		equals:	MacOSLocationRudesheim.
+		assert:	Rudesheim OS Mac location name
+		equals:	#MacOSLocationRudesheim.
 ]

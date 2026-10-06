@@ -24,7 +24,7 @@ Class {
 
 { #category : 'accessing' }
 MacOSLocationRudesheimTest class >> targetClass [
-	^ MacOSLocationRudesheim.
+	^ Rudesheim OS Mac location.
 ]
 
 { #category : 'tests' }
@@ -40,7 +40,7 @@ MacOSLocationRudesheimTest >> testAddDelegateCallbackForToUsingBlockCallbackAcce
 		self targetClass
 			addDelegateCallbackFor:	'locationManager:didUpdateHeading:'
 			to:	Object
-			using:	StubObjCLibraryLocationMobileLabRudesheim new
+			using:	Rudesheim MobileLab Location StubObjCLibrary new
 			block:
 			[ :managerArg :headingArg |
 				receivedArguments
@@ -68,7 +68,7 @@ MacOSLocationRudesheimTest >> testAddDelegateCallbackForToUsingBlockRegistersThe
 		callback
 	|
 
-	stub := StubObjCLibraryLocationMobileLabRudesheim new.
+	stub := Rudesheim MobileLab Location StubObjCLibrary new.
 
 	callback :=
 		self targetClass

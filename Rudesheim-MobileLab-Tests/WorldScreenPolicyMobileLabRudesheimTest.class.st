@@ -26,7 +26,7 @@ WorldScreenPolicyMobileLabRudesheimTest >> testOpenTitledAnswersTheWorldWindow [
 		view
 	|
 
-	view := StubPresenterMobileLabRudesheim new.
+	view := Rudesheim MobileLab ScreenPolicy StubPresenter new.
 
 	self
 		assert:
@@ -44,7 +44,7 @@ WorldScreenPolicyMobileLabRudesheimTest >> testOpenTitledGrowsTheWorldContainerO
 		view
 	|
 
-	view := StubPresenterMobileLabRudesheim new.
+	view := Rudesheim MobileLab ScreenPolicy StubPresenter new.
 
 	self targetClass
 		open:	view
@@ -67,7 +67,7 @@ WorldScreenPolicyMobileLabRudesheimTest >> testOpenTitledGrowsTheWorldContainerT
 		world
 	|
 
-	view := StubPresenterMobileLabRudesheim new.
+	view := Rudesheim MobileLab ScreenPolicy StubPresenter new.
 	world := view worldWindow currentWorld.
 
 	self targetClass
@@ -85,7 +85,7 @@ WorldScreenPolicyMobileLabRudesheimTest >> testOpenTitledSendsAsWorldWindowToThe
 		view
 	|
 
-	view := StubPresenterMobileLabRudesheim new.
+	view := Rudesheim MobileLab ScreenPolicy StubPresenter new.
 
 	self targetClass
 		open:	view

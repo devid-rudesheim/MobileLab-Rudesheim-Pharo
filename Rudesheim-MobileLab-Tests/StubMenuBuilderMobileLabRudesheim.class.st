@@ -33,7 +33,7 @@ StubMenuBuilderMobileLabRudesheim >> item: aSymbol [
 		at:	aSymbol
 		ifAbsentPut:
 		[
-			StubMenuItemMobileLabRudesheim new.
+			Rudesheim MobileLab WorldMenu StubMenuItem new.
 		].
 ]
 

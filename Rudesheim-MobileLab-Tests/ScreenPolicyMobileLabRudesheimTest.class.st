@@ -24,13 +24,13 @@ ScreenPolicyMobileLabRudesheimTest >> testReachableFromTheMobileLabNamespace [
 { #category : 'tests' }
 ScreenPolicyMobileLabRudesheimTest >> testWindowAnswersWindowScreenPolicy [
 	self
-		assert:	self targetClass Window
-		identicalTo:	WindowScreenPolicyMobileLabRudesheim.
+		assert:	self targetClass Window name
+		equals:	#WindowScreenPolicyMobileLabRudesheim.
 ]
 
 { #category : 'tests' }
 ScreenPolicyMobileLabRudesheimTest >> testWorldAnswersWorldScreenPolicy [
 	self
-		assert:	self targetClass World
-		identicalTo:	WorldScreenPolicyMobileLabRudesheim.
+		assert:	self targetClass World name
+		equals:	#WorldScreenPolicyMobileLabRudesheim.
 ]
