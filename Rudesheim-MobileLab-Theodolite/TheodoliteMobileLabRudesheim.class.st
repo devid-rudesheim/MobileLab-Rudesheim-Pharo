@@ -1,3 +1,10 @@
+"
+A TheodoliteMobileLabRudesheim is the namespace of the Theodolite app (`Rudesheim MobileLab
+Theodolite`); its class-side accessors reach the app's classes. It is also what the app hands to
+`Rudesheim MobileLab Export` classes when its exported iOS project is prepared: they ask it for the
+`Application` class (to start it) and for its `permissions` (the Rudesheim MobileLab Permission
+objects, with the sentence shown to the user, that go into the Info.plist).
+"
 Class {
 	#name : 'TheodoliteMobileLabRudesheim',
 	#superclass : 'Object',
@@ -69,4 +76,13 @@ TheodoliteMobileLabRudesheim class >> ViewPortrait [
 { #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> Widgets [
 	^ WidgetsTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'exporting' }
+TheodoliteMobileLabRudesheim class >> permissions [
+	^
+	{
+		Rudesheim MobileLab Permission LocationService
+			description:	'Theodolite uses your current location and heading to record each bearing line.'
+	}.
 ]

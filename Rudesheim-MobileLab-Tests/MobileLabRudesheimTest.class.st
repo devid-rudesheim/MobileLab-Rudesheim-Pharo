@@ -48,3 +48,41 @@ MobileLabRudesheimTest >> testApplicationClassesExcludesNamespacesWithoutAnAppli
 				includes:	self targetClass WorldMenu
 		).
 ]
+
+{ #category : 'tests' }
+MobileLabRudesheimTest >> testApplicationClassesExcludesExportAndPermission [
+	"Neither Rudesheim MobileLab Export nor Rudesheim MobileLab Permission is an app (neither answers
+	a class-side #Application), so #applicationClasses must not list anything of theirs."
+	self
+		deny:
+		(
+			self targetClass applicationClasses
+				anySatisfy:
+				[ :anApplicationClass |
+					anApplicationClass category
+						beginsWith:	'Rudesheim-MobileLab-Export'.
+				]
+		).
+
+	self
+		deny:
+		(
+			self targetClass applicationClasses
+				anySatisfy:
+				[ :anApplicationClass |
+					anApplicationClass category
+						beginsWith:	'Rudesheim-MobileLab-Permission'.
+				]
+		).
+]
+
+{ #category : 'tests' }
+MobileLabRudesheimTest >> testExportAndPermissionAreReachable [
+	self
+		assert:	self targetClass Export name
+		equals:	#ExportMobileLabRudesheim.
+
+	self
+		assert:	self targetClass Permission name
+		equals:	#PermissionMobileLabRudesheim.
+]

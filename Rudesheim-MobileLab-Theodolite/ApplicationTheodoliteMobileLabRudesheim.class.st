@@ -25,6 +25,10 @@ ObjC-bridge location/heading sourcing (項番FJ §8 item 4) are separate, not-ye
 `menuLabel` is this app's display name in the `MobileLab` World Menu item
 (`WorldMenuMobileLabRudesheim class>>#menuOn:` discovers every `Rudesheim MobileLab * Application`
 class and reads its `menuLabel`).
+
+The class-side `startup` is what an exported iOS app's startup.st calls
+(`Rudesheim MobileLab Export StartupScript` appends that line): it opens the app from the UI
+process, because startup.st runs before the UI is ready to open windows.
 "
 Class {
 	#name : 'ApplicationTheodoliteMobileLabRudesheim',
@@ -42,6 +46,15 @@ Class {
 { #category : 'accessing' }
 ApplicationTheodoliteMobileLabRudesheim class >> menuLabel [
 	^ 'Theodolite'.
+]
+
+{ #category : 'starting' }
+ApplicationTheodoliteMobileLabRudesheim class >> startup [
+	^ UIManager default
+		defer:
+		[
+			self new run.
+		].
 ]
 
 { #category : 'private' }

@@ -8,8 +8,18 @@ Class {
 }
 
 { #category : 'namespace' }
+MobileLabRudesheim class >> Export [
+	^ ExportMobileLabRudesheim.
+]
+
+{ #category : 'namespace' }
 MobileLabRudesheim class >> Location [
 	^ LocationMobileLabRudesheim.
+]
+
+{ #category : 'namespace' }
+MobileLabRudesheim class >> Permission [
+	^ PermissionMobileLabRudesheim.
 ]
 
 { #category : 'namespace' }
