@@ -20,8 +20,8 @@ OSLauncherRudesheimTest class >> targetClass [
 { #category : 'tests' }
 OSLauncherRudesheimTest >> testMacDispatchResolvesToMacOSLauncherRudesheim [
 	self
-		assert:	Rudesheim OS Mac launcher
-		equals:	MacOSLauncherRudesheim.
+		assert:	Rudesheim OS Mac launcher name
+		equals:	#MacOSLauncherRudesheim.
 ]
 
 { #category : 'tests' }
@@ -29,7 +29,8 @@ OSLauncherRudesheimTest >> testOpenIsSubclassResponsibility [
 	self
 		should:
 		[
-			OSLauncherRudesheim open: 'https://example.com' asZnUrl.
+			self targetClass
+				open:	'https://example.com' asZnUrl.
 		]
 		raise:	Error.
 ]

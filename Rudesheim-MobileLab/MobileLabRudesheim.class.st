@@ -13,6 +13,11 @@ MobileLabRudesheim class >> Location [
 ]
 
 { #category : 'namespace' }
+MobileLabRudesheim class >> ScreenPolicy [
+	^ ScreenPolicyMobileLabRudesheim.
+]
+
+{ #category : 'namespace' }
 MobileLabRudesheim class >> WorldMenu [
 	^ WorldMenuMobileLabRudesheim.
 ]

@@ -25,7 +25,7 @@ WorldMenuMobileLabRudesheimTest >> testMenuOnAddsOneChildItemPerApplicationClass
 		builder
 	|
 
-	builder := StubMenuBuilderMobileLabRudesheim new.
+	builder := Rudesheim MobileLab WorldMenu StubMenuBuilder new.
 
 	self
 		shouldnt:
