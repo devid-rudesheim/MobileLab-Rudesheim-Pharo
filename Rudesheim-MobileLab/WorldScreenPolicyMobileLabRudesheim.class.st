@@ -32,12 +32,10 @@ titled: aTitleString [
 		worldWindow
 	|
 
-	worldWindow := aViewSpPresenter asWorldWindow.
-
-	worldWindow
-		title:	aTitleString.
-
-	worldWindow open.
+	worldWindow :=
+		aViewSpPresenter asWorldWindow
+			title:	aTitleString;
+			open.
 
 	worldWindow
 		defer:
