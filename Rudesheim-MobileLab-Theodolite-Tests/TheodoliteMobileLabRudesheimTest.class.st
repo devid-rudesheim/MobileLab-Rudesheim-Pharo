@@ -128,11 +128,29 @@ TheodoliteMobileLabRudesheimTest >> testStartupScriptPreparationCallsTheApplicat
 ]
 
 { #category : 'tests' }
-TheodoliteMobileLabRudesheimTest >> testNamespaceIsExportable [
+TheodoliteMobileLabRudesheimTest >> testNamespaceComposesATraitRequiringApplication [
 	self
 		assert:
 		(
-			self targetClass class
-				includesTrait:	Rudesheim MobileLab Exportable classTrait
+			self targetClass class traits
+				anySatisfy:
+				[ :aTrait |
+					aTrait
+						includesSelector:	#Application.
+				]
+		).
+]
+
+{ #category : 'tests' }
+TheodoliteMobileLabRudesheimTest >> testNamespaceComposesATraitRequiringPermissions [
+	self
+		assert:
+		(
+			self targetClass class traits
+				anySatisfy:
+				[ :aTrait |
+					aTrait
+						includesSelector:	#permissions.
+				]
 		).
 ]

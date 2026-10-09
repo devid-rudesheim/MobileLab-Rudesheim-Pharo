@@ -9,7 +9,8 @@ prepare the app's exported iOS project -- the members they ask of it, and nothin
 Both are on the class side, so the trait is composed onto the namespace class's class side
 (`#classTraits : 'TExportableMobileLabRudesheim classTrait'`). Here they are only requirements
 (#subclassResponsibility): the namespace class defines them, and a `prepareAt:for:` argument is
-named after this trait to say so. Reached as `Rudesheim MobileLab Exportable`.
+named after this trait to say so. It is a part an app composes, not a branch of the Rudesheim
+MobileLab namespace, so it has no accessor there and `applicationClasses` never meets it.
 "
 Trait {
 	#name : 'TExportableMobileLabRudesheim',
@@ -18,7 +19,7 @@ Trait {
 	#tag : 'Export'
 }
 
-{ #category : 'namespace' }
+{ #category : 'exporting' }
 TExportableMobileLabRudesheim class >> Application [
 	^ self subclassResponsibility.
 ]
