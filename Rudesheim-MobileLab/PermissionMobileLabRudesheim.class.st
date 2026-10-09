@@ -21,7 +21,7 @@ Class {
 	#tag : 'Permission'
 }
 
-{ #category : 'accessing' }
+{ #category : 'namespace' }
 PermissionMobileLabRudesheim class >> LocationService [
 	^ LocationServicePermissionMobileLabRudesheim.
 ]

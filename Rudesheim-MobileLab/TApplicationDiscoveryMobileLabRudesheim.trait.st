@@ -40,6 +40,13 @@ TApplicationDiscoveryMobileLabRudesheim class >> applicationClasses [
 					perform:	aSelector.
 			].
 
+	namespaceClasses :=
+		namespaceClasses
+			reject:
+			[ :aNamespaceClass |
+				aNamespaceClass isTrait.
+			].
+
 	^
 	(
 		(

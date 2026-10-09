@@ -83,7 +83,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareAddsEveryPermissionOfTheAppA
 
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	contents := ( self exportDirectory / 'Info.plist' ) contents.
 
@@ -106,7 +106,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareAddsEveryPermissionOfTheAppA
 InfoPlistExportMobileLabRudesheimTest >> testPrepareEndsTheRootDictionaryAfterTheNewEntries [
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:
@@ -129,13 +129,13 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareIsIdempotent [
 
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	afterFirstPrepare := infoPlistFile contents.
 
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:	infoPlistFile contents
@@ -146,7 +146,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareIsIdempotent [
 InfoPlistExportMobileLabRudesheimTest >> testPrepareKeepsTheExistingEntries [
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:
@@ -197,7 +197,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareLeavesAnExistingDescriptionA
 
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	contents := ( self exportDirectory / 'Info.plist' ) contents.
 
@@ -226,7 +226,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareLeavesTheFileUnchangedWhenTh
 
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubBareAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubBareApp.
 
 	self
 		assert:
@@ -250,7 +250,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareRaisesWhenInfoPlistIsMissing
 		[
 			self targetClass
 				prepareAt:	directory
-				for:	StubAppExportMobileLabRudesheim.
+				for:	Rudesheim MobileLab Export StubApp.
 		]
 		raise:	Error.
 ]
@@ -286,7 +286,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareRaisesWhenTheRootDictionaryD
 		[
 			self targetClass
 				prepareAt:	self exportDirectory
-				for:	StubAppExportMobileLabRudesheim.
+				for:	Rudesheim MobileLab Export StubApp.
 		]
 		raise:	Error.
 ]
@@ -312,7 +312,7 @@ InfoPlistExportMobileLabRudesheimTest >> testPrepareRaisesWhenThereIsNoPListEnd 
 		[
 			self targetClass
 				prepareAt:	self exportDirectory
-				for:	StubAppExportMobileLabRudesheim.
+				for:	Rudesheim MobileLab Export StubApp.
 		]
 		raise:	Error.
 ]

@@ -68,7 +68,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareAnswersTheStartupScript 
 		(
 			self targetClass
 				prepareAt:	self exportDirectory
-				for:	StubAppExportMobileLabRudesheim
+				for:	Rudesheim MobileLab Export StubApp
 		)
 		equals:	self exportDirectory / 'PharoFiles' / 'startup.st'.
 ]
@@ -77,7 +77,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareAnswersTheStartupScript 
 StartupScriptExportMobileLabRudesheimTest >> testPrepareAppendsTheApplicationStartupCall [
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:
@@ -107,7 +107,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareFindsTheStartupScriptAtT
 
 	self targetClass
 		prepareAt:	directory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:
@@ -137,7 +137,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareFindsTheStartupScriptInW
 
 	self targetClass
 		prepareAt:	directory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:
@@ -158,13 +158,13 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareIsIdempotent [
 
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	afterFirstPrepare := startupFile contents.
 
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:	startupFile contents
@@ -175,7 +175,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareIsIdempotent [
 StartupScriptExportMobileLabRudesheimTest >> testPrepareKeepsTheExistingLines [
 	self targetClass
 		prepareAt:	self exportDirectory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:
@@ -203,7 +203,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareRaisesWhenThereAreSevera
 		[
 			self targetClass
 				prepareAt:	self exportDirectory
-				for:	StubAppExportMobileLabRudesheim.
+				for:	Rudesheim MobileLab Export StubApp.
 		]
 		raise:	Error.
 ]
@@ -222,7 +222,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareRaisesWhenThereIsNoStart
 		[
 			self targetClass
 				prepareAt:	directory
-				for:	StubAppExportMobileLabRudesheim.
+				for:	Rudesheim MobileLab Export StubApp.
 		]
 		raise:	Error.
 ]
@@ -247,7 +247,7 @@ StartupScriptExportMobileLabRudesheimTest >> testPrepareStartsTheCallOnItsOwnLin
 
 	self targetClass
 		prepareAt:	directory
-		for:	StubAppExportMobileLabRudesheim.
+		for:	Rudesheim MobileLab Export StubApp.
 
 	self
 		assert:

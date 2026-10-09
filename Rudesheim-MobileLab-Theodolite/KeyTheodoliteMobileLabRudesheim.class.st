@@ -22,12 +22,12 @@ Class {
 	#tag : 'Namespace'
 }
 
-{ #category : 'accessing' }
+{ #category : 'namespace' }
 KeyTheodoliteMobileLabRudesheim class >> BearingLines [
 	^ BearingLinesKeyTheodoliteMobileLabRudesheim.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'namespace' }
 KeyTheodoliteMobileLabRudesheim class >> Warning [
 	^ WarningKeyTheodoliteMobileLabRudesheim.
 ]

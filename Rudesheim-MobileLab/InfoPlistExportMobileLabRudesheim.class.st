@@ -20,12 +20,11 @@ Class {
 
 { #category : 'preparing' }
 InfoPlistExportMobileLabRudesheim class >> prepareAt: aDirectoryFileReference
-for: anAppClass [
+for: anAppTExportableMobileLabRudesheim [
 	|
 		infoPlistFile
 		contents
 		missingPermissions
-		entries
 		closingIndex
 		beforeClosing
 	|
@@ -42,7 +41,7 @@ for: anAppClass [
 	contents := infoPlistFile contents.
 
 	missingPermissions :=
-		anAppClass permissions
+		anAppTExportableMobileLabRudesheim permissions
 			reject:
 			[ :each |
 				contents
@@ -82,25 +81,6 @@ for: anAppClass [
 				error:	'No root </dict> right before </plist> in ' , infoPlistFile pathString , '.'.
 		].
 
-	entries :=
-		String
-			streamContents:
-			[ :aStream |
-				missingPermissions
-					do:
-					[ :each |
-						aStream
-							nextPutAll:	'    <key>';
-							nextPutAll:	each forPList key;
-							nextPutAll:	'</key>';
-							nextPutAll:	String lf;
-							nextPutAll:	'    <string>';
-							nextPutAll:	each description asHTMLString;
-							nextPutAll:	'</string>';
-							nextPutAll:	String lf.
-					].
-			].
-
 	infoPlistFile
 		ensureDelete;
 		writeStreamDo:
@@ -111,7 +91,26 @@ for: anAppClass [
 					beforeClosing
 						allButLast:	'</dict>' size
 				);
-				nextPutAll:	entries;
+				nextPutAll:
+				(
+					String
+						streamContents:
+						[ :aWriteStream |
+							missingPermissions
+								do:
+								[ :each |
+									aWriteStream
+										nextPutAll:	'    <key>';
+										nextPutAll:	each forPList key;
+										nextPutAll:	'</key>';
+										nextPutAll:	String lf;
+										nextPutAll:	'    <string>';
+										nextPutAll:	each description asHTMLString;
+										nextPutAll:	'</string>';
+										nextPutAll:	String lf.
+								].
+						]
+				);
 				nextPutAll:	'</dict>';
 				nextPutAll:	String lf;
 				nextPutAll:

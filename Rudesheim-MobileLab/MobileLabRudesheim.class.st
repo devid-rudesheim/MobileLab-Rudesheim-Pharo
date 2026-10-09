@@ -13,6 +13,11 @@ MobileLabRudesheim class >> Export [
 ]
 
 { #category : 'namespace' }
+MobileLabRudesheim class >> Exportable [
+	^ TExportableMobileLabRudesheim.
+]
+
+{ #category : 'namespace' }
 MobileLabRudesheim class >> Location [
 	^ LocationMobileLabRudesheim.
 ]

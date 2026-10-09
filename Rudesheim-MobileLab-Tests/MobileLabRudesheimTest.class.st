@@ -52,7 +52,8 @@ MobileLabRudesheimTest >> testApplicationClassesExcludesNamespacesWithoutAnAppli
 { #category : 'tests' }
 MobileLabRudesheimTest >> testApplicationClassesExcludesExportAndPermission [
 	"Neither Rudesheim MobileLab Export nor Rudesheim MobileLab Permission is an app (neither answers
-	a class-side #Application), so #applicationClasses must not list anything of theirs."
+	a class-side #Application), and neither is the trait Rudesheim MobileLab Exportable (it declares
+	#Application only as a requirement), so #applicationClasses must not list anything of theirs."
 	self
 		deny:
 		(
@@ -85,4 +86,24 @@ MobileLabRudesheimTest >> testExportAndPermissionAreReachable [
 	self
 		assert:	self targetClass Permission name
 		equals:	#PermissionMobileLabRudesheim.
+]
+
+{ #category : 'tests' }
+MobileLabRudesheimTest >> testExportableNamesTheApplicationClassTheExportClassesAsk [
+	self
+		assert:
+		(
+			self targetClass Exportable classTrait
+				includesSelector:	#Application
+		).
+]
+
+{ #category : 'tests' }
+MobileLabRudesheimTest >> testExportableNamesThePermissionsTheExportClassesAsk [
+	self
+		assert:
+		(
+			self targetClass Exportable classTrait
+				includesSelector:	#permissions
+		).
 ]

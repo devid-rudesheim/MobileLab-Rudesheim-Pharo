@@ -6,13 +6,14 @@ and two `permissions`.
 Class {
 	#name : 'StubAppExportMobileLabRudesheim',
 	#superclass : 'Object',
+	#classTraits : 'TExportableMobileLabRudesheim classTrait',
 	#category : 'Rudesheim-MobileLab-Tests',
 	#package : 'Rudesheim-MobileLab-Tests'
 }
 
-{ #category : 'accessing' }
+{ #category : 'namespace' }
 StubAppExportMobileLabRudesheim class >> Application [
-	^ StubApplicationExportMobileLabRudesheim.
+	^ Rudesheim MobileLab Export StubApplication.
 ]
 
 { #category : 'exporting' }
@@ -20,6 +21,6 @@ StubAppExportMobileLabRudesheim class >> permissions [
 	^
 	{
 		Rudesheim MobileLab Permission LocationService new.
-		StubPermissionExportMobileLabRudesheim new
+		Rudesheim MobileLab Export StubPermission new
 	}.
 ]

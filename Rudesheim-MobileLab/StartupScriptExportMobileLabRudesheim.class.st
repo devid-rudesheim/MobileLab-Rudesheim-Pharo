@@ -18,7 +18,7 @@ Class {
 
 { #category : 'preparing' }
 StartupScriptExportMobileLabRudesheim class >> prepareAt: aDirectoryFileReference
-for: anAppClass [
+for: anAppTExportableMobileLabRudesheim [
 	|
 		startupFiles
 		startupFile
@@ -48,7 +48,7 @@ for: anAppClass [
 		].
 
 	startupFile := startupFiles first.
-	startupCall := anAppClass Application name , ' startup.'.
+	startupCall := anAppTExportableMobileLabRudesheim Application name , ' startup.'.
 	contents := startupFile contents.
 
 	(

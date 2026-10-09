@@ -5,13 +5,14 @@ of `Rudesheim MobileLab Export InfoPlist` that must leave the file alone.
 Class {
 	#name : 'StubBareAppExportMobileLabRudesheim',
 	#superclass : 'Object',
+	#classTraits : 'TExportableMobileLabRudesheim classTrait',
 	#category : 'Rudesheim-MobileLab-Tests',
 	#package : 'Rudesheim-MobileLab-Tests'
 }
 
-{ #category : 'accessing' }
+{ #category : 'namespace' }
 StubBareAppExportMobileLabRudesheim class >> Application [
-	^ StubApplicationExportMobileLabRudesheim.
+	^ Rudesheim MobileLab Export StubApplication.
 ]
 
 { #category : 'exporting' }

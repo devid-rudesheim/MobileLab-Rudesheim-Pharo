@@ -126,3 +126,13 @@ TheodoliteMobileLabRudesheimTest >> testStartupScriptPreparationCallsTheApplicat
 		) contents lines last
 		equals:	'ApplicationTheodoliteMobileLabRudesheim startup.'.
 ]
+
+{ #category : 'tests' }
+TheodoliteMobileLabRudesheimTest >> testNamespaceIsExportable [
+	self
+		assert:
+		(
+			self targetClass class
+				includesTrait:	Rudesheim MobileLab Exportable classTrait
+		).
+]
