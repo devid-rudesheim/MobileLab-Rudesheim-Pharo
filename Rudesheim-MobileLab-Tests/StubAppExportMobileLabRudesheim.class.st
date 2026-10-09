@@ -1,6 +1,6 @@
 "
 A StubAppExportMobileLabRudesheim stands for an app's namespace class (like `Rudesheim MobileLab
-Theodolite`) in the tests of `Rudesheim MobileLab Export` classes: it answers an `Application` class
+Theodolite`) in the tests of `Rudesheim MobileLab Export` classes: it answers an `application` class
 and two `permissions`.
 "
 Class {
@@ -11,12 +11,17 @@ Class {
 	#package : 'Rudesheim-MobileLab-Tests'
 }
 
+{ #category : 'accessing' }
+StubAppExportMobileLabRudesheim class >> application [
+	^ self Application.
+]
+
 { #category : 'namespace' }
 StubAppExportMobileLabRudesheim class >> Application [
 	^ Rudesheim MobileLab Export StubApplication.
 ]
 
-{ #category : 'exporting' }
+{ #category : 'accessing' }
 StubAppExportMobileLabRudesheim class >> permissions [
 	^
 	{

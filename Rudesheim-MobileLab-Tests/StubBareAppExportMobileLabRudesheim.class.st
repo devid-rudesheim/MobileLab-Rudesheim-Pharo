@@ -10,12 +10,17 @@ Class {
 	#package : 'Rudesheim-MobileLab-Tests'
 }
 
+{ #category : 'accessing' }
+StubBareAppExportMobileLabRudesheim class >> application [
+	^ self Application.
+]
+
 { #category : 'namespace' }
 StubBareAppExportMobileLabRudesheim class >> Application [
 	^ Rudesheim MobileLab Export StubApplication.
 ]
 
-{ #category : 'exporting' }
+{ #category : 'accessing' }
 StubBareAppExportMobileLabRudesheim class >> permissions [
 	^ #(  ).
 ]

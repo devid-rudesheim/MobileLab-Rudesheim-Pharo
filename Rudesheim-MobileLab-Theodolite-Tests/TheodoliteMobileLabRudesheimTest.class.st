@@ -1,6 +1,6 @@
 "
 A TheodoliteMobileLabRudesheimTest is a test class for testing what `Rudesheim MobileLab Theodolite`
-answers to the `Rudesheim MobileLab Export` classes (its `Application` and its `permissions`), and
+answers to the `Rudesheim MobileLab Export` classes (its `application` and its `permissions`), and
 that those classes can prepare an exported project's files with it: the project is a directory of an
 in-memory file system.
 "
@@ -136,7 +136,7 @@ TheodoliteMobileLabRudesheimTest >> testNamespaceComposesATraitRequiringApplicat
 				anySatisfy:
 				[ :aTrait |
 					aTrait
-						includesSelector:	#Application.
+						includesSelector:	#application.
 				]
 		).
 ]
@@ -153,4 +153,11 @@ TheodoliteMobileLabRudesheimTest >> testNamespaceComposesATraitRequiringPermissi
 						includesSelector:	#permissions.
 				]
 		).
+]
+
+{ #category : 'tests' }
+TheodoliteMobileLabRudesheimTest >> testApplicationAnswersTheApplicationBranch [
+	self
+		assert:	self targetClass application
+		identicalTo:	self targetClass Application.
 ]

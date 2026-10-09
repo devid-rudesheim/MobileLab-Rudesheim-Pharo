@@ -2,7 +2,7 @@
 A StartupScriptExportMobileLabRudesheim makes an exported app's startup.st start the app: it appends
 the line `<the app's Application class> startup.` to the end of that file (the Export as App's own
 startup.st only hides the development chrome). The line is built from the class the app answers to
-`Application`, so renaming the class cannot leave a stale name behind.
+`application`, so renaming the class cannot leave a stale name behind.
 
 startup.st is looked for in the exported project's directory and in each directory directly under it,
 because which directory holds it (`Resources`, ...) is iospharo's business, not this class's; it
@@ -48,7 +48,7 @@ for: anAppTExportableMobileLabRudesheim [
 		].
 
 	startupFile := startupFiles first.
-	startupCall := anAppTExportableMobileLabRudesheim Application name , ' startup.'.
+	startupCall := anAppTExportableMobileLabRudesheim application name , ' startup.'.
 	contents := startupFile contents.
 
 	(

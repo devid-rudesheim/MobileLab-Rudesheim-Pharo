@@ -5,7 +5,7 @@ app's `Export as App` has written its Xcode project: `Rudesheim MobileLab Export
 `prepareAt: aDirectoryFileReference for: anAppTExportableMobileLabRudesheim`, where the first argument is the exported
 project's directory and the second is the app's own namespace class (e.g.
 `Rudesheim MobileLab Theodolite`), which must compose the trait `TExportableMobileLabRudesheim`: that
-trait names the two members these classes ask of it, `Application` and `permissions`.
+trait names the two members these classes ask of it, `application` and `permissions`.
 
 Every `prepareAt:for:` can be run again on an already prepared project and then changes nothing.
 This only covers what is specific to the app; anything that is wrong in the exported project

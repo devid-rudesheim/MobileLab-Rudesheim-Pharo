@@ -2,7 +2,7 @@
 A TheodoliteMobileLabRudesheim is the namespace of the Theodolite app (`Rudesheim MobileLab
 Theodolite`); its class-side accessors reach the app's classes. It is also what the app hands to
 `Rudesheim MobileLab Export` classes when its exported iOS project is prepared: they ask it for the
-`Application` class (to start it) and for its `permissions` (the Rudesheim MobileLab Permission
+`application` class (to start it) and for its `permissions` (the Rudesheim MobileLab Permission
 objects, with the sentence shown to the user, that go into the Info.plist).
 "
 Class {
@@ -17,6 +17,11 @@ Class {
 { #category : 'namespace' }
 TheodoliteMobileLabRudesheim class >> Application [
 	^ ApplicationTheodoliteMobileLabRudesheim.
+]
+
+{ #category : 'accessing' }
+TheodoliteMobileLabRudesheim class >> application [
+	^ self Application.
 ]
 
 { #category : 'namespace' }
@@ -79,7 +84,7 @@ TheodoliteMobileLabRudesheim class >> Widgets [
 	^ WidgetsTheodoliteMobileLabRudesheim.
 ]
 
-{ #category : 'exporting' }
+{ #category : 'accessing' }
 TheodoliteMobileLabRudesheim class >> permissions [
 	^
 	{

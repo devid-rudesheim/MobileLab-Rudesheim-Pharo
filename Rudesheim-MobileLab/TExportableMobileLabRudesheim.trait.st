@@ -3,7 +3,8 @@ A TExportableMobileLabRudesheim names what a MobileLab app's namespace class (li
 `Rudesheim MobileLab Theodolite`) must answer for the `Rudesheim MobileLab Export` classes to
 prepare the app's exported iOS project -- the members they ask of it, and nothing else:
 
-	`Application`	the app's SpApplication class (it answers the class-side #startup)
+	`application`	the app's SpApplication class (it answers the class-side #startup); an app
+			namespace has it answer its own `Application` branch: `application ^ self Application`
 	`permissions`	the Rudesheim MobileLab Permission objects the app needs (empty when none)
 
 Both are on the class side, so the trait is composed onto the namespace class's class side
@@ -19,12 +20,12 @@ Trait {
 	#tag : 'Export'
 }
 
-{ #category : 'exporting' }
-TExportableMobileLabRudesheim class >> Application [
+{ #category : 'accessing' }
+TExportableMobileLabRudesheim class >> application [
 	^ self subclassResponsibility.
 ]
 
-{ #category : 'exporting' }
+{ #category : 'accessing' }
 TExportableMobileLabRudesheim class >> permissions [
 	^ self subclassResponsibility.
 ]
