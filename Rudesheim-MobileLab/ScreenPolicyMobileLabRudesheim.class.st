@@ -20,12 +20,12 @@ Class {
 	#tag : 'Namespace'
 }
 
-{ #category : 'accessing' }
+{ #category : 'namespace' }
 ScreenPolicyMobileLabRudesheim class >> Window [
 	^ WindowScreenPolicyMobileLabRudesheim.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'namespace' }
 ScreenPolicyMobileLabRudesheim class >> World [
 	^ WorldScreenPolicyMobileLabRudesheim.
 ]
