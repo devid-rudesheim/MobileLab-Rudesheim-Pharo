@@ -2,7 +2,7 @@
 An ExportMobileLabRudesheim is the namespace of the work a MobileLab app needs after the iospharo
 app's `Export as App` has written its Xcode project: `Rudesheim MobileLab Export StartupScript` and
 `Rudesheim MobileLab Export InfoPlist`. Each of them is stateless and answers
-`prepareAt: aDirectoryFileReference for: anAppTExportableMobileLabRudesheim`, where the first argument is the exported
+`prepareAt: aDirectoryFileReference for: aTargetTExportableMobileLabRudesheim`, where the first argument is the exported
 project's directory and the second is the app's own namespace class (e.g.
 `Rudesheim MobileLab Theodolite`), which must compose the trait `TExportableMobileLabRudesheim`: that
 trait names the two members these classes ask of it, `application` and `permissions`.

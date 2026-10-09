@@ -20,7 +20,7 @@ Class {
 
 { #category : 'preparing' }
 InfoPlistExportMobileLabRudesheim class >> prepareAt: aDirectoryFileReference
-for: anAppTExportableMobileLabRudesheim [
+for: aTargetTExportableMobileLabRudesheim [
 	|
 		infoPlistFile
 		contents
@@ -41,7 +41,7 @@ for: anAppTExportableMobileLabRudesheim [
 	contents := infoPlistFile contents.
 
 	missingPermissions :=
-		anAppTExportableMobileLabRudesheim permissions
+		aTargetTExportableMobileLabRudesheim permissions
 			reject:
 			[ :each |
 				contents
