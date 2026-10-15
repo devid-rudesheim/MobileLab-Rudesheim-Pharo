@@ -28,7 +28,9 @@ class and reads its `menuLabel`).
 
 The class-side `startup` is what an exported iOS app's startup.st calls
 (`Rudesheim MobileLab Export StartupScript` appends that line): it opens the app from the UI
-process, because startup.st runs before the UI is ready to open windows.
+process, because startup.st runs before the UI is ready to open windows. An exported app has
+nothing else on screen to keep, so `startup` opens the View as the World (`startupScreenPolicy`),
+unlike the MobileLab World Menu item, which keeps the ordinary window.
 "
 Class {
 	#name : 'ApplicationTheodoliteMobileLabRudesheim',
@@ -53,8 +55,15 @@ ApplicationTheodoliteMobileLabRudesheim class >> startup [
 	^ UIManager default
 		defer:
 		[
-			self new run.
+			self new
+				screenPolicy:	self startupScreenPolicy;
+				run.
 		].
+]
+
+{ #category : 'starting' }
+ApplicationTheodoliteMobileLabRudesheim class >> startupScreenPolicy [
+	^ Rudesheim MobileLab ScreenPolicy World.
 ]
 
 { #category : 'private' }
