@@ -32,16 +32,14 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 ]
 
 { #category : 'tests' }
-ApplicationTheodoliteMobileLabRudesheimTest >> testStartupSucceeds [
-	"Class-side #startup is what an exported iOS app's startup.st calls. Here (a headless image, no
-	World) it must at least not raise; that it really opens Theodolite on the UI process is checked
-	in the iOS Simulator, since the tests can't open a World."
+ApplicationTheodoliteMobileLabRudesheimTest >> testStartupScreenPolicyIsWorld [
+	"Class-side #startup is what an exported iOS app's startup.st calls. It must open the View as
+	the World, but a test cannot send it: opening the World is irreversible and the tests can't
+	open one. So only the chosen policy is checked here; that Theodolite really fills the screen
+	is checked in the iOS Simulator."
 	self
-		shouldnt:
-		[
-			self targetClass startup.
-		]
-		raise:	Error.
+		assert:	self targetClass startupScreenPolicy
+		equals:	Rudesheim MobileLab ScreenPolicy World.
 ]
 
 { #category : 'tests' }
