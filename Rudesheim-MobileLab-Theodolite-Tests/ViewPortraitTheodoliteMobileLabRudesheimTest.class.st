@@ -34,40 +34,64 @@ ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutGivesAddLineBut
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesAddLineButtonFifth [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutGivesTopRowTheDynamicIslandClearance [
+	|
+		layout
+	|
+
+	layout := self basicTarget defaultLayout.
+
 	self
-		assert:	self basicTarget defaultLayout children fifth
+		assert:
+		(
+			layout
+				constraintsFor:	layout children first
+		) height
+		equals:	62.
+]
+
+{ #category : 'tests' }
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesAnEmptyRowFirst [
+	self
+		assert:	self basicTarget defaultLayout children first children
+		equals:	#(  ).
+]
+
+{ #category : 'tests' }
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesAddLineButtonSixth [
+	self
+		assert:	self basicTarget defaultLayout children sixth
 		identicalTo:	self basicTarget widgets addLineButton.
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesMapAreaSecond [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesMapAreaThird [
 	self
-		assert:	self basicTarget defaultLayout children second
+		assert:	self basicTarget defaultLayout children third
 		identicalTo:	self basicTarget widgets mapArea.
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesProgressLabelThird [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesProgressLabelFourth [
 	self
-		assert:	self basicTarget defaultLayout children third
+		assert:	self basicTarget defaultLayout children fourth
 		identicalTo:	self basicTarget widgets progressLabel.
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesRarelyUsedRowFirstWithAddressBarInIt [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesRarelyUsedRowSecondWithAddressBarInIt [
 	self
 		assert:
 		(
-			self basicTarget defaultLayout children first children
+			self basicTarget defaultLayout children second children
 				includes:	self basicTarget widgets addressBar
 		).
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesRemoveLineButtonFourth [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesRemoveLineButtonFifth [
 	self
-		assert:	self basicTarget defaultLayout children fourth
+		assert:	self basicTarget defaultLayout children fifth
 		identicalTo:	self basicTarget widgets removeLineButton.
 ]
 
@@ -79,10 +103,10 @@ ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutPlacesWarningLa
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutStacksSixRows [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutStacksSevenRows [
 	self
 		assert:	self basicTarget defaultLayout children size
-		equals:	6.
+		equals:	7.
 ]
 
 { #category : 'tests' }
