@@ -5,8 +5,9 @@ A ViewPortraitTheodoliteMobileLabRudesheim is Theodolite's portrait-orientation 
 
 Like ViewLandscapeTheodoliteMobileLabRudesheim, it only arranges the widgets it gets from its
 `widgets` (a WidgetsTheodoliteMobileLabRudesheim, the widget set shared by both orientations) into
-the portrait structure, top to bottom: an empty fixed-height row (`self topInset`) that keeps
-everything clear of the status bar and the Dynamic Island, the fixed-height rarely-used row (discard/address/open/copy)
+the portrait structure, top to bottom: an empty row of the fixed height 62 (the top safe area of an iPhone with a Dynamic
+Island, measured; to be replaced by the inset the OS reports) that keeps everything clear of the
+status bar and the Dynamic Island, the fixed-height rarely-used row (discard/address/open/copy)
 -- the same top row the landscape View has, so the address readout is always the topmost thing --
 then the variable-height self-drawn map area (`widgets mapArea`, 項番GM), then the controls
 stacked vertically as three full-width fixed-height rows in the order progress, remove, add (the
@@ -39,22 +40,11 @@ ViewPortraitTheodoliteMobileLabRudesheim >> buttonHeight [
 	^ self class buttonHeight.
 ]
 
-{ #category : 'accessing' }
-ViewPortraitTheodoliteMobileLabRudesheim class >> topInset [
-	"The height of the empty row above everything else, so no part sits under the status bar or the Dynamic Island. A fixed value (the top safe area of an iPhone with a Dynamic Island, measured: 62) until the real inset is read from the OS."
-	^ 62.
-]
-
-{ #category : 'accessing' }
-ViewPortraitTheodoliteMobileLabRudesheim >> topInset [
-	^ self class topInset.
-]
-
 { #category : 'layout' }
 ViewPortraitTheodoliteMobileLabRudesheim >> defaultLayout [
 	^ SpBoxLayout newTopToBottom
 		add:	SpBoxLayout newTopToBottom
-		height:	self topInset;
+		height:	62;
 		add:
 		(
 			SpBoxLayout newLeftToRight

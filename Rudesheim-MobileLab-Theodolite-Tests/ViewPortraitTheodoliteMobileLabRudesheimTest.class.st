@@ -34,7 +34,7 @@ ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutGivesAddLineBut
 ]
 
 { #category : 'tests' }
-ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutGivesTopRowTheTopInsetHeight [
+ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutGivesTopRowTheDynamicIslandClearance [
 	|
 		layout
 	|
@@ -47,7 +47,7 @@ ViewPortraitTheodoliteMobileLabRudesheimTest >> testDefaultLayoutGivesTopRowTheT
 			layout
 				constraintsFor:	layout children first
 		) height
-		equals:	self basicTarget topInset.
+		equals:	62.
 ]
 
 { #category : 'tests' }
