@@ -1,6 +1,6 @@
 "
 An OSLocationRudesheim is the default/base OS-specific implementation for reading the device's
-current position and true-heading direction, reached as `Smalltalk os rudesheim location` (or, for
+current position and true-heading direction, reached as `OSPlatform current rudesheim location` (or, for
 reflective discovery, `Rudesheim OS location`) -- mirroring OSRudesheim's own dispatch pattern (see
 e.g. its `Mac`/`openCL`/`tableQuery` accessors, Rudesheim-Kernel).
 

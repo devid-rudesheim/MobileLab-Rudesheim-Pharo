@@ -7,7 +7,7 @@ bug in this app. Dedicated so a UI action block can `on:do:` it specifically and
 message instead of dropping into the debugger, without also swallowing unrelated Errors.
 
 Placed alongside MacOSLocationRudesheim in the same OS-dispatch namespace, rather than as a bare
-global: reached as `Smalltalk os rudesheim locationUnavailable` (or, for reflective discovery,
+global: reached as `OSPlatform current rudesheim locationUnavailable` (or, for reflective discovery,
 `Rudesheim OS Mac locationUnavailable`) via MacOSRudesheim's own `#location`/`#locationUnavailable`
 extension accessors (MacOSRudesheim.extension.st, Rudesheim-MobileLab) -- mirroring how
 MacOSLocationRudesheim itself is reached.

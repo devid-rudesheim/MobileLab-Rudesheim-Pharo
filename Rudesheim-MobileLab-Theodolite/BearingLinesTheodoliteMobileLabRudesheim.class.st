@@ -33,7 +33,7 @@ not flag them as possibly-not-understood; #add:/#removeLast/#size/#warning are r
 (declared on this class or CollectionValueHolder itself), so those stay as plain `self` sends.
 
 There is no #push/#pop wrapping #add:/#removeLast with the OS-dispatch position/heading read
-(`Smalltalk os rudesheim location currentRay`) baked in -- that read is slow (up to ~50 seconds,
+(`OSPlatform current rudesheim location currentRay`) baked in -- that read is slow (up to ~50 seconds,
 see MacOSLocationRudesheim's comment) and its own caller, the 'Add line' button's Spec2 action
 block, needs to disable/re-enable the add/remove buttons around it (see
 SpecBuilderTheodoliteMobileLabRudesheim's comment), which only that action block can do -- so it
@@ -173,7 +173,7 @@ BearingLinesTheodoliteMobileLabRudesheim >> mapURL [
 	Maps instead of a browser (see
 	https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html).
 	Actually opening it is the View/action-block layer's concern, via
-	`Smalltalk os rudesheim launcher open:` (see OSLauncherRudesheim's comment) -- not this class."
+	`OSPlatform current rudesheim launcher open:` (see OSLauncherRudesheim's comment) -- not this class."
 	^ self intersectionPoint
 		collect:
 		[ :point |

@@ -7,7 +7,7 @@ the Model the way ModelTheodoliteMobileLabRudesheimTest does. That distinction c
 implementation bugs neither ModelTheodoliteMobileLabRudesheimTest nor
 SpecBuilderTheodoliteMobileLabRudesheimTest had surfaced, because both of those only ever exercise
 a BearingLines instance the Model already wired up with #warning: -- entirely unrelated to the
-app's own OS-dispatch surface (`Smalltalk os rudesheim location currentRay`, sourced by
+app's own OS-dispatch surface (`OSPlatform current rudesheim location currentRay`, sourced by
 SpecBuilderTheodoliteMobileLabRudesheim's #addLineButton action rather than this class, out of
 scope here, see BearingLinesTheodoliteMobileLabRudesheim's own comment):
 - #removeLast used to raise a `CollectionIsEmpty` error when the collection was already empty --
