@@ -1,6 +1,6 @@
 "
 A MacOSLocationRudesheim is the macOS-specific OSLocationRudesheim override, reached as
-`Smalltalk os rudesheim location` while running on macOS. Overrides the two primitives
+`OSPlatform current rudesheim location` while running on macOS. Overrides the two primitives
 OSLocationRudesheim's #currentRay template method needs: #currentLocation (the device's current
 position, as a GPoint) and #currentNormalizedBearing (the device's current true-heading direction,
 converted from raw degrees to Rudesheim-MobileLab's normalized bearing form through
@@ -398,7 +398,7 @@ using: aLibrary [
 
 { #category : 'private' }
 MacOSLocationRudesheim class >> signalLocationUnavailable [
-	^ Smalltalk os rudesheim locationUnavailable signal.
+	^ OSPlatform current rudesheim locationUnavailable signal.
 ]
 
 { #category : 'private' }

@@ -13,7 +13,7 @@ the self-drawn map -- NocoDB Sections 項番GM) and #addLineButton/#removeLineBu
 #copyButton/#discardButton (each an SpButtonPresenter, for the write-direction action blocks).
 
 #addLineButton's action reads the current position/heading itself (via Rudesheim-MobileLab's
-OS-dispatch mechanism, `Smalltalk os rudesheim location currentRay`; see MacOSLocationRudesheim's
+OS-dispatch mechanism, `OSPlatform current rudesheim location currentRay`; see MacOSLocationRudesheim's
 comment for its own known limitation) rather than delegating that to
 BearingLinesTheodoliteMobileLabRudesheim (see its own comment for why): `currentRay` blocks its
 caller for up to ~50 seconds waiting on a CoreLocation delegate callback, so it runs on a TaskIt
@@ -33,7 +33,7 @@ near-parallel-line rejection) rather than a dialog, so there is no `on:do:` guar
 debugger for.
 
 #openButton's action and the LaunchRequested handler below open each
-mapURL through `Smalltalk os rudesheim launcher open:` rather than sending it a `ZnUrl`-side
+mapURL through `OSPlatform current rudesheim launcher open:` rather than sending it a `ZnUrl`-side
 #launch -- see OSLauncherRudesheim's comment for why that dispatch lives there instead.
 
 #mapArea's drawBlock: re-renders from `aModel bearingLines` directly (like the transform blocks
@@ -188,7 +188,7 @@ toView: aView [
 				value:	false.
 
 			[
-				Smalltalk os rudesheim location currentRay.
+				OSPlatform current rudesheim location currentRay.
 			] future
 				onSuccessDo:
 				[ :aGRay |
@@ -234,7 +234,7 @@ toView: aView [
 			aModel bearingLines mapURL
 				do:
 				[ :url |
-					Smalltalk os rudesheim launcher
+					OSPlatform current rudesheim launcher
 						open:	url.
 				].
 		].
@@ -264,7 +264,7 @@ toView: aView [
 			aModel bearingLines mapURL
 				do:
 				[ :url |
-					Smalltalk os rudesheim launcher
+					OSPlatform current rudesheim launcher
 						open:	url.
 				].
 		]

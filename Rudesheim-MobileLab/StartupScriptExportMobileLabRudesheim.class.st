@@ -55,7 +55,7 @@ for: aTargetTExportableMobileLabRudesheim [
 		contents lines
 			anySatisfy:
 			[ :each |
-				startupCall = each trimmed.
+				startupCall = each trimBoth.
 			]
 	)
 		ifTrue:
