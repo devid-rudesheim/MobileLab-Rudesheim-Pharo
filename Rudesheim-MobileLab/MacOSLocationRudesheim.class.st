@@ -1,0 +1,428 @@
+"
+A MacOSLocationRudesheim is the macOS-specific OSLocationRudesheim override, reached as
+`OSPlatform current rudesheim location` while running on macOS. Overrides the two primitives
+OSLocationRudesheim's #currentRay template method needs: #currentLocation (the device's current
+position, as a GPoint) and #currentNormalizedBearing (the device's current true-heading direction,
+converted from raw degrees to Rudesheim-MobileLab's normalized bearing form through
+`Rudesheim Utility Normalizer Angle Degree normalizeAngle:`).
+
+Both go through CoreLocation via the ObjC bridge (`ObjCLibrary`, see note/pharo-ops.md section 40),
+using `CLLocationManager`'s delegate-callback API (`requestLocation`/`startUpdatingHeading`,
+delivering results to a dynamically-generated NSObject subclass registered as the manager's
+delegate -- see note/pharo-ops.md section 41 for the underlying delegate-creation technique this
+follows). All ObjC/CoreLocation plumbing is confined to this class's own class-side methods and
+class-instance variables (`locationManager`/`locationDelegate`/`delegateCallbacks`/
+`pendingLocationDescription`/`pendingHeadingDegrees`) rather than a separate globally-named bridge
+class.
+
+`CLLocationCoordinate2D` (the struct `-coordinate` returns) can't be read through
+`ObjCLibrary>>#sendMessage:to:` (it treats every return as a bare pointer, and a 2-double struct
+uses a different register-based ABI) -- worked around by parsing `CLLocation>>-description`'s
+human-readable text form instead, via `Rudesheim MobileLab Location CoordinateParser` (see its own
+comment). `trueHeading` (a plain `double` property, no struct-packing issue) is read directly
+through `ObjCLibrary>>#sendDoubleMessage:to:`, a small extension added in `ObjCLibrary.extension.st`
+specifically to declare that one method's `double`-typed FFI return, unlike the library's own
+generic pointer-returning `sendMessage:to:`.
+
+`#addDelegateCallbackFor:to:using:block:`'s FFICallback declares 4 parameters in its own
+`#signature:` (`rcvr`/`objCSel`, the Objective-C calling convention's own implicit receiver and
+selector, plus the delegate method's own 2 arguments) -- its wrapping Smalltalk block must itself
+declare all 4, even though `aBlock` (the actual per-callback handler, e.g.
+#recordUpdatedHeading:using:) only wants the trailing 2. Declaring only 2 parameters compiles and
+loads without error but crashes with `ArgumentsCountMismatch` the moment the real Objective-C
+runtime actually invokes the callback with all 4 arguments (`FFICallback>>#valueWithArguments:`,
+see MacOSLocationRudesheimTest's own comment) -- invisible in every headless run, since (per the
+next paragraph) CoreLocation's delegate callbacks never fire there at all, so this only ever
+surfaced once the app was actually run somewhere CoreLocation could authorize it.
+
+**Known limitation, not a bug here**: macOS only shows CoreLocation's permission dialog to a
+process running from a proper `.app` bundle with an `Info.plist`
+`NSLocationWhenInUseUsageDescription` entry -- a bare headless `Pharo` binary invocation (as used
+by `tool/eval.sh` and every worker image in this project) never gets authorized, so
+`authorizationStatus` stays `kCLAuthorizationStatusNotDetermined` forever and neither delegate
+callback this class registers for ever actually fires. #currentLocation/#currentNormalizedBearing
+therefore always time out and raise (see #signalLocationUnavailable) until this app is packaged as
+a real `.app` bundle -- verified 2026-09-12, see note/pharo-ops.md section 41.
+"
+Class {
+	#name : 'MacOSLocationRudesheim',
+	#superclass : 'OSLocationRudesheim',
+	#classInstVars : [
+		'locationManager',
+		'locationDelegate',
+		'delegateCallbacks',
+		'pendingLocationDescription',
+		'pendingHeadingDegrees'
+	],
+	#category : 'Rudesheim-MobileLab',
+	#package : 'Rudesheim-MobileLab'
+}
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> addDelegateCallbackFor: aSelectorString
+to: aDelegateClass
+using: aLibrary
+block: aBlock [
+	|
+		callback
+	|
+
+	callback :=
+		FFICallback
+			signature:	#(void (void* rcvr, void* objCSel, void* arg1, void* arg2))
+			block:
+			[ :rcvr :objCSel :arg1 :arg2 |
+				aBlock
+					value:	arg1
+					value:	arg2.
+			].
+
+	aLibrary
+		class_addMethodClass:	aDelegateClass
+		selector:
+		(
+			aLibrary
+				lookupSelector:	aSelectorString
+		)
+		implementation:	callback
+		signature:	'v@:@@'.
+
+	^ callback.
+]
+
+{ #category : 'accessing' }
+MacOSLocationRudesheim class >> currentLocation [
+	|
+		library
+	|
+
+	library := ObjCLibrary uniqueInstance.
+	pendingLocationDescription := nil.
+
+	library
+		sendMessage:
+		(
+			library
+				lookupSelector:	'requestLocation'
+		)
+		to:	self locationManager.
+
+	self
+		waitUntil:
+		[
+			pendingLocationDescription notNil.
+		]
+		timeoutSeconds:	25.
+
+	(
+		pendingLocationDescription isNil
+			or:
+			[
+				pendingLocationDescription isEmpty.
+			]
+	)
+		ifTrue:
+		[
+			^ self signalLocationUnavailable.
+		].
+
+	^ Rudesheim MobileLab Location CoordinateParser
+		parseCLLocationDescription:	pendingLocationDescription.
+]
+
+{ #category : 'accessing' }
+MacOSLocationRudesheim class >> currentNormalizedBearing [
+	|
+		library
+	|
+
+	library := ObjCLibrary uniqueInstance.
+	pendingHeadingDegrees := nil.
+
+	library
+		sendMessage:
+		(
+			library
+				lookupSelector:	'startUpdatingHeading'
+		)
+		to:	self locationManager.
+
+	self
+		waitUntil:
+		[
+			pendingHeadingDegrees notNil.
+		]
+		timeoutSeconds:	25.
+
+	library
+		sendMessage:
+		(
+			library
+				lookupSelector:	'stopUpdatingHeading'
+		)
+		to:	self locationManager.
+
+	pendingHeadingDegrees
+		ifNil:
+		[
+			^ self signalLocationUnavailable.
+		].
+
+	^ Rudesheim Utility Normalizer Angle Degree
+		normalizeAngle:	pendingHeadingDegrees.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> defaultLocationDelegate [
+	|
+		library
+		delegateClass
+		instance
+	|
+
+	DynamicLoader forCurrentPlatform
+		loadLibrary:	'/System/Library/Frameworks/CoreLocation.framework/CoreLocation'
+		flag:	2.
+
+	library := ObjCLibrary uniqueInstance.
+
+	delegateClass :=
+		library
+			objc_allocateClassPairSuperclass:
+			(
+				library
+					lookupClass:	'NSObject'
+			)
+			name:	'RudesheimMobileLabLocationDelegate'
+			extraBytes:	0.
+
+	delegateCallbacks := OrderedCollection new.
+
+	delegateCallbacks
+		add:
+		(
+			self
+				addDelegateCallbackFor:	'locationManager:didUpdateLocations:'
+				to:	delegateClass
+				using:	library
+				block:
+				[ :managerArg :locationsArg |
+					self
+						recordUpdatedLocations:	locationsArg
+						using:	library.
+				]
+		);
+		add:
+		(
+			self
+				addDelegateCallbackFor:	'locationManager:didFailWithError:'
+				to:	delegateClass
+				using:	library
+				block:
+				[ :managerArg :errorArg |
+					pendingLocationDescription := ''.
+				]
+		);
+		add:
+		(
+			self
+				addDelegateCallbackFor:	'locationManager:didUpdateHeading:'
+				to:	delegateClass
+				using:	library
+				block:
+				[ :managerArg :headingArg |
+					self
+						recordUpdatedHeading:	headingArg
+						using:	library.
+				]
+		).
+
+	library
+		objc_registerClassPair:	delegateClass.
+
+	instance :=
+		library
+			sendMessage:
+			(
+				library
+					lookupSelector:	'alloc'
+			)
+			to:	delegateClass.
+
+	instance :=
+		library
+			sendMessage:
+			(
+				library
+					lookupSelector:	'init'
+			)
+			to:	instance.
+
+	^ instance.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> defaultLocationManager [
+	|
+		library
+		manager
+	|
+
+	library := ObjCLibrary uniqueInstance.
+
+	manager :=
+		library
+			sendMessage:
+			(
+				library
+					lookupSelector:	'alloc'
+			)
+			to:
+			(
+				library
+					lookupClass:	'CLLocationManager'
+			).
+
+	manager :=
+		library
+			sendMessage:
+			(
+				library
+					lookupSelector:	'init'
+			)
+			to:	manager.
+
+	library
+		sendMessage:
+		(
+			library
+				lookupSelector:	'setDelegate:'
+		)
+		to:	manager
+		with:	self locationDelegate.
+
+	library
+		sendMessage:
+		(
+			library
+				lookupSelector:	'requestWhenInUseAuthorization'
+		)
+		to:	manager.
+
+	^ manager.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> locationDelegate [
+	^ locationDelegate
+		ifNil:
+		[
+			locationDelegate := self defaultLocationDelegate.
+		].
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> locationManager [
+	^ locationManager
+		ifNil:
+		[
+			locationManager := self defaultLocationManager.
+		].
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> nsStringToString: nsString
+using: aLibrary [
+	|
+		cString
+	|
+
+	cString :=
+		aLibrary
+			sendMessage:
+			(
+				aLibrary
+					lookupSelector:	'UTF8String'
+			)
+			to:	nsString.
+
+	^ cString utf8StringFromCString.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> recordUpdatedHeading: headingArg
+using: aLibrary [
+	pendingHeadingDegrees :=
+		aLibrary
+			sendDoubleMessage:
+			(
+				aLibrary
+					lookupSelector:	'trueHeading'
+			)
+			to:	headingArg.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> recordUpdatedLocations: locationsArg
+using: aLibrary [
+	|
+		firstLocation
+		description
+	|
+
+	firstLocation :=
+		aLibrary
+			sendMessage:
+			(
+				aLibrary
+					lookupSelector:	'firstObject'
+			)
+			to:	locationsArg.
+
+	description :=
+		self
+			nsStringToString:
+			(
+				aLibrary
+					sendMessage:
+					(
+						aLibrary
+							lookupSelector:	'description'
+					)
+					to:	firstLocation
+			)
+			using:	aLibrary.
+
+	pendingLocationDescription := description.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> signalLocationUnavailable [
+	^ OSPlatform current rudesheim locationUnavailable signal.
+]
+
+{ #category : 'private' }
+MacOSLocationRudesheim class >> waitUntil: aBlock
+timeoutSeconds: aNumberOfSeconds [
+	|
+		remainingSeconds
+	|
+
+	remainingSeconds := aNumberOfSeconds.
+	[
+		aBlock value
+			or:
+			[
+				0 >= remainingSeconds.
+			].
+	]
+		whileFalse:
+		[
+			(
+				Delay
+					forSeconds:	1
+			) wait.
+
+			remainingSeconds := remainingSeconds - 1.
+		].
+]

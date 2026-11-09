@@ -32,16 +32,42 @@ BaselineOfRudesheimMobileLab >> baseline: spec [
 					spec
 						requires:	#( 'RudesheimKernel' 'RudesheimUtility' ).
 				];
-				package:	'Rudesheim-MobileLab-Tests'
+				package:	'Rudesheim-MobileLab-Theodolite'
 				with:
 				[
 					spec
 						requires:	#( 'Rudesheim-MobileLab' ).
 				];
+				project:	'RudesheimKernelTests'
+				copyFrom:	'RudesheimKernel'
+				with:
+				[
+					spec
+						loads:	#( 'tests' ).
+				];
+				project:	'RudesheimUtilityTests'
+				copyFrom:	'RudesheimUtility'
+				with:
+				[
+					spec
+						loads:	#( 'tests' ).
+				];
+				package:	'Rudesheim-MobileLab-Tests'
+				with:
+				[
+					spec
+						requires:	#( 'Rudesheim-MobileLab' 'RudesheimKernelTests' 'RudesheimUtilityTests' ).
+				];
+				package:	'Rudesheim-MobileLab-Theodolite-Tests'
+				with:
+				[
+					spec
+						requires:	#( 'Rudesheim-MobileLab-Theodolite' 'RudesheimKernelTests' 'RudesheimUtilityTests' ).
+				];
 				group:	#core
-				with:	#( 'Rudesheim-MobileLab' );
+				with:	#( 'Rudesheim-MobileLab' 'Rudesheim-MobileLab-Theodolite' );
 				group:	#tests
-				with:	#( 'Rudesheim-MobileLab-Tests' );
+				with:	#( 'Rudesheim-MobileLab-Tests' 'Rudesheim-MobileLab-Theodolite-Tests' );
 				group:	#default
 				with:	#( #core ).
 		].
