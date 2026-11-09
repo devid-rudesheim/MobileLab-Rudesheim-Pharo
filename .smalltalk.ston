@@ -7,7 +7,7 @@ SmalltalkCISpec {
   ],
   #testing : {
     #include : {
-      #packages : [ 'Rudesheim-MobileLab-Tests' ]
+      #packages : [ 'Rudesheim-MobileLab-Tests', 'Rudesheim-MobileLab-Theodolite-Tests' ]
     }
   }
 }
