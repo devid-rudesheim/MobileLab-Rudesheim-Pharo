@@ -30,7 +30,11 @@ The class-side `startup` is what an exported iOS app's startup.st calls
 (`Rudesheim MobileLab Export StartupScript` appends that line): it opens the app from the UI
 process, because startup.st runs before the UI is ready to open windows. An exported app has
 nothing else on screen to keep, so `startup` opens the View as the World (`startupScreenPolicy`),
-unlike the MobileLab World Menu item, which keeps the ordinary window.
+unlike the MobileLab World Menu item, which keeps the ordinary window. It does nothing when the app
+is already running (`isRunning`, which asks the Applications that were started and still have a window; they are held by the
+class because the instance of an open app is otherwise unreferenced and gone after an image restart): an image prepared by `Rudesheim MobileLab Export Image` is saved
+with the app open, and its startup.st may still call `startup` without opening a second app.
+(`openAsStartup` is the opening itself, answering the Application.)
 "
 Class {
 	#name : 'ApplicationTheodoliteMobileLabRudesheim',
@@ -41,13 +45,50 @@ Class {
 		'viewPortrait',
 		'screenPolicy'
 	],
+	#classInstVars : [
+		'applications'
+	],
 	#category : 'Rudesheim-MobileLab-Theodolite',
 	#package : 'Rudesheim-MobileLab-Theodolite'
 }
 
 { #category : 'accessing' }
+ApplicationTheodoliteMobileLabRudesheim class >> applications [
+	^ applications
+		ifNil:
+		[
+			applications := OrderedCollection new.
+		].
+]
+
+{ #category : 'accessing' }
 ApplicationTheodoliteMobileLabRudesheim class >> menuLabel [
 	^ 'Theodolite'.
+]
+
+{ #category : 'testing' }
+ApplicationTheodoliteMobileLabRudesheim class >> isRunning [
+	^ self applications
+		anySatisfy:
+		[ :anApplication |
+			anApplication windows notEmpty.
+		].
+]
+
+{ #category : 'starting' }
+ApplicationTheodoliteMobileLabRudesheim class >> openAsStartup [
+	|
+		application
+	|
+
+	application := self new.
+
+	application
+		screenPolicy:	self startupScreenPolicy.
+
+	application run.
+
+	^ application.
 ]
 
 { #category : 'starting' }
@@ -55,9 +96,11 @@ ApplicationTheodoliteMobileLabRudesheim class >> startup [
 	^ UIManager default
 		defer:
 		[
-			self new
-				screenPolicy:	self startupScreenPolicy;
-				run.
+			self isRunning
+				ifFalse:
+				[
+					self openAsStartup.
+				].
 		].
 ]
 
@@ -132,6 +175,9 @@ ApplicationTheodoliteMobileLabRudesheim >> start [
 
 	self
 		registerWindow:	window.
+
+	self class applications
+		add:	self.
 
 	Rudesheim MobileLab Theodolite SpecBuilder
 		bindModel:	self model
