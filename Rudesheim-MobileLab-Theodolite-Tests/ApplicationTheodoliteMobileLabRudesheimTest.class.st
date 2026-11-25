@@ -32,6 +32,33 @@ ApplicationTheodoliteMobileLabRudesheimTest >> testNewRunSucceeds [
 ]
 
 { #category : 'tests' }
+ApplicationTheodoliteMobileLabRudesheimTest >> testIsRunningOnlyWhileAnApplicationHasAWindow [
+	|
+		target
+	|
+
+	target := self basicTarget.
+	target start.
+
+	self
+		assert:	self targetClass isRunning.
+
+	self targetClass applications
+		do:
+		[ :anApplication |
+			anApplication windows copy
+				do:
+				[ :aWindow |
+					anApplication
+						unregisterWindow:	aWindow.
+				].
+		].
+
+	self
+		deny:	self targetClass isRunning.
+]
+
+{ #category : 'tests' }
 ApplicationTheodoliteMobileLabRudesheimTest >> testStartupScreenPolicyIsWorld [
 	"Class-side #startup is what an exported iOS app's startup.st calls. It must open the View as
 	the World, but a test cannot send it: opening the World is irreversible and the tests can't
